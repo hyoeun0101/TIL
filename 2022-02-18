@@ -1,0 +1,88 @@
+# 2022-02-18
+
+## 9시-12시 장고 기초 특강
+
+```
+<form method="post">
+
+</form>
+```
+
+action 그 주소에서 그 주소로 보내는 거면 안써도됨
+
+form태그 안의 button은 제출하는 버튼. onclick 제대로 작동x
+
+render
+
+사용자가 요청을 보내면 url은 바뀌지않고 , html 띄어주는거
+
+redirect
+
+url이 바뀌는거.
+
+makemigrations ⇒ 얘는 모델 변경의미!!??
+
+migrate ⇒ 모든 변경사항 저장??
+
+## 비쥬얼 스튜디어 코드 설치 및 웹 개발을 위한 필수 익스텐션 10개 추천 -유튜브 앨리
+
+IDE (Integrated Development Environment) 통합 개발 환경
+
+- 코딩, 컴파일, 디버그 등 모든 작업을 하나의  프로그램에서 처리할 수 있는 환경
+
+vscode ⇒ ctrl+shift+p 
+
+추천1. Material Theme, Materal Icon Theme
+
+추천2. Prettier-code formatter
+
+추천3. Bracket Pair Colorizer
+
+추천4. auto rename tag
+
+추천5. css peek (ctrl 키 누르고 클릭하면 정의된 곳으로 감)
+
+추천6. html css support
+
+live server
+
+## 마크다운 6분 순삭 정리 + 깃허브 리드미 파일 작성 팁 -유튜브 앨리
+
+```python
+# heading
+___
+**word**
+*word*
+~~word~~
+> hahaha #인용구
+
+<!-- link -->
+Click [here](링크)
+
+<!--img-->
+![img description](이미지 링크)
+
+<!--table-->
+
+|Header|Description|
+|--:|--:|  # 오른쪽 정렬
+|cell1|cell2|
+#중간정렬은 양쪽 ::
+
+<!--code-->
+백틱 3개
+```
+
+```python
+# heading
+___
+**word**
+*word*
+~~word~~
+
+Click here
+
+이미지사진
+
+테이블만들어짐
+```
