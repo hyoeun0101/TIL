@@ -1,4 +1,6 @@
 # TIL
 Today I Learned
 
-[2022-02-17.md](https://github.com/hyoeun0101/TIL/files/8092866/2022-02-17.md)
+매일 아침 어제 쓴 TIL을 보며 공부한 내용 복습하고, 커밋하기!
+
+
