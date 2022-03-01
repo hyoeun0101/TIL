@@ -1,6 +1,6 @@
 ### { key : value } => Json 구조
 
-__FormData.get, Form.getall()__
+- __FormData.get, Form.getall()__
 ```js
 const form_data = new FormData()
 form_data.append("name", "eun")
