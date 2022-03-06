@@ -15,10 +15,12 @@ docker run -d -p 80:80 docker/getting-strated
 ```
 docker run -it python:3.8
 ```
+
 2.  컨테이너 상태 확인하기
 ```
 docker ps
 docker ps -a  # 꺼진 컨테이너 확인하기
+```
 
 3. 컨테이너 멈추기
 ```
