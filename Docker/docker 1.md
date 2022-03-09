@@ -64,3 +64,13 @@ docker history hyoeun/docker-memo:version1
 ```
 docker rmi hyoeun/docker-memo:version1
 ```
+
+
+![image](https://user-images.githubusercontent.com/96059261/157365754-f26a0477-103d-4a7c-8e70-f19585b58b4b.png)
+- DOCKER_HOST : 도커 객체(이미지나 컨테이너)를 관리하는 공간. 레지스트리에서 이미지를 다운받거나 컨테이너 실행 등의 일을 한다.
+- Registry : 이미지를 저장하는 공간. registry에서 이미지를 다운받는다.
+- docker build : 도커 이미지 생성
+- docker pull : Registry에서 이미지 다운
+- docker run : 이미 있는 이미지에서 컨테이너 생성
+
+# Virtual Machine
