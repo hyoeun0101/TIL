@@ -53,13 +53,13 @@ print(3&5)
 ### 🍎 bool 자료형
 => 결과값  True, False: 0
 ### 🍎 논리연산자 and or not
-_tip! 파이썬에서는 && || ! 안씀_
+_tip! 파이썬에서는 && || ! 안씀_   
 
-암기
-or  0111
-and 0001
-xor 0110 =>서로 다르면 True
+암기   
+or  0111   
+and 0001   
+xor 0110 =>서로 다르면 True   
 
 ![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/0937bfcb-7423-43f9-824a-eabff4dc1f64/Untitled.png)
-(A and not B) or (not A and B)
+(A and not B) or (not A and B)   
 
