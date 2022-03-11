@@ -61,6 +61,6 @@ _tip! 파이썬에서는 && || ! 안씀_
 or  0111   
 and 0001   
 xor 0110 =>서로 다르면 True   
-(A and not B) or (not A and B)
+(A and not B) or (not A and B)   
 (A && !B)||(!A && B) 
 
