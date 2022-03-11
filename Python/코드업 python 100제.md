@@ -28,3 +28,16 @@ print(ord('A'))
 print(chr(65))
 >>A
 ```
+### 소숫점 반올림
+```
+a= 3.45675
+print(f'{a:.2f}') #2자릿수까지 출력
+print('{:.2f}'.format(a))
+print(format(a,".2f"))
+```
+## 2배 곱하기
+```
+a=3
+print(a<<1)
+```
+
