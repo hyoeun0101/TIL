@@ -48,18 +48,19 @@ print(3&5)
 =>  0000 0001
 >> 1
 ```
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/219d0b71-ace3-4fad-86ce-25c6a4b4c6c7/Untitled.png)
+a<<1  => a * 2^1
+a<<2  => a * 2^2
+a<<b  => a * 2^b
 
 ### 🍎 bool 자료형
 => 결과값  True, False: 0
 ### 🍎 논리연산자 and or not
 _tip! 파이썬에서는 && || ! 안씀_   
-
+=> 결과값 True, False   
 암기   
 or  0111   
 and 0001   
 xor 0110 =>서로 다르면 True   
-
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/0937bfcb-7423-43f9-824a-eabff4dc1f64/Untitled.png)
-(A and not B) or (not A and B)   
+(A and not B) or (not A and B)
+(A && !B)||(!A && B) 
 
