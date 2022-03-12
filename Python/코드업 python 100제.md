@@ -64,3 +64,24 @@ xor 0110 =>서로 다르면 True
 (A and not B) or (not A and B)   
 (A && !B)||(!A && B) 
 
+### 이중 for문 
+```
+1.list comprehension
+
+lst= [[0 for j in range(2)] for i in range(3)]
+
+>> [[0,0],
+		[0,0],
+		[0,0]]
+
+2.
+
+lst=[[0]*2 for _ in range(3)]
+
+3.
+lst=[]
+for i in range(3);
+	lst.append([])
+	for j in range(2):
+			lst[i].append(0)
+```
