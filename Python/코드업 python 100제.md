@@ -81,7 +81,35 @@ lst=[[0]*2 for _ in range(3)]
 3.
 lst=[]
 for i in range(3);
-	lst.append([])
-	for j in range(2):
-			lst[i].append(0)
+    lst.append([])
+        for j in range(2):
+	    lst[i].append(0)
 ```
+### 반올림,내림,올림
+```
+# 올림
+import math
+math.ceil(3.14)
+>>4
+math.ceil(-3.14)
+>> -3
+#내림
+math.floor(3.14)
+>>3
+math.floor(-3.14)
+>>-4  
+round(3.14)
+>>3
+round(3.1414,2)
+>>3.14
+round(345.567,-2)
+>>300.0
+##사사오입 원칙
+round(4.5)
+>>4
+round(3.5)
+>>4
+
+=> 짝수는 내림, 홀수는 올림
+```
+
