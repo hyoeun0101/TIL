@@ -27,6 +27,7 @@ git rebase --abort
 ```
 git add .
 git commit -m ""
+```
 ### rebase 경우   
 만약 합칠 커밋이 여러개이면 continue를 해서 일일히 합쳐줘야함.
 ```
