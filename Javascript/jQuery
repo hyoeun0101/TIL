@@ -1,0 +1,10 @@
+
+### 로딩하자마자 실행
+```
+$(document).ready(function(){
+    listing();
+})
+function listing(){
+  console.log('hello')
+}
+```
