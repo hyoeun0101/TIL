@@ -37,4 +37,4 @@ parsing hmtl    -> parsing html
 parsing html  -> executing js    
   fetching js
 - html 파싱되는 동안 js 다운만 받고 파싱 끝나면 실행
-- 제일 
+- 제일 효율적
