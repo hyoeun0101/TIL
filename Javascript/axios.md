@@ -39,4 +39,5 @@ axios({
  method: 'get',
  data: { foo : 'diary'}
 });
+```
 <https://inpa.tistory.com/entry/AXIOS-%F0%9F%93%9A-%EC%84%A4%EC%B9%98-%EC%82%AC%EC%9A%A9>
