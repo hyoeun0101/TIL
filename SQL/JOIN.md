@@ -1,9 +1,3 @@
-# 1. LEFT OUNTER JION
-
-```
-select * from topic
-```
-
 topic
 |tid |title |description |author_id|
 |----|-----|-----------|----------|
@@ -25,3 +19,31 @@ profile
 |1| developer| developer is …|
 |2| designer| designer is … |
 |3| DBA| DBA is ..|
+
+# LEFT OUTER JOIN
+
+:A...left 기준으로 테이블 합치기. 없는 값은 NULL
+
+### Q. topic 테이블을 기준으로 author테이블 left join하기
+
+SELECT \* FROM topic <span style='color:red'>LEFT JOIN author ON topic.author_id=author.aid</span>;
+
+# INNER JOIN
+
+:A와 B 교집합..없는 값 지워짐.
+
+SELECT \* FROM topic <span style='color:red'>INNER JOIN author ON topic.author_id=author.aid</span>;
+
+# FULL OUTER JOIN
+
+: A와 B의 합집합... 중복된 값은 제거.
+
+SELECT \* FROM topic FULL OUTER JOIN author ON topic.author_id=author.aid
+
+(SELECT _ FROM topic LEFT JOIN author ON topic.author_id=author.aid) UNION (SELECT _ FROM topic RIGHT JOIN author ON topic.author_id=author.aid)
+
+# EXCLUSIVE LEFT JOIN
+
+: A-B...A에서 B 삭제
+
+SELECT \* FROM topic LEFT JOIN author ON topic.author_id=author_aid WHERE author.aid is NULL
