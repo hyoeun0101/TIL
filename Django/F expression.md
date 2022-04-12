@@ -1,5 +1,5 @@
 # 동시성 문제 해결하기
-동시에 좋아요 누르면?
+동시에 좋아요 누르면?   
 기존 코드
 ```
 
@@ -12,8 +12,8 @@ def do_like(article_id: int, user_id: int) -> Like:
   return Like.objects.create(user_id=user_id, article_id=article_id)
   ```
   
-이렇게 작성하면 
-서버에서 요청-> DB에서 like_count 가져오기 -> like_count +1 해주기 -> DB저장
+이렇게 작성하면    
+서버에서 요청-> DB에서 like_count 가져오기 -> like_count +1 해주기 -> DB저장   
 그래서 동시에 요청이 가면 하나만 증가한다.
 
 ## F expression으로 해결!!
@@ -27,5 +27,5 @@ def do_like(article_id: int, user_id: int) -> Like:
   
   return Like.objects.create(user_id=user_id, article_id=article_id)
 ```
-바로 DB에 요청!!
+바로 DB에 요청!!   
 SQL구문.
