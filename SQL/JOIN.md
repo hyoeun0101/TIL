@@ -20,7 +20,7 @@ profile
 |2| designer| designer is … |
 |3| DBA| DBA is ..|
 
-# LEFT OUTER JOIN
+# ⭐LEFT OUTER JOIN
 
 :A...left 기준으로 테이블 합치기. 없는 값은 NULL
 
@@ -28,7 +28,7 @@ profile
 
 SELECT \* FROM topic <span style='color:red'>LEFT JOIN author ON topic.author_id=author.aid</span>;
 
-# INNER JOIN
+# ⭐INNER JOIN
 
 :A와 B 교집합..없는 값 지워짐.
 
