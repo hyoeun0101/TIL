@@ -1,7 +1,6 @@
 # TIL (Today I Learned)
 
-- 매일 저녁 8시 오늘 하루 공부한 내용 복습하고, 커밋하기!
+- 오늘 배운 새로운 내용 커밋하기!
 
-- 최대한 보지 않고 정리한다.
 
 [Django](https://github.com/hyoeun0101/TIL/tree/main/Django)
