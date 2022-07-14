@@ -58,9 +58,12 @@ for(Cookie cookie: cookies){
 }
 
 ```
+### 실습
 
+1. 아이디 기억 체크되어 있으면 쿠키 생성
+2. 없으면 쿠키 삭제
 
-쿠키가 있으면 id보여주고, 아이디 기억 체크하기
+3. jsp에서 쿠키가 있으면 id보여주고, 아이디 기억 체크하기
 ```html
         <input type="text" name="id" value="${cookie.id.value }" placeholder="이메일 입력" autofocus>
 

@@ -13,13 +13,14 @@ js에서 ${} 이건 template literal 인데, el은 서버에서 사용해서 우
 `${'${msg}'}` 이렇게!!   
 
 ----
-JSTL
+__JSTL__
 ```html
 <form action= "<c:url value='login'/>" >
 </form>
 ```
-c:url 은 context root 자동 추가 (ch1/login 이렇게)
-, session id 자동 추가 역할을 함.
+<c:url>의 역할
+1. context root 자동 추가 (ch1/login 이렇게)
+2. session id 자동 추가
    
 ----
 maven 모듈들의 실제 위치   
