@@ -45,7 +45,7 @@ POST /ch1/login/login HTTP/1.1
 HOST: localhost   
 Cookie: id=qqqq; SESSIONID=zzzzzzzzzz    
 
-쿠키가 있음.
+이렇게 쿠키가 있음.
 
 ```java
 Cookie[] cookies = request.getCookies();//쿠키 읽기, 여러 개일 수도 있으니 배열로,없으면 null
@@ -57,6 +57,10 @@ for(Cookie cookie: cookies){
     System.out.printf("[cooke]name= %s, value=%s", name, value);
 }
 
+```
+매개변수에 @CookieValue(String name) 붙히기
+```java
+@CookieValue("JSESSIONID") String sessionId
 ```
 ### 실습
 

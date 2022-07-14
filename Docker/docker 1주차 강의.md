@@ -74,3 +74,4 @@ docker rmi hyoeun/docker-memo:version1
 - docker run : 이미 있는 이미지에서 컨테이너 생성
 
 # Virtual Machine
+ 
