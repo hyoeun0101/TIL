@@ -18,11 +18,15 @@ __JSTL__
 <form action= "<c:url value='login'/>" >
 </form>
 ```
-<c:url>의 역할
+### <c:url>의 역할
 1. context root 자동 추가 (ch1/login 이렇게)
 2. session id 자동 추가
    
 ----
-maven 모듈들의 실제 위치   
+### maven 모듈들의 실제 위치   
 사용자 > 사용자 > .m2 > repository   
 모듈 충돌나거나 오류 생기면 repository 삭제하고 maven update 하면 됨.
+----
+### jsp가 서블릿으로 변환 되고, 컴파일된 결과 보기
+이클립스   
+Run>run configurations> Arguments> deploy 경로 복사 > 들어가기 > 한 단계 위로 tmp0 >  work 들어가기
