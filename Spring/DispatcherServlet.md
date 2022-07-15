@@ -2,7 +2,8 @@
 입력, 처리, 출력 중 입력을 DispatcherServlet이 처리를 함.   
 
 
-![image](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/d5665bce-e1c5-4588-8359-2a3239c24c9e/Untitled.png)
+``Ds`` -> `HandlerMapping` -> `DS` -> `HandlerAdaptor` -> `Controller` -> `HandlerAdaptor` -> `DS`   
+-> `JstlView` -> `.jsp` 
 
 `HandlerMapping`: URL-메서드 식으로 맵핑되어 있는데, URL과 맵핑되는 메서드를 찾아 DS에게 반환   
 `HandlerAdapter` : DS와 Controller의 느슨한 연결을 위해 존재. (변경에 유리) 메서드를 받아 Controller와 연결해줌. 컨트롤러 뿐만 아니라 서블릿도 호출 가능.
