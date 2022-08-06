@@ -30,3 +30,5 @@ __JSTL__
 ### jsp가 서블릿으로 변환 되고, 컴파일된 결과 보기
 이클립스   
 Run>run configurations> Arguments> deploy 경로 복사 > 들어가기 > 한 단계 위로 tmp0 >  work 들어가기
+---
+src/main/resources > log4j.xml > org.springframework.web <level value="trace"> 아니면 info
