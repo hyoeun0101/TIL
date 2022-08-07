@@ -1,14 +1,62 @@
 # RequestMapping
+- @RequestMapping("/url") 는 get,post 요청 둘다 허용
+- @RequestMapping(value="/url", method=RequestMethod.POST) 는 POST 요청 허용
+- @RequestMapping(value="/url", method=RequestMethod.GET) 는 GET 요청 허용
 
-@RequestMapping(value="/login/hello", method={RequestMethod.POST})   
+### @GetMapping, @PostMapping
+- 4.3부터 사용 가능. 스프링 버전 5.0.7로 변경하기
    
-== @PostMapping("/login/hello")   
-   
-단순히 GET요청 받아 jsp 띄워 주는거면   
-servelt-context.xml에 다음 코드 추가
+단순히 GET요청 받아 jsp 띄워 주는거면      
+`servelt-context.xml`에 다음 코드 추가
 ```xml
 <view-controller path="/register/add" view-name="registerForm"/>
 <!-- <mvc:view-controller path="/register/add" view-name="registerForm"/> -->
+```
+```java
+@GetMapping("/register/add")
+public String register(){
+    return "registerForm"
+}
+```
+이것과 동일. 간단하게 뷰 이름만 반환하는 메서드 대신에 뷰를 뷰 컨트롤러에 등록. 뷰 컨트롤러는 `GET`요청만 허용함.   
+
+### 에러 메세지 띄우기
+```java
+@PostMapping("/register/save")
+public Strign save(User user, Model m) throws Exception{
+    if(!isValid(user)){
+        String msg = URLEncoder.encode("id를 잘못를 입력했습니다.","utf-8");
+
+        m.addAttribute("msg",msg);
+        return "redirect:register/add";
+        //return "redircet:/register/add?msg="+msg;
+    }
+    return "registerInfo";
+}
+```
+여기서 redirect를 하는데 사실 redirect를 통해 url를 재요청을 하게되면, save에 있는 Model과 add에 있는 Model은 다른것.   
+save의 모델에 msg를 저장하고 넘겨주는데, 이는 스프링이 자동으로 "redircet:/register/add?msg="+msg 이렇게 바꿔주기 때문임.   
+즉 위 두줄과 주석처리 부분은 같음.
+[registerInfo.jsp]
+```jsp
+<h1>id=${param.id}</h1>
+<h1>pwd=${param.pwd}</h1>
+<h1>name=${param.name}</h1>
+<h1>email=${param.email}</h1>
+<h1>birth=${param.birth}</h1>
+<h1>sns=${paramValues.sns}</h1>
+<h1>sns=${paramValues.sns[0]}</h1>
+<h1>sns=${paramValues.sns[1]}</h1>
+<h1>sns=${paramValues.sns[2]}</h1>
+```
+[registerInfo.jsp]변경
+```jsp
+<h1>id=${user.id}</h1>
+<h1>pwd=${user.pwd}</h1>
+<h1>name=${user.name}</h1>
+<h1>email=${user.email}</h1>
+<h1>birth=${user.birth}</h1>
+<h1>sns=${user.sns}</h1>
 ```
 
 # URL Pattern
@@ -58,11 +106,14 @@ public class RequestMappingTest {
 **은 하위 경로까지   
 ?은 한 글자.   
 
-### url 인코딩
-url에다가 non-ASCII 작성하면 자동으로 문자열로 변환됨.   
-url 인코딩: 문자코드(숫자)를 문자열로 변환.   
+# URL 인코딩
+- 퍼센트 인코딩
+- url에다가 non-ASCII 작성하면 자동으로 문자 코드(16진수)문자열로 변환됨.   
+- url은 ASCII 여야함.
+- url 인코딩: 문자코드(숫자)를 문자열로 변환.  ex) 김효은 -> %EA%B9%80%ED%9A%A8%EC%9D%80
+- 반대는 디코딩.
    
-request.setCharacterEncoding("UTF-8") 이걸로 인코딩 해줘야함.   
+요청이 들어오면 request.setCharacterEncoding("UTF-8") 이걸로 인코딩 해줘야함.   
 일일히 하기 싫으니 필터에 넣어줌.   
    
 web.xml에 한글 필터 작성.
