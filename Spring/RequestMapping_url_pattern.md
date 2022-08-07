@@ -34,10 +34,12 @@ public Strign save(User user, Model m) throws Exception{
     return "registerInfo";
 }
 ```
-여기서 redirect를 하는데 사실 redirect를 통해 url를 재요청을 하게되면, save에 있는 Model과 add에 있는 Model은 다른것.   
-save의 모델에 msg를 저장하고 넘겨주는데, 이는 스프링이 자동으로 "redircet:/register/add?msg="+msg 이렇게 바꿔주기 때문임.   
-즉 위 두줄과 주석처리 부분은 같음.
-[registerInfo.jsp]
+여기서 redirect를 하는데 사실 redirect를 통해 url를 재요청을 하게되면,    
+save에 있는 Model과 add에 있는 Model은 다른것.         
+save의 모델에 msg를 저장하고 넘겨주는데,      
+이는 스프링이 자동으로 "redircet:/register/add?msg="+msg 이렇게 바꿔주기 때문임.   
+즉 위 두줄과 주석처리 부분은 같음.     
+[registerInfo.jsp]      
 ```jsp
 <h1>id=${param.id}</h1>
 <h1>pwd=${param.pwd}</h1>
@@ -65,7 +67,6 @@ save의 모델에 msg를 저장하고 넘겨주는데, 이는 스프링이 자�
 1. exact mapping -완전 일치 /test/hello.do
 2. path mapping - 경로 일치 /test/*
 3. extension mapping - 확장자 일치  *.do
-
 
 ```java
 @Controller
@@ -102,9 +103,9 @@ public class RequestMappingTest {
 }
 
 ```
-*은 하나 이상   
-**은 하위 경로까지   
-?은 한 글자.   
+*은 하나 이상     
+**은 하위 경로까지     
+?은 한 글자.     
 
 # URL 인코딩
 - 퍼센트 인코딩
@@ -113,10 +114,10 @@ public class RequestMappingTest {
 - url 인코딩: 문자코드(숫자)를 문자열로 변환.  ex) 김효은 -> %EA%B9%80%ED%9A%A8%EC%9D%80
 - 반대는 디코딩.
    
-요청이 들어오면 request.setCharacterEncoding("UTF-8") 이걸로 인코딩 해줘야함.   
-일일히 하기 싫으니 필터에 넣어줌.   
-   
-web.xml에 한글 필터 작성.
+요청이 들어오면 request.setCharacterEncoding("UTF-8") 이걸로 인코딩 해줘야함.     
+일일히 하기 싫으니 필터에 넣어줌.      
+    
+web.xml에 한글 필터 작성.   
 ```xml
 
 	<!-- 한글 변환 필터 시작 -->
@@ -140,10 +141,10 @@ web.xml에 한글 필터 작성.
 	<!-- 한글 변환 필터 끝 -->
 ```
 메이븐 까보면 필터 나와있음. 코드 까보면 doFilter에서 전처리로 request.setCharacterEncoding("") 해주는 걸 볼 수 있다.   
-   
-   
-응답할 때, msg를 인코딩 후 보내고, 뷰에서 다시 디코딩하기.   
-String msg = URLEncoder.encode("msg입니당","utf-8");   
+    
+     
+응답할 때, msg를 인코딩 후 보내고, 뷰에서 다시 디코딩하기.    
+String msg = URLEncoder.encode("msg입니당","utf-8");    
    
 <%@ page import="java.net.URLDecoder" %>   
 ${URLDecoder.decode(param.msg,"utf-8")}   
