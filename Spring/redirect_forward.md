@@ -32,6 +32,7 @@
 3. `InternalResourceView`에게 전달
 4. /register/add로 요청, 호출
 
+결론: 한번만 요청. 내부적으로 호출이 됨. 브라우저의 url은 처음에 요청한 경로이고, 화면은 forward로 요청한 결과를 보여줌.
 예시로 pdf, csv, excel 파일 다운로드 
 
 ![img](/image/redirect_forward.PNG)
