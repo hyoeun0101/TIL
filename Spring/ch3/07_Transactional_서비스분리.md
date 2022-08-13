@@ -58,3 +58,22 @@ TransactionStatus status = tm.getTransaction(new DefaultTransactionDefinition())
 # tx 실습하기
 둘 다 성공, 하나만 성공하면 실패하도록 하기
 
+
+결론 : Dao의 메서드들 (select, update, delete, insert)은 각각 서로 다른 Connection이다.   
+하나의 Tx로 묶기 위해서 TransactionManager를 사용한다.
+사용하는 방법은 선언 또는 빈 등록해서 주입받기.    
+
+
+### @Transactional의 속성
+|속성|설명|
+|---|----|
+|propagation| Tx의 경계를 설정하는 방법을 지정|
+|isolation|Tx이 isolation level을 지정|
+|readOnly|Tx이 데이터를 읽기만 하는 경우, true로 지정하면 성능 향상|
+|rollbackFor|지정된 예외가 발생하면, Tx을 rollback. RuntimeException과 Error는 자동 롤백.|
+|noRollbackFor|지정된 예외가 발생해도 ,롤백X|
+|timeout|지정된 시간 내에 Tx 종료하지 않으면 강제 종료|
+
+__propagation속성의 값__
+![이미지](/image/propagation.png)   
+ch3-20강 23분 보기   
