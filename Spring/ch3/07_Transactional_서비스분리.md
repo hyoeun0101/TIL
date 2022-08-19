@@ -114,7 +114,7 @@ public void isnertTest() throws Exception{
     }
 }
 ```
-- 키 충돌이라 실패. 둘 다 들어가면 안됨. 
+- 키 충돌이라 실패. 실패하면 롤백해줘서 둘 다 insert되면 안됨. 
 - connection 출력 보면 같은 connection인걸 알 수 있음.
 
 
@@ -127,16 +127,36 @@ public void insertWithTx throws Exception{
     a1Dao.insert(2,200);
 }
 ```
+- 자동으로 AOP가 주입을 해줌. 
 @Transactional은 RuntimeException, Error만 롤백을 함.   
-그래서 rollbackFor 써줘야 롤백함.    
+그래서  Exception 예외도 롤백을 하려면 (rollbackFor=Exception.calss) 써줘야함.    
+```java
+@Transactional
+public viod insertWithTx throws Exception(){
+    a1Dao.insert(1,100);
+    throw new RumtimeException();
 
-- @Transactional의 속성
+}
+```
+-> 롤백함.
+```java
+@Transactional
+public viod insertWithTx throws Exception(){
+    a1Dao.insert(1,100);
+    throw new Exception();
+
+}
+```
+-> 롤백 안함.
+
+- @Transactional의 속성               
+              
 |속성|설명|
 |---|----|
 |propagation| Tx의 경계를 설정하는 방법을 지정|
 |isolation|Tx이 isolation level을 지정|
 |readOnly|Tx이 데이터를 읽기만 하는 경우, true로 지정하면 성능 향상|
-|rollbackFor|지정된 예외가 발생하면, Tx을 rollback. RuntimeException과 Error는 자동 롤백.|
+|rollbackFor|지정된 예외가 발생하면, Tx을 rollback. RuntimeException과 Error는 자동 롤백.Exception은 써줘야함|
 |noRollbackFor|지정된 예외가 발생해도 ,롤백X|
 |timeout|지정된 시간 내에 Tx 종료하지 않으면 강제 종료|
 
