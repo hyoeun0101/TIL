@@ -17,3 +17,11 @@ $('div').attr('class')
 //div에 title = 'hello' 속성을 추가한다
 &('div').attr('title','hello')
 ```
+
+### @ disabled 속성 설정하기
+- true면 비활성화   
+- false면 활성화   
+```
+$("#editBox").attr("disabled", true); //비활성화
+$("#editBox").attr("disabled", false); //활성화
+```
