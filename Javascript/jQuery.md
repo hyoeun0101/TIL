@@ -15,7 +15,13 @@ function listing(){
 // div의 class 속성을 가져온다
 $('div').attr('class')
 //div에 title = 'hello' 속성을 추가한다
-&('div').attr('title','hello')
+$('div').attr('title','hello')
+
+//testInput 값을 disabled로.
+$('#testInput).attr("disabled",true)
+
+//testInput값이 disabled이면 disabled 반환, 아니면 undefined 반환
+$("#testInput").attr("disabled")
 ```
 
 ### @ disabled 속성 설정하기

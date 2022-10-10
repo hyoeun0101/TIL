@@ -32,3 +32,41 @@ __JSTL__
 Run>run configurations> Arguments> deploy 경로 복사 > 들어가기 > 한 단계 위로 tmp0 >  work 들어가기
 ---
 src/main/resources > log4j.xml > org.springframework.web <level value="trace"> 아니면 info
+
+
+### XML의 특수 문자 처리
+특수 문자 <, >,& 는 변환 필요.    
+
+ex) 
+```xml
+<update id="update" parameterType="BoardDto">
+    UPDATE board 
+    SET title = #{title},
+        content = #{content},
+        up_date = now()
+    WHERE bno = #{bno} and bno <> 0
+</update>
+```
+1. 변환하기 <> -> &lt; &gt;
+2. <![CDATA[ 여기 내용 ]]> 으로 감싸기
+    - 여기 내용에는 XML 태그가 없다는 뜻.
+
+---
+### mapper.xml에서 #{} ${} 태그 차이
+1. #{title} 는 PreparedStatement를 사용. #{title} -> ?로 바뀐다.
+문자열(varchar)일 경우 알아서 따옴표 붙여줌.   
+값에만 쓸 수 있음. SQL Injection 방지할 수 있다.
+```java
+String sql = "INSERT INTO board VALUES (?,?,?)";
+PreparedStatement pstmt = conn.prepareStatement(sql);
+int result = pstmt.executeUpdate();
+```
+
+2. '${title}' 는 Statement를 사용. 따옴표를 붙여서 바뀐다.
+더 유연하다. 왜? 테이블 이름에도 쓸 수 있음.
+유연하기 때문에 내부의 값을 주입할 때만 사용.
+```java
+String sql = "INSERT INTO board VALUES ('"+title+"')";
+Statement stmt = conn.createStatement();
+int result = stmt.executeUpdate(sql);
+```
