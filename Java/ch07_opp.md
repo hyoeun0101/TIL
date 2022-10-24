@@ -26,7 +26,7 @@ class Point{
 
 
 ### 참조변수 super와 생성자 super()
-참조변수 super : 부모의 멤버와 자식의 멤버 구분 짓기 위함.
+참조변수 `super`: 부모의 멤버와 자식의 멤버 구분 짓기 위함.
 ```java
 class A{
     int num=10;
@@ -41,19 +41,18 @@ class B extends A{
     }
 }
 ```
-생성자 super() : 조상의 생성자 호출. 모든 생성자 첫줄에는 super(); 생략되어있다.
+생성자 `super()` : 조상의 생성자 호출. 모든 생성자 첫줄에는 super(); 생략되어있다.
      
     
 
 ## 제어자
-### 접근 제어자 - private, default, protected, public
-### static - 클래스의, 공통적인
-### final - 마지막의, 변경할 수 없는
-- 클래스 : 부모 클래스 X 확장X
-- 메서드 : 오버라이딩 X
-- 변수 : 상수
-
-### abstract - 추상의 
+-  접근 제어자 - private, default, protected, public
+-  static :클래스의, 공통적인
+-  final :마지막의, 변경할 수 없는
+    - final 클래스 : 부모 클래스 X 확장X
+    - final 메서드 : 오버라이딩 X
+    - final 변수 : 상수
+- abstract : 추상의 
 
 
 ## 내부 클래스
@@ -62,32 +61,31 @@ class B extends A{
 2. 코드의 캡슐화를 통해 복잡성 줄인다. 
 
 
-|InterfaceInner|StaticInner|LocalInner|
-|-----------|---------------|-------|
-|외부 클래스의 인스턴스 멤버|im사용 X. ||
-|외부 클래스의 인스터와 관련된 작업|||
-
-
 |종류|역할| |
 |---|--------|----|
 |인스턴스 내부 클래스|외부 클래스의 인스턴스 멤버|외부 클래스의 인스턴스와 관련된 작업에 사용|
 |static 내부 클래스|외부 클래스의 static 메서드에서 사용|
 |지역 내부 클래스|외부 클래스의 메서드, 초기화 블럭 안에 선언|선언된 영역 내부에서만 사용ok|
 
-** 내부 클래스의 제어자와 접근성
-- 접근 제어자 사용 가능
-- static 내부 클래스만 static 멤버 사용 ok.
-- 다만, final static은 모든 내부 클래스에서 사용 ok.
-- Static Inner에서 인스턴스멤버 접근 X. 굳이 하려면 외부 클래스의 객체 생성 후 가능
 ```java
 Outer outer = new Outer();
-InstanceInner inner = outer.new InstanceInner();
-```
-- 외부 클래스의 private 멤버도 접근 가능하다.
-- 지역 클래스에서는 외부 클래스의 final 지역변수만 접근 가능하다.
-    - 메서드는 소멸되고, 지역 클래스는 실행 중일 수도 있기 때문에.
+Outer.InstanceInner ii = outer.new InstanceInner();
 
-- 외부 클래스의 변수 접근 : Outer.this.value    
+Outer.StaticInner si = new Outer.StaticInner();
+```
+
+** 내부 클래스의 제어자와 접근성
+- `접근 제어자 사용 가능`
+- `static 내부 클래스`만 `static 멤버` 사용 ok.
+- 다만, `final static`은 `모든 내부 클래스`에서 사용 ok.
+- Static Inner에서 인스턴스멤버 접근 X. 굳이 하려면 외부 클래스의 객체 생성 후 가능
+- 외부 클래스의 private 멤버도 접근 가능하다.
+- `지역 클래스`에서는 외부 클래스의 `final 지역변수`만 접근 가능하다. 이는 메서드가 먼저 소멸되고, 지역 클래스는 실행 중일 수도 있기 때문이다. 소멸된 메서드의 지역 변수를 지역 클래스에서 쓸 순 없다. 
+
+- 외부 클래스의 변수 접근 : `Outer.this.value`
+
+컴파일 시 생성되는 파일 : `외부클래스이름$내부클래스이름.class`
+
 
 ## 익명 클래스
 ```java
@@ -100,9 +98,6 @@ class Ex7{
     }
 }
 ```
-컴파일 시 생성되는 클래스 파일   
-Ex7.class   
-Ex7$1.class
-Ex7$2.class
-Ex7$3.class
+컴파일 시 생성되는 클래스 파일  : `클래스이름$n.class` (n은 익명 클래스 개수에 따라 증가한다.)
+
 
