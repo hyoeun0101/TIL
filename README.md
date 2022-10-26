@@ -1,6 +1,2 @@
 # TIL (Today I Learned)
-
-- 오늘 배운 새로운 내용 커밋하기!
-
-
-[Django](https://github.com/hyoeun0101/TIL/tree/main/Django)
+- 오늘 공부한 내용 정리 공간
