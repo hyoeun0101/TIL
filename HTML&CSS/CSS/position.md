@@ -4,8 +4,9 @@
 
 - `static`(default) : 기준 없음
 - `relative` : 원래 자기자신의 위치가 기준.
-  - 거의 사용X 
-  ![캡처](https://user-images.githubusercontent.com/96059261/202970567-96d17436-54fa-4e7f-99b5-c6c27dcb9934.PNG)
+  - 거의 사용X
+
+<img src="https://us er-images.githubusercontent.com/96059261/202970567-96d17436-54fa-4e7f-99b5-c6c27dcb9934.PNG"  width="70" height="70"/>     
 ```html
 .container .item:nth-child(2){
   width: 140px;
@@ -21,7 +22,8 @@
   - 단순히 absolute하면 공중부양, 즉 다른 요소와 겹치게 됨.
   - 부모에 `postion: relative;` 작성 후, 자식에 `position:absolute;` 해야 부모를 기준삼는 것.
   - 부모 요소에 기준에 없다면 뷰포트를 기준삼음
- ![캡처](https://user-images.githubusercontent.com/96059261/202971043-51036a6a-4fa4-4382-a37a-3b74fe1bb8f9.PNG)
+
+<img src="https://user-images.githubusercontent.com/96059261/202971043-51036a6a-4fa4-4382-a37a-3b74fe1bb8f9.PNG"  width="70" height="70"/>
 ```html
 .container{
   width:300px;
