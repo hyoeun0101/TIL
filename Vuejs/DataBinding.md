@@ -124,7 +124,7 @@ export default {
 - radio
   - 하나만 선택이므로 문자열
 
-## v-bind, 속성 - 단방향
+## 4. v-bind, 속성 - 단방향
 
 - `v-bind:value`을 사용하여 단방향으로 값을 가져온다.
 - `v-bind:`는 `:` 이렇게 쓸 수 있다.
@@ -148,9 +148,9 @@ export default {
 }
 ```
 
-- txt1이 ''이면 disabeld가 ture이다.
+- txt1이 ''이면 disabeld가 true이다.
 
-## v-for, 리스트 뽑기
+## 5. v-for, 리스트 뽑기
 
 ```javascript
 <option :key="city.id" v-for="city in 리스트"></option>
