@@ -199,3 +199,5 @@ String[] lineArr = {
 Stream<String> lineStream = Arrays.stream(lineArr);
 lineStream.flatMap(line->Stream)
 ```
+
+## 스트림 최종연산

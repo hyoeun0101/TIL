@@ -1,22 +1,19 @@
-import java.io.File;
-import java.util.Arrays;
-import java.util.stream.Stream;
+import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Ex{
     public static void main(String[] args) {
-        String[] lineArr = {
-            "zBB SSS sss rrr xdf dgwr sfsg",
-            "asdf dfg wer dfg wer"
-        };
-        Stream<String> lineStream = Arrays.stream(lineArr);
+        IntStream intStream = new Random().ints(1,46).distinct().limit(6);
+        // OptionalInt max = intStream.peek(i->System.out.println(i)).reduce(Integer::max);
+        // System.out.println(max.getAsInt());
 
-        
-        // lineStream.flatMap(line->Stream.of(line.split(" +")))//공백
-        //             .map(String::toLowerCase)
-        //             .distinct()
-        //             .sorted()
-        //             .forEach(System.out::println);
+        System.out.println();
 
+        Optional<Integer> max1 = intStream.boxed().collect(Collectors.reducing(Integer::max));
 
-    }
+        System.out.println(max1);
+        }
 }
