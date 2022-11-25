@@ -46,7 +46,7 @@ class B extends A{
     
 
 ## 제어자
--  접근 제어자 - private, default, protected, public
+-  접근 제어자 - private < default < protected < public
 -  static :클래스의, 공통적인
 -  final :마지막의, 변경할 수 없는
     - final 클래스 : 부모 클래스 X 확장X
