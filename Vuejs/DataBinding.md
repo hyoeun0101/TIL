@@ -193,6 +193,19 @@ export default {
 </style>
 ```
 
+클래스를 배열로 받을 수도 있음
+
+```javascript
+<div :class="[activeClass, errerClass]"></div>
+...
+data(){
+  return{
+    activeClass:'active',
+    errorClass:'text-danger'
+  }
+}
+```
+
 ## style 바인딩
 
 ```javascript
@@ -217,3 +230,28 @@ export default {
 </script>
 
 ```
+
+- 인라인 바인딩
+
+```javascript
+<div :style="{color: activeColor, fontSize: fontSize+'px'}"></div>
+...
+data(){
+  return{
+    activeColor:'red',
+    fontSize: 30
+  }
+}
+```
+
+---
+
+# 이외 템플릿 문법
+
+### v-once
+
+데이터를 초기에 한번만 랜더링 하고, 데이터 수정이 되더라도 화면이 변하지 않는다.
+
+### :[attr] , @[attr]
+
+속성 이름을 바인딩.
