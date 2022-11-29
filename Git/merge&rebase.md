@@ -38,3 +38,4 @@ git rebase --continue //남은 커밋 rebase 계속 하기
 ```
 
 rebase 완료 후, 메인 브랜치로 이동 후 merge하기.
+dk lTL...
