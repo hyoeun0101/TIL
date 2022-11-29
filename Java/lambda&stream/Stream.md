@@ -338,7 +338,7 @@ Optional<Integer> max = intStream.boxed().collect(Collectors.reducing(Integer::m
 
 //점수 높은 학생 뽑기
 Optional<Student> topStudent = stuStream.map(Student::getTotalScore).reduce(Integer::max);
-Optoional<Student> topStudent = stuStream.collect(Collections.reducing(Integer::max));
+Optoional<Student> topStudent = stuStream.collect(Collectors.reducing(Integer::max));
 
 //totalScore 모두 더하기
 int grandTotal = stuStream.map(Student::getTotalScore).reduce(0,Integer::sum);

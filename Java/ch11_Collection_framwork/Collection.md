@@ -1,4 +1,4 @@
-![collection](https://user-images.githubusercontent.com/96059261/198411622-cf171f48-8294-4e13-a5bb-0a50aef7f81a.png)
+![img](https://user-images.githubusercontent.com/96059261/204466993-7a1195e8-fd43-4450-9640-072e8b093862.jpg)
 
 Collection 인터페이스의 메서드
 |메서드|설명|

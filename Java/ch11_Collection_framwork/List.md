@@ -1,8 +1,8 @@
 # ArrayList
-ArrayList는 List 인터페이스의 구현 클래스로 `순서를 저장`하고, `중복을 허용`한다.   
-기존의 Vector를 개선한 것으로 Vector보단 ArrayList를 사용하는 것이 좋다.   
-Object 배열을 이용하여 데이터를 순차적으로 저장한다. 배열에 더 이상 저장할 공간이 없으면 새로운 큰 배열을 만들어 복사하는 작업을 한다.    
 
+ArrayList는 List 인터페이스의 구현 클래스로 `순서를 저장`하고, `중복을 허용`한다.  
+기존의 Vector를 개선한 것으로 Vector보단 ArrayList를 사용하는 것이 좋다.  
+Object 배열을 이용하여 데이터를 순차적으로 저장한다. 배열에 더 이상 저장할 공간이 없으면 새로운 큰 배열을 만들어 복사하는 작업을 한다.
 
 (메서드 예제)
 
@@ -77,28 +77,30 @@ public class TestArrayList {
 
 - 배열에서 인덱스로 주소 구하는 연산
 
-     인덱스가 n인 데이터의 주소 = 배열의 주소 + n * 데이터 타입의 크기
+  인덱스가 n인 데이터의 주소 = 배열의 주소 + n \* 데이터 타입의 크기
 
 ## Stack
 
-LIFO이기 때문에 `배열`로 구현    
+LIFO이기 때문에 `배열`로 구현
 
 ex) 수식 계산, 수식 괄호 검사, 웹브라우저의 뒤로/앞으로
 
-|Stack 메서드|설명|
-|----------|-----|
-|boolean empty()|Stack이 비었으면 true|
-|Object peek()|맨 위 객체 반환. 비었으면 EmptyStackException 발생|
-|Object pop()|맨 위 객체 꺼내기. 비었으면 EmptyStackException 발생|
-|Obejct push(Object item)|객체 저장|
-|int search(Object o)|o를 찾아서 위치 반환. 못찾으면 -1 (맨 위소가 1로 시작)|
+| Stack 메서드             | 설명                                                   |
+| ------------------------ | ------------------------------------------------------ |
+| boolean empty()          | Stack이 비었으면 true                                  |
+| Object peek()            | 맨 위 객체 반환. 비었으면 EmptyStackException 발생     |
+| Object pop()             | 맨 위 객체 꺼내기. 비었으면 EmptyStackException 발생   |
+| Obejct push(Object item) | 객체 저장                                              |
+| int search(Object o)     | o를 찾아서 위치 반환. 못찾으면 -1 (맨 위소가 1로 시작) |
+
 ## Queue
-FIFO, 배열로 구현하게 되면 삭제 시 데이터 이동이 빈번하기 때문에 `LinkedList`가 더 적합.    
+
+FIFO, 배열로 구현하게 되면 삭제 시 데이터 이동이 빈번하기 때문에 `LinkedList`가 더 적합.
 
 ex) 최근사용문서, 인쇄작업 대기목록
 
-|Queue 메서드|설명|
-|----------|-----|
-|booean offer(Object o)|객체 저장. 성공 시 true|
-|Object poll()|객체 꺼내고 반환, 비어있으면 null 반환|
-|Object peek()|삭제없이 요소 읽기, 비었으면 null 반환|
+| Queue 메서드           | 설명                                   |
+| ---------------------- | -------------------------------------- |
+| booean offer(Object o) | 객체 저장. 성공 시 true                |
+| Object poll()          | 객체 꺼내고 반환, 비어있으면 null 반환 |
+| Object peek()          | 삭제없이 요소 읽기, 비었으면 null 반환 |
