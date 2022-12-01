@@ -13,3 +13,7 @@ git pull --no-rebase
 ```jsx
 git pull --rebase
 ```
+
+## fetch
+
+: 로컬로 원격의 내용을 가져오기만 한다. pull은 fetch 후 merge하는 것이라 보면 된다.

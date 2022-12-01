@@ -23,9 +23,11 @@ merge하는 하나의 커밋만 생성되기 때문에 한번만 충돌 해결�
 
 메인 브랜치에 다른 브랜치의 커밋을 그대로 가져온다. 브랜치의 흔적이 사라진다.  
 `다른 브랜치에서 메인 브랜치로 rebase`한다.  
-즉 다른 브랜치에서 `git rebase main`  
-rebase한 후, 메인 브랜치로 이동하면 다른 브랜치의 커밋이 생성된 걸 볼 수 있다. 그리고 메인에서 다른 브랜치를 merge 해줘야한다.  
-`git switch main` -> `git merge new-bracnh-name`
+즉 다른 브랜치에서 rebase한 후, 메인 브랜치로 이동하면 다른 브랜치의 커밋이 생성된 걸 볼 수 있다. 그리고 메인에서 다른 브랜치를 merge 해줘야한다.
+
+1. `git rebase main`
+2. `git switch main`
+3. `git merge 브랜치명`
 
 ### rebase 시 충돌 해결
 
@@ -39,3 +41,12 @@ git rebase --continue //남은 커밋 rebase 계속 하기
 
 rebase 완료 후, 메인 브랜치로 이동 후 merge하기.
 dk lTL...
+
+## 충돌 해결
+
+### merge/rebase 중단
+
+```
+git merge --abort
+git rebase --abort
+```
