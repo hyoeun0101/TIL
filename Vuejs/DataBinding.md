@@ -115,6 +115,8 @@ export default {
 
 - v-model="" 으로 값 주고받기
 - v-model.number="" 해야 숫자가 된다. 기본 input값은 String이다!
+- v-model.lazy="msg" : 변경내용 작성 후 다른 곳 클릭해야 msg 값이 변경됨.
+- v-model.trim : 공백 제거
 - input
   - 사용자가 값을 입력할 때 `v-model`을 사용한다. 사용자가 변경한 값이 바로 userId에 들어오는 것이다.
 - select
@@ -123,6 +125,11 @@ export default {
   - 선택한 value가 v-model에 들어온다. 여러 개 선택이므로 배열로 선언, v-model이 같은 것 끼리 묶음.
 - radio
   - 하나만 선택이므로 문자열
+- 한글 같은 경우는 한박자 느리게 바인딩 된다. 이때는 다음과 같이 작성
+
+```javascript
+<input type="text" :value="msg" @input="msg=$event.target.value"/>
+```
 
 ## 4. v-bind, 속성 - 단방향
 
