@@ -14,8 +14,9 @@ git reset --hard 커밋해시
 git reset --mixed
 ```
 
-: hard는 원하는 커밋 상태로 아예 돌아가서 그 이후 커밋 내용들은 완전히 삭제하는 것이라면, mixed는 커밋은 지우되 커밋의 내용들은 남아 있음. 커밋의 파일 묶음을 수정하고 싶다면 mixed로 돌아간 후 커밋을 다시 작성하면됨.  
-mixed는 working directory에 있는 상태이고, soft는 스테이징까지 올라가있는 것임.
+: `hard`는 원하는 커밋 상태로 아예 돌아가서 그 이후 커밋 내용들은 완전히 삭제하는 것이라면, `mixed`는 커밋은 지우되 커밋의 내용들은 남아 있음. 커밋의 파일 묶음을 수정하고 싶다면 mixed로 돌아간 후 커밋을 다시 작성하면됨.  
+mixed는 working directory에 있는 상태이고, `soft`는 스테이징까지 올라가있는 것임.  
+더 많이 reset하는 순서: hard> mixed> soft
 
 ## 2. revert
 
