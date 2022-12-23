@@ -9,24 +9,6 @@ v-on:click="handler"
 @click="handler"
 ```
 
-**\*\* handler의 값 두가지**
-
-- 인라인 핸들러 : 이벤트가 트리거될 때 실행. javascript의 onclick 속성과 유사
-- 매소드 핸들러 : 컴포넌트에 정의된 메서드 이름, 메서드를 가르키는 경로
-
-## 인라인 핸들러
-
-```javascript
-<button @click="count++">1추가</button>
-<p>{{ count }}</p>
-...
-data(){
-    return{
-        count:0
-    }
-}
-```
-
 ```javascript
 <button @click="warn('아직 양식을 제출할 수 없습니다.', $event)">
   제출하기
@@ -46,96 +28,48 @@ methods: {
 
 : $event 를 사용하여 DOM 이벤트 객체에 접근할 수 있다.
 
-## 메서드 핸들러
+- 다수의 메서드를 호출하려면 메서드 뒤에 괄호를 붙여줘야한다. `@click="method1() method2()"` 이렇게.
 
-```javascript
-<button @click="greet">클릭</button>
-...
-data() {
-  return {
-    name: 'Vue.js'
-  }
-},
-methods: {
-  greet(event) {
-    alert(`안녕 ${this.name}!`)
-    // 'event'는 네이티브 DOM 이벤트 객체
-    if (event) {
-      alert(event.target.tagName)
-    }
-  }
-}
-```
+## 다양한 이벤트명
 
-event를 매개변수로 받아 `event.target`으로 요소에 접근할 수 있다.
+| 이벤트명  | 설명                                             |
+| --------- | ------------------------------------------------ |
+| click     | 마우스를 클릭했을 때 실행함                      |
+| dblclick  | 마우스를 더블 클릭했을 때 실행함                 |
+| mouseover | 마우스의 포인트가 요소 위로 올라왔을 때 실행함   |
+| mouseout  | 마우스의 포인트가 요소 밖으로 벗어났을 때 실행함 |
+| mousemove | 마우스의 포인트가 이동했을 때 실행함             |
+| mousedown | 마우스의 버튼을 눌렀을 때 실행함                 |
+| mouseup   | 마우스의 버튼을 놓았을 때 실행함                 |
+| keydown   | 키보드의 키를 눌렀을 때 실행함                   |
+| keyup     | 키보드의 키를 놓았을 때 실행함                   |
+| keypress  | 키보드의 키를 눌렀다가 놓았을 때 실행함          |
+| change    | 요소가 변경될 때 실행함                          |
+| submit    | `<Form>`이 제출될 때 실행함                      |
+| reset     | `<Form>`이 재설정될 때 실행함                    |
+| select    | `<select>`의 값이 선택되었을 때 실행함           |
+| focus     | 태그에 포커스가 있을 때 실행함                   |
+| blur      | 태그에 포커스를 잃었을 때 실행함                 |
 
 ## 이벤트 수식어
 
 - `.stop` : 이벤트 전파 중지. stopPropagation()과 동일한 기능
 - `.prevent` : 기본 이벤트의 자동 실행을 중단. preventDefault()와 동일한 기능
-- `.self`: 자신일 경우에만 실행. 자식에서 이벤트 발생했다면 실행 안됨. 즉 부모에서 자식을 뺀 부분을 클릭했을 때만 실행됨.
-- `.capture`
-- `.once`: 이벤트를 한번만 실행
-- `.passive`: 기본 이벤트 취소할 수 없음. `.preventDefault()`의 실행을 막음.
+- `.self` : 자신일 경우에만 실행. 원래 자식을 클릭하면 버블링으로 인해 부모도 이벤트 발생하는데 부모에 `.self`를 붙이면 자식을 클릭했을 때 부모는 발생 안된다.
+- `.capture` : 이걸 쓴 이벤트가 먼저 실행된다.
+- `.once` : 이벤트를 한번만 실행
+- `.passive` : 기본 이벤트 취소할 수 없음. 핸들러 내에 `event.preventDefault()`가 있어도 기본 이벤트가 동작함.
 
 ```javascript
-<!-- 수식어를 연결할 수 있습니다. -->
-<a @click.stop.prevent="doThat"></a>
-
 <!-- 이벤트에 핸들러 없이 수식어만 사용할 수 있습니다. -->
 <form @submit.prevent></form>
-
-<!-- event.target이 엘리먼트 자신일 경우에만 핸들러가 실행됩니다. -->
-<!-- 예를 들어 자식 엘리먼트에서 클릭 액션이 있으면 핸들러가 실행되지 않습니다. -->
-<div @click.self="doThat">...</div>
 
 <!-- 이벤트 리스너를 추가할 때 캡처 모드 사용 -->
 <!-- 내부 엘리먼트에서 클릭 이벤트 핸들러가 실행되기 전에, 여기에서 먼저 핸들러가 실행됩니다. -->
 <div @click.capture="doThis">...</div>
-
-
-<!-- 핸들러 내 `event.preventDefault()`가 포함되었더라도 -->
-<!-- 스크롤 이벤트의 기본 동작(스크롤)이 발생합니다.        -->
-<div @scroll.passive="onScroll">...</div>
-
-
 ```
 
-- `@click.prevent.self`
-
-## 이벤트 핸들링
-
-아래에서 e는 이벤트 객체이다.
-
-```javascript
-<template>
-  <div>
-    <button @click="handler">click!</button>
-  </div>
-</template>
-<script>
-export default {
-  components: {},
-  data() {
-    return {}
-  },
-  methods: {
-    handler(e) {
-      console.log(e)
-    }
-  }
-}
-</script>
-
-```
-
-@click에서 handler('value', $event)를 넘겨주면 문자와 이벤트 객체가 출력된다. 다수의 메서드를 호출하려면 메서드 뒤에 괄호를 붙여줘야한다.`@click="method1() method2()"` 이렇게.
-
-## 이벤트 핸들링 - 이벤트 수식어
-
-- @click.prevent : event.prventDefult()와 같음.함수 실행 되고 그 이후의 동작을 막음. 콘솔 찍히고 네이버 안들어가짐.
-- @click.once : 한번만 동작
-- @click.prvent.once : 처음 클릭하면 콘솔찍히고, 네이버 안들어가짐. 두 번째 클릭은 콘솔 안찍히고 들어가짐.
+예시)
 
 ```javascript
 <template>
@@ -159,56 +93,59 @@ export default {
   </template
 ```
 
-## 이벤트 버블링
+- @click.prevent : 함수는 실행 되고 그 이후의 동작을 막음. 콘솔 찍히고 네이버 안들어가짐.
+- @click.once : 함수가 한번만 실행됨.
+- @click.prvent.once : 처음 클릭하면 콘솔찍히고, 네이버 안들어가짐. 두 번째 클릭은 콘솔 안찍히고 들어가짐.
 
-child를 클릭하면 parent도 클릭하는 것이기 때문에 parent의 click도 동작한다. child 클릭 실행 다음 parent 클릭 실행. 이벤트가 부모로 타고 올라가 동작함. `B출력 후 A 출력`
-
-```javascript
-<template>
-    <div>
-        <div class="parent" @click="handlerA">
-            <div class="child" @click="handlerB"></div>
-        </div>
-    </div>
-</template>
-<script>
-export default {
-    methods: {
-        handlerA(){
-            console.log("A")
-        },
-        handlerB(){
-            console.log("B")
-        }
-
-    }
-}</script>
-
-```
-
-이를 방지하기 위해선 child에서 다음과 같이 작성하여 이벤트 전파를 막을 수 있다.
-
-```javascript
-handlerB(e){
-    e.stopPopagation()
-}
-또는
-@click.stop="handlerB"
-```
-
-## 이벤트 캡쳐링
-
-이벤트 버블링의 반대. 부모 요소에서 자식 요소로 내려오는 것. 자식을 클릭했는데 A출력 후 B출력하려면 다음과 같이 작성한다.
-
-```javascript
-@click.capture="handlerA"
-```
-
-- click.self 는 부모-자식 상관없이 자신의 영역 클릭했을 때 동작.
+---
 
 - @wheel.passive : 휠과 함수와 분리되어 동작
 - @keydown.key="함수"
 
-  - key는 키보드키 의미
+- key는 키보드키 의미
 
 - v-model.lazy="msg" : 변경내용 작성 후 다른 곳 클릭해야 msg 값이 변경됨.
+
+---
+
+## 입력키 수식어
+
+- `.enter`
+- `.tab`
+- `.delete` ("Delete" 및 "Backspace" 키 모두 캡처)
+- `.esc`
+- `.space`
+- `.up`
+- `.down`
+- `.left`
+- `.right`
+- `.ctrl`
+- `.alt`
+- `.shift`
+- `.meta`
+
+```javascript
+<!-- Alt + Enter -->
+<input @keyup.alt.enter="clear" />
+
+<!-- Ctrl + Click -->
+<div @click.ctrl="doSomething">시작하기</div>
+```
+
+```javascript
+<!-- Ctrl과 함께 Alt 또는 Shift를 누른 상태에서도 클릭하면 실행됩니다. -->
+<button @click.ctrl="onClick">A</button>
+
+<!-- 오직 Ctrl만 누른 상태에서 클릭해야 실행됩니다. -->
+<button @click.ctrl.exact="onCtrlClick">A</button>
+
+<!-- 시스템 입력키를 누르지 않고 클릭해야지만 실행됩니다. -->
+<button @click.exact="onClick">A</button>
+```
+
+## 마우스 버튼 수식어
+
+- `.left`
+- `.right`
+- `.middle`
+  특정 마우스 버튼에 의해 이벤트가 트리거 되도록 제한하고 싶을 때 사용합니다.
