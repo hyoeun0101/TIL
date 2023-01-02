@@ -1,17 +1,19 @@
-## config
-
-### git 최초 설정
+## 🍎config
 
 ```
 git config --global user.name "이름"
 git config --global user.email "이메일"
 ```
 
-### 기본 브랜치명 변경
+: git 최초 설정
 
 ```
 git config --global init.defaultBranch main
 ```
+
+: 기본 브랜치명 변경(master-> main))
+
+---
 
 ![ss](https://user-images.githubusercontent.com/96059261/204958793-f2aff42f-45c2-4c93-859f-20bbecccc7e7.png)
 
@@ -19,7 +21,9 @@ git config --global init.defaultBranch main
   - untracked: 새로 생성한 파일, gitignore된 파일
   - tracked: 내역 있는 파일
 
-## HEAD
+---
+
+## 🍎HEAD
 
 : 브랜치의 마지막 커밋을 의미한다.
 `HEAD^^ 또는 HEAD~~`는 마지막 커밋의 전전 커밋을 의미한다. 커밋 해시를 몰라도 HEAD를 이용해서 보다 편하게 커밋간 이동이 가능하다.
@@ -36,11 +40,12 @@ git checkout -
 
 : HEAD를 통해 커밋을 여러 번 이동을 했다면 git checkout HEAD^^와는 정반대로 전에 있었던 커밋으로 이동한다.
 
-switch은 해당 브랜치의 최신 커밋(HEAD)으로 이동하는 것이다.
-
+- switch은 해당 브랜치의 최신 커밋(HEAD)으로 이동하는 것이다.
 - HEAD로 이동을 하게 되면 익명의 브랜치가 생성된다. HEAD로 이동 후 `git switch -c 새브랜치명`을 치면 그 이동한 커밋으로부터 새로운 브랜치를 생성하게 된다.
 
-## 커밋 관련 command
+---
+
+## 🍎 커밋 관련 command
 
 ```
 git add -p
@@ -48,27 +53,21 @@ git add -p
 
 `-p`옵션 : 수정 사항 하나하나 확인하며 스테이징할지 안할지 정함.
 
-### 커밋 메세지 수정
+### \*\*커밋 메세지 수정
 
 ```
 git commit --amend
 git commit --amend -m "commit message"
 ```
 
-### add 취소하기- unstaging
-
-```jsx
-git restore --staged 파일명
-```
-
-### 커밋 수정하기 - 최근 커밋에 방금 수정한 파일까지 포함시키고 싶을 때
+### \*\* 커밋 수정하기 - 최근 커밋에 방금 수정한 파일까지 포함시키고 싶을 때
 
 1. A파일 수정을 했다.
 2. git add 로 스테이징하기.
 3. git commit --amend 하기
    -> A파일의 수정까지 커밋에 들어감.
 
-### 과거의 커밋을 수정,삭제,병합하기
+### \*\* 과거의 커밋을 수정,삭제,병합하기
 
 1. 우선 수정할 커밋의 전 커밋으로 rebase
 
@@ -102,7 +101,32 @@ git restore --staged 파일명
 - 이제 각각의 커밋 만들어주기
 - `git rebase --continue`하면 끝.
 
-# git에서 관리하지 않는 파일 삭제하기
+---
+
+## 🍎restore
+
+```
+git restore 파일명
+```
+
+: 깃이 관리하는 파일 중에서 add 하지않은 내용 없애기. 즉 commit 상태로 내용 돌림. 커밋 후 수정사항을 삭제하는 것.
+
+```jsx
+git restore --staged 파일명
+```
+
+: add 취소하기, 언스테이징하기
+
+```
+
+git restore --source=(해드 또는 커밋해시) 파일명
+```
+
+: 파일을 특정 커밋의 상태로 되돌리기
+
+---
+
+## 🍎clean - git에서 관리하지 않는 파일 삭제하기
 
 | 옵션 | 설명                            |
 | ---- | ------------------------------- |
@@ -111,3 +135,42 @@ git restore --staged 파일명
 | -d   | 폴더 포함                       |
 | -f   | 강제로 바로 지워버리기          |
 | -x   | .gitignore에 등록된 파일도 삭제 |
+
+```
+git clean -df
+```
+
+: 깃이 관리하지 않는 파일 삭제하기
+
+---
+
+## 🍎cherry-pick
+
+원하는 커밋만 복사해서 가져오기.
+
+```
+git cherry-pick (체리의 해시)
+```
+
+어느 브랜치에 있던 상관없이 원하는 커밋을 복사하여 생성한다.
+
+---
+
+![branches](https://user-images.githubusercontent.com/96059261/210207464-2871bb23-3dca-484d-a8bc-8956c8533e3e.png)
+
+## 다른 브랜치에서 파생된 브랜치만 가져오기
+
+```
+git rebase --onto (도착 브랜치) (출발 브랜치) (이동할 브랜치)
+```
+
+fruit에서 파생된 citrus 브랜치를 메인브랜치로 옮겨붙이기
+
+1. `git rebase --onto main fruit citrus`
+   - 메인에서 입력
+   - 입력 후 citrus 브랜치로 이동하고 메인에 citrus 브랜치가 rebase 됨.
+2. `git switch main`
+   - 1번하면 citrus 브랜치로 이동되기 때문에 다시 main으로 이동하기
+3. `git merge citrus`
+
+## 다른 브랜치의 커밋들을 묶어서 가져오기
