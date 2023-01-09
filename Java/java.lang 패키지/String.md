@@ -75,3 +75,39 @@ String 문자열을 지원하는 인코딩은 LATIN-1(1byte), UTF-16(2byte) 두 
 기존의 char형은 UTF-16 기반으로 2byte를 참조한다.  
 영문는 1byte로 표현이 가능하지만, 문자열은 기본적으로 char형이었기 때문에 2byte를 사용했다. 즉 1byte는 의미없는 값으로 채워졌다는 것이다.  
 byte형을 사용하면 영문의 경우 1byte로 표현이 가능하게 되어 메모리 공간을 절약할 수 있게 되었다.
+
+## StringBuffer
+
+: String과 유사하지만 StringBuffer는 `문자열 변경`이 가능하다. 내부적으로 문자열 수정을 위한 Buffer를 가지고 있다.  
+**생성자 4개**
+
+```java
+@HotSpotIntrinsicCandidate
+public StringBuffer() {
+    super(16);
+}
+@HotSpotIntrinsicCandidate
+public StringBuffer(int capacity) {
+    super(capacity);
+}
+@HotSpotIntrinsicCandidate
+public StringBuffer(String str) {
+    super(str.length() + 16);
+    append(str);
+}
+public StringBuffer(CharSequence seq) {
+    this(seq.length() + 16);
+    append(seq);
+}
+
+```
+
+- 지정한 문자열보다 16만큼 더 크게 생성하는 것을 볼 수 있다.
+
+- equals()는 오버라이딩되어 있지 않아서 ==연산자와 같다.따라서 `str.toString()`으로 String으로 변환 후 equals()를 사용하자.
+- 동기화되어 있다.
+  - 멀티쓰레드가 아닌 경우 동기화는 불필요하게 성능만 떨어뜨린다.
+
+## StringBuilder
+
+: 동기화 뺀 StringBuffer

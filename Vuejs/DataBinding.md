@@ -61,7 +61,19 @@ export default {
 
 - InnerHtml과 같음
 
-## 3. v-model, 양방향 databinding
+## 3. v-model
+
+: 양방향 데이터 바인딩
+
+```html
+<input v-model="searchText" />
+```
+
+위는 아래와 같다.
+
+```html
+<input :value="searchText" @input="searchText = $event.target.value" />
+```
 
 ```javascript
 <template>
@@ -130,6 +142,8 @@ export default {
 ```javascript
 <input type="text" :value="msg" @input="msg=$event.target.value"/>
 ```
+
+- 컴포넌트에 v-model 사용하기
 
 ## 4. v-bind, 속성 - 단방향
 

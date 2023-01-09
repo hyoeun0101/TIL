@@ -18,6 +18,18 @@ git reset --mixed
 mixed는 working directory에 있는 상태이고, `soft`는 스테이징까지 올라가있는 것임.  
 더 많이 reset하는 순서: hard> mixed> soft
 
+## reset --hard 되돌리기
+
+```
+git reflog
+```
+
+: 모든 기록들이 있다.
+
+1. reset --hard로 커밋을 날렸다.
+2. `git reflog` : reset한 기록도 남아있다. 그 전 커밋 해시를 복사한다.
+3. `git reset --hard 되돌리고 싶은 커밋 해시` 로 다시 되돌린다.
+
 ## 2. revert
 
 ![revert](https://user-images.githubusercontent.com/96059261/203552527-ca0fdaca-b745-4c2f-81ca-412911d86b08.PNG)  

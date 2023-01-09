@@ -19,7 +19,6 @@ export default {
   //state에서의 데이터는 mutations에서만 변경할 수 있다.
   mutations: "",
   //비동기 처리
-
   actions: "",
 };
 ```
@@ -35,21 +34,23 @@ export default {
   state: () => ({
     movies: [],
   }),
-  //computed
+  //state의 값을 가져와 계산함.
   getters: {
     movieIds(state) {
       return state.movies.map((m) => m.mId);
     },
   },
+  //이곳에서만 state의 값을 직접 수정할 수 있다.
   mutations: {
     //영화 초기화
     resetMovies(state) {
       state.movies = [];
     },
   },
+  // 비동기로 처리.
   actions: {
-    async searchMovies(context) {
-      //context를 통해 state에 접근할 수 있다.
+    async searchMovies(context, payload) {
+      //context를 통해 state에 접근할 수 있다. 직접 state에 접근할 수 없다.
       context.state;
       contesxt.getters;
     },
@@ -65,7 +66,20 @@ export default {
 
 ## actions
 
-매개변수
-context, payload
+매개변수 : context, payload  
+payload를 통해 원하는 객체의 데이터에 접근할 수 있다.
 
-$store의 `mutations` 실행할 때는 `.commit()` 메소드를 사용하고, `actions` 실행할 때는 `.dispatch()`를 사용한다.
+```javascript
+const { title, type, number, year } = payload;
+```
+
+$store의 `mutations` 실행할 때는 `.commit()` 메소드를 사용하고, `actions` 실행할 때는 `.dispatch()`를 사용한다.  
+예시
+
+```javascript
+this.$store.dispatch("movie/searchMovies", {
+  //payload를 통해 넘겨줄 값
+  title: this.title,
+  type: this.type,
+});
+```
