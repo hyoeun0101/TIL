@@ -1,20 +1,3 @@
-## 🍎config
-
-```
-git config --global user.name "이름"
-git config --global user.email "이메일"
-```
-
-: git 최초 설정
-
-```
-git config --global init.defaultBranch main
-```
-
-: 기본 브랜치명 변경(master-> main))
-
----
-
 ![ss](https://user-images.githubusercontent.com/96059261/204958793-f2aff42f-45c2-4c93-859f-20bbecccc7e7.png)
 
 - working directory
@@ -173,4 +156,25 @@ fruit에서 파생된 citrus 브랜치를 메인브랜치로 옮겨붙이기
    - 1번하면 citrus 브랜치로 이동되기 때문에 다시 main으로 이동하기
 3. `git merge citrus`
 
-## 다른 브랜치의 커밋들을 묶어서 가져오기
+---
+
+## 🍎log 옵션
+
+- (-갯수) : 최근 n개 커밋보기
+- -stat : 통계와 함께 보기 (--shortstat : 더 간략히 보기)
+- --oneline : 한 줄로 보기
+- -S (검색어) : 변경 사항 내단어 검색
+- --grep (검색어) : 커밋 메세지로 검색
+
+---
+
+## 🍎diff
+
+```
+git diff
+```
+
+: 워킹 디렉토리의 변경 사항 확인
+
+- --name-only : 파일명만 확인
+- --staged

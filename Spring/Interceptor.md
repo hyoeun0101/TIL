@@ -10,3 +10,9 @@
 |호출 시점|DispatcherServlet이 실행 전|DispatchServlet 실행 후|
 |설정 위치|web.xml|spring-servlet.xml|
 |구현 방식|web.xml에서 설정하기|설정 및 메서드 구현 필요|
+
+---
+
+`ssgpnt_allapi`  
+resources/spring/mybatis-config.xml => 여기서 LogQueryInterceptor를 인터셉터로 등록.
+resource/spring/context-mybiatis.xml => 여기서 re== SqlSessionFactory 등록.

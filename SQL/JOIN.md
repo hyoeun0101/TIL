@@ -26,7 +26,8 @@ profile
 
 ### Q. topic 테이블을 기준으로 author테이블 left join하기
 
-SELECT \* FROM topic <span style='color:red'>LEFT JOIN author ON topic.author_id=author.aid</span>;
+SELECT \* FROM topic <span style='color:red'>LEFT JOIN author ON topic.author_id=author.aid</span>;  
+![left](https://user-images.githubusercontent.com/96059261/211751490-5a238ab1-0dc6-44b3-bc0c-2d2213043b26.png)
 
 # ⭐INNER JOIN
 
