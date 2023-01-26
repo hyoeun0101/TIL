@@ -1,4 +1,4 @@
-# 스프링 컨테이너
+## 🍎 스프링 컨테이너
 
 - `ApplicationContext`, ` BeanFactory`가 스프링 컨테이너이다.
 - 전에는 개발자가 직접 객체를 생성하고 관리했다면 스프링에서는 스프링 컨테이너가 객체를 생성하고 관리하여 그 객체를 주입받아 사용한다.
@@ -6,21 +6,21 @@
 - 스프링 컨테이너는 `싱글톤 컨테이너`이다. 객체를 하나만 생성하고 스프링 빈에 등록하여 등록한 이 빈을 공유하며 사용한다.
   - 빈은 공유되기 때문에 `stateless`해야한다.
 
-## 스프링 컨테이너 생성 과정
+## 🍎 스프링 컨테이너 생성 과정
 
-1. `스프링 컨테이너 생성`
+### 1. 스프링 컨테이너 생성
 
 ```java
 ApplicationContext ac = new AnnotationConfigApplicationContext(AppConfig.class);
 ```
 
-    - AppConfig라는 설정 정보 클래스로 스프링 컨테이너를 생성한다.
+- AppConfig라는 설정 정보 클래스로 스프링 컨테이너를 생성한다.
 
-2. `스프링 빈 등록`
+### 2. 스프링 빈 등록
 
-   - AppConfig에 @Bean이 붙어있는 클래스를 스프링 빈으로 등록한다.
+- AppConfig에 @Bean이 붙어있는 클래스를 스프링 빈으로 등록한다.
 
-3. `스프링 빈끼리의 의존관계 설정`
+### 3. 스프링 빈끼리의 의존관계 설정
 
 ```java
 @Configuration
@@ -44,9 +44,9 @@ public class AppConfig {
 }
 ```
 
-    - 매개변수에 스프링 빈 객체를 주입함으로써 빈끼리의 의존관계를 설정한다.
+- 매개변수에 스프링 빈 객체를 주입함으로써 빈끼리의 의존관계를 설정한다.
 
-## BeanFactory, ApplicationContext
+## 🍎 BeanFactory, ApplicationContext
 
 - BeanFactory는 스프링 컨테이너의 최상위 인터페이스이다.
 - ApplicationContext는 BeanFactory에 부가 기능을 추가한 것이다.
@@ -60,11 +60,13 @@ public class AppConfig {
 
 ![s](https://user-images.githubusercontent.com/96059261/211357066-ee9ea127-818c-41ed-97f3-111db0f569cb.PNG)
 
-** 스프링은 어떻게 다양한 설정 방식을 지원할까 **
-xml 또는 java 코드를 읽어서 `BeanDefinition`을 만든다. 따라서 스프링 컨테이너는 이 `BeanDefinition`만 알면 된다. `BeanDefinition`을 빈 설정 메타정보라고 한다.  
-AnnotationConfigApplicationContext는 AnnotatedBeanDefinitionReader를 통해 AppConfig.class를 읽고 BeanDefinition을 생성한다.
+### ** 스프링은 어떻게 다양한 설정 방식을 지원할까 **
 
-### ** ApplicationContext 메서드 **
+- xml 또는 java 코드인 설정 클래스를 읽어서 `BeanDefinition`을 만들고, 이 `BeanDefinition`으로 스프링 컨테이너를 만든다. 따라서 스프링 컨테이너는 이 `BeanDefinition`만 알면 된다.
+- `BeanDefinition`을 빈 설정 메타정보라고 한다.
+- `AnnotationConfigApplicationContext`는 `AnnotatedBeanDefinitionReader`를 통해 AppConfig.class를 읽고 `BeanDefinition`을 생성한다.
+
+### ** ApplicationContext 관련 메서드 **
 
 | 메서드                                      | 설명                                               |
 | ------------------------------------------- | -------------------------------------------------- |
@@ -79,12 +81,12 @@ AnnotationConfigApplicationContext는 AnnotatedBeanDefinitionReader를 통해 Ap
 | getBeanNamesForAnnotation(Component.class)  | @Component가 붙은 빈의 이름을 배열로 반환          |
 | getBeanNamesForType(Engine.class)           | Engine 또는 그 자손 타입인 빈의 이름을 배열로 반환 |
 
-## 싱글톤 컨테이너
+## 🍎 싱글톤 컨테이너
 
-- 스프링 컨테이너는 싱글톤 컨테이너이다.
+- 스프링 컨테이너는 `싱글톤 컨테이너`이다.
 - 어떻게 객체를 하나만 생성하고 관리하는 것일까?  
-  --> `@Configuration`  
-  @Configuration은 설정 정보 클래스 AppConfig.class에 붙인다. 스프링 컨테이너는 이 클래스 역시 스프링 빈으로 등록한다.  
-  @Configuation 때문에 스프링 컨테이너는 설정 정보 클래스를 클래스의 바이트 코드 조작 라이브러리를 통해 빈으로 등록한다.  
-  일반적인 클래스가 아니라 AppConfig를 상속받은 `AppConfig$$CGLIB`가 빈으로 등록된다. 이 CGLIB를 통해 싱글톤을 보장하는 것이다.  
-  따라서 @Configuration을 붙이지 않으면 싱글톤을 보장되지 않는다. 설정 정보는 꼭 @Configuration을 사용하여 싱글톤을 보장해야한다!
+  ➡︎ `@Configuration`
+- `@Configuration`은 설정 정보 클래스 AppConfig.class에 붙인다. 스프링 컨테이너는 이 클래스 역시 스프링 빈으로 등록한다.
+  - `@Configuation`으로 인해 스프링 컨테이너는 설정 정보 클래스를 클래스의 바이트 코드 조작 라이브러리를 통해 빈으로 등록한다.
+  - 일반적인 클래스가 아니라 AppConfig를 상속받은 `AppConfig$$CGLIB`가 빈으로 등록된다. 이 CGLIB를 통해 싱글톤을 보장하는 것이다.
+  - 따라서 @Configuration을 붙이지 않으면 싱글톤을 보장되지 않는다. **설정 정보는 꼭 @Configuration을 사용하여 싱글톤을 보장해야한다!**

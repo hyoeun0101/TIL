@@ -1,16 +1,15 @@
-데이터가 문자열로 요청이 들어오면, `WebDataBinder`에서 타입 변환 후 BindingReuslt에 저장,   
-두 번째로 데이터 검증. 에러가 없으면 값 저장하고, 에러가 있으면 BindingReuslt 에 저장.   
-   
+요청이 들어오면, `WebDataBinder`에서 데이터 처리(타입 변환, 데이터 검증)를 한 후 그 결과는 `BindingResult`에 저장한다.
 
-
-### __[실습] RegisterController 회원가입__   
+### **[실습] RegisterController 회원가입**
 
 # 1. 타입 변환
+
 입력 받으면 WebDataBinder 거쳐 타입 변환해줌.
+
 - 생일 필드를 String -> Date
-- SNS 필드값을 여러 개 받으면, String[]로 들어옴. 
+- SNS 필드값을 여러 개 받으면, String[]로 들어옴.
 - User의 SNS필드가 String이면, String[]-> String 으로 자동 변환
-- "카카오톡, 페이스북, 인스타그램" 이렇게.
+
 ```java
 @InitBinder
 public void toDate(WebDataBinder binder){
@@ -20,7 +19,9 @@ public void toDate(WebDataBinder binder){
     binder.registerCustomEditor(Date.class, new CustomDateEditor(df,false));
 }
 ```
+
 또는
+
 ```java
  public class User{
     private String id;
@@ -30,11 +31,13 @@ public void toDate(WebDataBinder binder){
  }
 ```
 
-#####  - 취미 필드 추가
+##### - 취미 필드 추가
+
 - private String[] hobby;
 - 입력 : Tennis#piano#swimming
 - 이러면 [Tennis#piano#swimming] 이렇게 들어감.
-- 
+-
+
 ```java
 @InitBinder
 public void toDate(WebDataBinder binder){
@@ -46,24 +49,29 @@ public void toDate(WebDataBinder binder){
     binder.registerCustomEditor(String[].class, new StringArrayPropertyEditor("#"));
 }
 ```
-- [Tennis,piano, swimming] 이렇게 들어옴.
-### 타입 변환
-1. PropertyEditor
-    - 양방향으로 타입 변환.
-    - 특정 타입이나 특정 필드에 적용 가능
-    - 디폴트 PropertyEditor는 스프링이 기본 제공함.
-    - 커스텀 PropertyEditor는 사용자가 직접 구현. PropertyEditorSupport를 상속하면 편리 
 
-    - propertydeitors 서칭해서 필요할 때 찾아보기.
-    - 모든 컨트롤러 내에서 변환하려면 WebBindingInitializer를 구현 후 등록
-    - 특정 컨트롤러 내에서 변환은 메서드에 @InitBinder 붙여주기
+- [Tennis,piano, swimming] 이렇게 들어옴.
+
+### 타입 변환
+
+1. PropertyEditor
+
+   - 양방향으로 타입 변환.
+   - 특정 타입이나 특정 필드에 적용 가능
+   - 디폴트 PropertyEditor는 스프링이 기본 제공함.
+   - 커스텀 PropertyEditor는 사용자가 직접 구현. PropertyEditorSupport를 상속하면 편리
+
+   - propertydeitors 서칭해서 필요할 때 찾아보기.
+   - 모든 컨트롤러 내에서 변환하려면 WebBindingInitializer를 구현 후 등록
+   - 특정 컨트롤러 내에서 변환은 메서드에 @InitBinder 붙여주기
 
 2. Converter
-    - 단방향 타입 변환.
-    - PropertyEditor 단점을 개선. 인스턴스 변수를 씀.(stateful)-> 싱글톤으로 사용 불가. 즉, 변환할 때마다 새로운 객체 계속 생성
-    - WebDataBinder에 DefaultFormattingConversionService가 기본 등록
-    - 모든 컨트롤러 변환- ConfigurableWebBindingInitializer를 설정
-    - 특정 컨트롤러 변환 - 컨트롤러에 @InitBinder 붙은 메서드 작성
+   - 단방향 타입 변환.
+   - PropertyEditor 단점을 개선. 인스턴스 변수를 씀.(stateful)-> 싱글톤으로 사용 불가. 즉, 변환할 때마다 새로운 객체 계속 생성
+   - WebDataBinder에 DefaultFormattingConversionService가 기본 등록
+   - 모든 컨트롤러 변환- ConfigurableWebBindingInitializer를 설정
+   - 특정 컨트롤러 변환 - 컨트롤러에 @InitBinder 붙은 메서드 작성
+
 ```java
 public class StringToStringArrayConverter impements Converter<String,String[]>{
     @Override
@@ -72,16 +80,17 @@ public class StringToStringArrayConverter impements Converter<String,String[]>{
     }
 }
 ```
-String -> String[]
-위의 Converter를 ConversionService에 등록. 타입 변환 서비스를 제공. 여러 Converter를 등록 가능  
 
+String -> String[]
+위의 Converter를 ConversionService에 등록. 타입 변환 서비스를 제공. 여러 Converter를 등록 가능
 
 - 스프링이 제공하는 Converter 출력하기
+
 ```java
 @InitBinder
 public void toDate(WebDataBinder binder){
     ConversionService cs = binder.getConversionService();
-    
+
     //포맷 형식
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
     //Date 타입으로 변환. CustomDateEditor 사용
@@ -92,8 +101,10 @@ public void toDate(WebDataBinder binder){
 ```
 
 3. Formmater
+
 - 양방향 타입 변환
 - 바인딩할 필드에 적용 - @NumberFormat, @DateTimeFormat
+
 ```java
 @DateTimeFormat(pattern="yyyy/MM/dd")
 Date birth;
@@ -103,16 +114,19 @@ Date birth;
 BigDecimal salary;
 ```
 
-
 - 우선 순위
-    - 커스텀 PropertyEditor
-    - ConversionService
-    - 디폴트 PropertyEditor
-----
+  - 커스텀 PropertyEditor
+  - ConversionService
+  - 디폴트 PropertyEditor
+
+---
+
 # 2. 데이터 검증
+
 - 검증이란 관심사를 분리
 
 ### - Validator : 객체를 검증하기 위한 인터페이스.
+
 ```java
 public interface Validator{
     //검증 가능한 객체인가
@@ -121,8 +135,11 @@ public interface Validator{
     void validate(@Nullable Object target, Errors errors);
 }
 ```
+
 ### - Errors 인터페이스
+
 - BindingResult는 Errors의 자손
+
 ```java
 public interface Errors{
     //객체 전체에 대한 에러 "id 또는 pwd 일치하지 않습니다."
@@ -131,7 +148,9 @@ public interface Errors{
     void rejectValue(String field, String errorCode);
 }
 ```
+
 ### - UserValidator 작성
+
 ```java
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -149,7 +168,7 @@ public class UserValidator implements Validator{
 	@Override
 	public void validate(Object target, Errors errors) {
 		System.out.println("UserValidator.validate() is called");
-		
+
 		User user= (User)target;// 검증할 User 객체 들어옴. 사실 supports에서 검증해주기 때문에 instanceof 필요없음.
 		String id = user.getId();
 		//id가 비었거나 공백이면,"id"필드에서 "required"라는 에러 코드를 저장.
@@ -162,8 +181,11 @@ public class UserValidator implements Validator{
 	}
 }
 ```
+
 ### - 검증 방법
+
 1. 수동으로 검증 - 메서드 내에서 UserValidator()호출
+
 ```java
 UserValidator uv = new UserValidator();
 uv.validate(user,result);//검증.
@@ -172,6 +194,7 @@ if(result.hasErrors())//에러가 있으면,
 ```
 
 2. 자동으로 검증 - @InitBinder
+
 ```java
 @InitBinder
 public void toDate(WebDataBinder binder){
@@ -183,18 +206,24 @@ public void toDate(WebDataBinder binder){
 public String save(@Valid User user,BindingResult result){}
 
 ```
+
 - @InitBinder에 검증 객체 등록하고, 검증할 객체 앞에 @Valid 붙여주기
-- maven repository-  Bean Validation API
+- maven repository- Bean Validation API
 
 ### - 글로벌 Validator
+
 - 하나의 Validator로 여러 객체를 검증할 때, 글로벌 Validator로 등록.
+
 1. servlet-context.xml에 추가 - 글로벌 Validator 등록
+
 ```xml
 <annotation-driven validator="globalValidator" />
 <!-- <beans:bean id="globalValidator" class="GlobalValidator 위치" /> -->
 <beans:bean id="globalValidator" class="com.hyoding.ch2.GlobalValidator" />
 ```
+
 2. 글로벌 Validator와 로컬 Validator를 동시에 적용
+
 ```java
 @InitBinder
 public void toDate(WebDataBinder binder){
@@ -204,9 +233,10 @@ public void toDate(WebDataBinder binder){
 ```
 
 ### - MessageSource
+
 - 다양한 리소스(파일, 배열 등)에서 메시지를 읽기 위한 인터페이스.
 - 어떤 코드를 주면 코드에 대한 메세지를 문자열로 반환
-- Locale 
+- Locale
 
 ```java
 public interface MessageSource{
@@ -215,11 +245,14 @@ public interface MessageSource{
     String getMessage(MessageSourceResolvable resolvable, Locale locale) throws NoSuchMessageException;
 }
 ```
+
 - Locale : 지역 정보. 지역에서 사용하는 언어가 Locale 객체에 들어있음. 사용하는 시스템으로부터 얻을 수 있음. error_message_ko.properties 이런 파일 없으면 그냥 error_message.properties 가 디폴트.
 - Object[] args 는 new String[]{"5","11"}이렇게 값을 넘겨 주는거.
+
 1. 프로퍼티 파일을 메세지 소스로 하는 ResourceBundleMessageSource(MessageSource의 구현체)를 등록.
 
 -> servlet-context.xml에 추가
+
 ```xml
 <beans:bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
 		<beans:property name="basenames">
@@ -230,29 +263,29 @@ public interface MessageSource{
 		<beans:property name="defaultEncoding" value="UTF-8"/>
 	</beans:bean>
 ```
+
 2. src/main/resources/`error_message.properties` 파일 생성
+
 ```
 required=필수 항목 입니다.
 required.user.pwd=비밀번호는 필수 항목입니다.
 invalidLength.id=아이디 길이는 {0}~{1}사이여야 합니다.
 ```
 
-"id"필드에 에러가 발생하면, "required"     
-1순위 required.user.id      
-2순위 required.id   
-3순위 required.java.lang.String   
-4순위 required   
-5순위 defaultMessage   
- 
+"id"필드에 에러가 발생하면, "required"  
+1순위 required.user.id  
+2순위 required.id  
+3순위 required.java.lang.String  
+4순위 required  
+5순위 defaultMessage
+
 ### - 검증 메세지 출력
+
 ```html
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <!-- 검증할 객체=user. 이렇게 바뀜. <form id="user" action="/ch2/register/add" method="post"> -->
 <form:form modelAttribute="user">
-
-
-    <form:errors path="id" cssClss="msg"/>
-    <!-- 이렇게 바뀜.<span id="id.errors" class="msg">필수 입력 항목입니다.</span> -->
-
+  <form:errors path="id" cssClss="msg" />
+  <!-- 이렇게 바뀜.<span id="id.errors" class="msg">필수 입력 항목입니다.</span> -->
 </form:form>
 ```
