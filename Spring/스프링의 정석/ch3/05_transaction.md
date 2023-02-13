@@ -1,42 +1,42 @@
-# Transaction이란?
+## 🍎Transaction이란?
+- 더 이상 나눌 수 없는 작업의 단위
+- 계좌 이체의 경우, 출금과 입금이 하나의 tx이다. 출금과 입금이 모두 성공하지 않으면 실패해야한다.
 
-: 더 이상 나눌 수 없는 작업의 단위
+## 🍎Transaction의 속성-ACID
 
-- 계좌 이체의 경우, 출금과 입금이 하나의 tx
-- 둘 다 성공하거나 둘다 실패 하거나. all or nothing
-
-### Transaction의 속성-ACID
-
-1. Atomicity(원자성)
+### 1. Atomicity(원자성)
    - 나눌 수 없는 하나의 작업으로 다루어져야한다.
    - 계좌이체는 출금과 입금의 작업
-2. Consistency(일관성)
+### 2. Consistency(일관성)
    - Tx 수행 전과 후가 일관된 상태를 유지해야 한다.
    - A가 B에게 100원을 주면 A의 잔고는 -100, B의 잔고는 +100 이 되어야한다.
-3. Isolation(고립성)
+### 3. Isolation(고립성)
    - 각 Tx는 독립적으로 수행되어야한다.
    - Tx1의 작업이 Tx2의 작업에 영향을 미쳐서 값이 변하면 안된다.
-   - isolation level을 적절하게 선택
-4. Durability(영속성)
+   - isolation level을 적절하게 선택하여 사용한다.
+### 4. Durability(영속성)
    - 성공한 Tx의 결과는 유지되어야 한다.
    - 계좌 이체가 성공하면 그 결과가 계속 유지된다.
 
-### 커밋과 롤백
-
+## 🍎 커밋과 롤백
 - 커밋 : 작업 내용을 DB에 영구적으로 저장
 - 롤백 : 최근 변경사항을 취소. 마지막 커밋으로 복귀
+- 자동 커밋과 수동 커밋
+   - 자동 커밋: 명령 실행 후, 자동으로 커밋. 롤백 불가  
+   - 수동 커밋: 명령 실행 후, 수동으로 커밋, 롤백.
 
-### 자동 커밋과 수동 커밋
-
-- 자동 커밋: 명령 실행 후, 자동으로 커밋. 롤백 불가
-- 수동 커밋: 명령 실행 후, 수동으로 커밋, 롤백.
-
-### isolation level
-
-- read uncommited : 커밋되지 않은 데이터도 읽기 가능
-
-- read commited : 커밋된 데이터만 읽기 가능
-
-- repeatable read : Tx이 시작된 이후 변경은 무시
-
-- serializable : 한번에 하나의 Tx만 독립적으로 수행
+## 🍎 Isolation level
+- `READ UNCOMMITED`
+   - 커밋되지 않은 데이터도 읽기 가능
+- `READ COMMITED`
+   - 커밋된 데이터만 읽기 가능
+   - Tx1 실행 중에 Tx2에서 insert를 한 후 커밋을 하면 Tx1에서 읽기 가능하다.
+- `REPEATABLE READ` (Default) 
+   - Tx이 시작된 이후 변경은 무시.
+   - 각 Tx은 독립적이며 영향을 미치지 않는다.
+   - Tx1 실행 중 Tx2에서 insert를 해도 Tx1에서는 읽을 수 없다.
+- `SERIALIZABLE`
+   - 한 번에 하나의 Tx만 독립적으로 수행
+   - Tx1 실행 중 Tx2에서 insert를 해도 실행이 되지 않고 대기 상태가 된다.
+   - Tx1의 작업이 끝나야 Tx2의 insert가 실행된다.
+   - Tx1 실행 중에는 Tx2의 select(읽기)만 실행 가능하다.

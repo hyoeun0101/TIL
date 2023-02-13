@@ -1,132 +1,91 @@
-요청이 들어오면, `WebDataBinder`에서 데이터 처리(타입 변환, 데이터 검증)를 한 후 그 결과는 `BindingResult`에 저장한다.
 
-### **[실습] RegisterController 회원가입**
+요청 데이터를 `WebDataBinder`에서 처리(`타입 변환`, `데이터 검증`)를 한 후 그 결과를 `BindingResult`에 저장한다.
 
-# 1. 타입 변환
-
-입력 받으면 WebDataBinder 거쳐 타입 변환해줌.
-
-- 생일 필드를 String -> Date
-- SNS 필드값을 여러 개 받으면, String[]로 들어옴.
-- User의 SNS필드가 String이면, String[]-> String 으로 자동 변환
-
-```java
+## 🍎 요청 데이터를 자바 객체로 변환하는 법
+- 모든 요청 데이터는 String으로 들어온다.
+- 같은 키의 값이 여러 개면 String 배열로 들어온다.
+### 1. PropertyEditor
+- 양방향으로 타입 변환.(String -> 타입, 타입 -> String)
+- 특정 타입이나 특정 필드에 적용 가능
+```java 
 @InitBinder
 public void toDate(WebDataBinder binder){
-    //포맷 형식
-    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-    //Date 타입으로 변환. CustomDateEditor 사용
-    binder.registerCustomEditor(Date.class, new CustomDateEditor(df,false));
+    //특정 필드 hobby에만 적용하기
+    binder.registerCustomEditor(String[].class,"hobby" new StringArrayPropertyEditor("#"));
 }
 ```
-
-또는
-
-```java
- public class User{
-    private String id;
-    @DateTimeFormat(pattern="yyyy-MM-dd")
-    private Date birth;
-    private String name;
- }
-```
-
-##### - 취미 필드 추가
-
-- private String[] hobby;
-- 입력 : Tennis#piano#swimming
-- 이러면 [Tennis#piano#swimming] 이렇게 들어감.
--
-
-```java
+- 디폴트 PropertyEditor는 스프링이 기본적으로 제공.(여러 PropertyEditor를 지원하니 필요할 때 구글링하여 사용하기!)
+- 커스텀 PropertyEditor는 사용자가 직접 구현. (PropertyEditorSupport를 상속하면 편리)
+- 모든 컨트롤러 내에서 변환- `WebBindingInitializer`를 구현 후 등록
+- 특정 컨트롤러 내에서 변환- 컨트롤러에 @InitBinder 붙은 메서드 작성
+```java 
 @InitBinder
 public void toDate(WebDataBinder binder){
     //포맷 형식
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-    //Date 타입으로 변환. CustomDateEditor 사용
+    //스프링이 제공하는 CustomDateEditor 사용하여 변환. String -> Date
     binder.registerCustomEditor(Date.class, new CustomDateEditor(df,false));
-    //binder.registerCustomEditor(String[].class,"hobby", new StringArrayPropertyEditor("#"));
+    // String을 # 기준으로 나누어 String 배열로 변환
     binder.registerCustomEditor(String[].class, new StringArrayPropertyEditor("#"));
 }
 ```
-
-- [Tennis,piano, swimming] 이렇게 들어옴.
-
-### 타입 변환
-
-1. PropertyEditor
-
-   - 양방향으로 타입 변환.
-   - 특정 타입이나 특정 필드에 적용 가능
-   - 디폴트 PropertyEditor는 스프링이 기본 제공함.
-   - 커스텀 PropertyEditor는 사용자가 직접 구현. PropertyEditorSupport를 상속하면 편리
-
-   - propertydeitors 서칭해서 필요할 때 찾아보기.
-   - 모든 컨트롤러 내에서 변환하려면 WebBindingInitializer를 구현 후 등록
-   - 특정 컨트롤러 내에서 변환은 메서드에 @InitBinder 붙여주기
-
-2. Converter
-   - 단방향 타입 변환.
-   - PropertyEditor 단점을 개선. 인스턴스 변수를 씀.(stateful)-> 싱글톤으로 사용 불가. 즉, 변환할 때마다 새로운 객체 계속 생성
-   - WebDataBinder에 DefaultFormattingConversionService가 기본 등록
-   - 모든 컨트롤러 변환- ConfigurableWebBindingInitializer를 설정
-   - 특정 컨트롤러 변환 - 컨트롤러에 @InitBinder 붙은 메서드 작성
-
+### 2. Convertor
+- 단방향 타입 변환.(타입A -> 타입B)
+- PropertyEditor 단점을 개선하였다.
+- `ConversionService` 이라는 타입 변환하는 서비스를 제공한다.  WebDataBinder에 `DefaultFormattingConversionService`가 기본 등록되어 있다.
+- 모든 컨트롤러 변환- ConfigurableWebBindingInitializer를 설정
+- 특정 컨트롤러 변환 - 컨트롤러에 @InitBinder 붙은 메서드 작성
 ```java
 public class StringToStringArrayConverter impements Converter<String,String[]>{
     @Override
     public String[] convert(String source){
-        return source.split("#");
+        return source.split("#");//String -> String[]
     }
 }
 ```
-
-String -> String[]
-위의 Converter를 ConversionService에 등록. 타입 변환 서비스를 제공. 여러 Converter를 등록 가능
-
-- 스프링이 제공하는 Converter 출력하기
-
+- 위의 Converter를 ConversionService에 등록하여 사용한다.
+- 스프링이 제공하는 ConversionService 출력하기
 ```java
 @InitBinder
 public void toDate(WebDataBinder binder){
     ConversionService cs = binder.getConversionService();
-
-    //포맷 형식
-    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-    //Date 타입으로 변환. CustomDateEditor 사용
-    binder.registerCustomEditor(Date.class, new CustomDateEditor(df,false));
-    //binder.registerCustomEditor(String[].class,"hobby", new StringArrayPropertyEditor("#"));
-    binder.registerCustomEditor(String[].class, new StringArrayPropertyEditor("#"));
+    // cs를 출력해보면 스프링이 제공하는 ConversionService를 볼 수 있다.
 }
 ```
 
-3. Formmater
 
-- 양방향 타입 변환
+### 3. Formmater
+- 양방향 타입 변환(String-> 타입, 타입 -> String)
 - 바인딩할 필드에 적용 - @NumberFormat, @DateTimeFormat
 
 ```java
-@DateTimeFormat(pattern="yyyy/MM/dd")
+public interface Formatter<T> extends Printer<T>, Parser<T>{}
+public Printer<T>{
+    String print(T object, Locale lacale);//Object -> String
+}
+public Parser<T>{
+    T parse(String text, Locale locale) throws ParseException;//String -> Object
+}
+```
+```java
+@DateTimeFormat(pattern="yyyy-MM-dd")//2022-01-01
 Date birth;
 
-//123,456 이렇게 들어오면 숫자로
-@NumberFormat(parttern="###,###")
+@NumberFormat(parttern="###,###")// 123,456
 BigDecimal salary;
 ```
-
-- 우선 순위
+### 타입 변환 우선 순위
   - 커스텀 PropertyEditor
   - ConversionService
   - 디폴트 PropertyEditor
-
 ---
 
-# 2. 데이터 검증
+## 🍎 데이터 검증
 
-- 검증이란 관심사를 분리
+- 검증이란 관심사를 분리하여 작성하자.
 
-### - Validator : 객체를 검증하기 위한 인터페이스.
-
+### Validator
+: 객체를 검증하기 위한 인터페이스.
 ```java
 public interface Validator{
     //검증 가능한 객체인가
@@ -136,7 +95,7 @@ public interface Validator{
 }
 ```
 
-### - Errors 인터페이스
+### Errors 인터페이스
 
 - BindingResult는 Errors의 자손
 
@@ -158,10 +117,10 @@ import org.springframework.validation.Validator;
 
 public class UserValidator implements Validator{
 
-	@Override
-	public boolean supports(Class<?> clazz) {
-		//clazz가 User또는 자손인지 검증
-		return User.class.isAssignableFrom(clazz);
+    @Override
+    public boolean supports(Class<?> clazz) {
+        //clazz가 User또는 자손인지 검증
+        return User.class.isAssignableFrom(clazz);
         //return User.class.equals(clazz);
 	}
 
@@ -210,7 +169,7 @@ public String save(@Valid User user,BindingResult result){}
 - @InitBinder에 검증 객체 등록하고, 검증할 객체 앞에 @Valid 붙여주기
 - maven repository- Bean Validation API
 
-### - 글로벌 Validator
+## 🍎 글로벌 Validator
 
 - 하나의 Validator로 여러 객체를 검증할 때, 글로벌 Validator로 등록.
 
@@ -232,8 +191,8 @@ public void toDate(WebDataBinder binder){
 }
 ```
 
-### - MessageSource
 
+## 🍎MessageSource
 - 다양한 리소스(파일, 배열 등)에서 메시지를 읽기 위한 인터페이스.
 - 어떤 코드를 주면 코드에 대한 메세지를 문자열로 반환
 - Locale
@@ -255,13 +214,13 @@ public interface MessageSource{
 
 ```xml
 <beans:bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
-		<beans:property name="basenames">
-			<beans:list>
-				<beans:value>error_message</beans:value> <!-- /src/main/resources/error_message.properties -->
-			</beans:list>
-		</beans:property>
-		<beans:property name="defaultEncoding" value="UTF-8"/>
-	</beans:bean>
+        <beans:property name="basenames">
+            <beans:list>
+                <beans:value>error_message</beans:value> <!-- /src/main/resources/error_message.properties -->
+            </beans:list>
+        </beans:property>
+        <beans:property name="defaultEncoding" value="UTF-8"/>
+    </beans:bean>
 ```
 
 2. src/main/resources/`error_message.properties` 파일 생성

@@ -118,18 +118,18 @@ engine1 = hello.core.prac.Engine@cb0ed20
 - Car의 engine 필드에 AppContext의 map이 관리하는 Engine 객체가 들어간 것을 확인할 수 있다.
 - Guava:Google Core Libraries For Java 라이브러리 추가 필요.
 
-### @Resource
-
+## 🍎@Resource
 : by Name
-Project Structure > Libraries > apache-tomcat 추가> 빌드 클릭
+- 표준 애너테이션 - Project Structure > Libraries > apache-tomcat 추가 > 빌드 클릭
+- @Resource(name="이름"). name 생략 시 참조변수 이름이 기본값이다.
 
 ```java
-private void doAutowired(){
+private void doResource(){
     try{
         for(Object bean: map.values()){
             for(Field field : bean.getClass().getDeclaredFields()){
                 //필드에 @Resource가 붙어있으면 map에서 객체 찾아 주입하기
-                if(field.getAnnotation(Autowired.class)!= null){
+                if(field.getAnnotation(Resource.class)!= null){
                     field.set(bean, getBean(field.getName()));//by Name
                 }
             }
@@ -138,98 +138,4 @@ private void doAutowired(){
         e.printStackTrace();
     }
 }
-```
-
----
-
-## 🍎 변경에 유리한 코드 작성하기
-
-### 1. 기존 코드
-
-```java
-package com.hyocoding.ch2.diCopy1;
-
-class Car{}
-class SportsCar extends Car{}
-class Truck extends Car{}
-
-public class Main{
-    public static void main(String[] args){
-        //SportsCar 객체 생성
-        Car car = new SportsCar();
-        System.out.println("car="+car);
-    }
-}
-```
-
-- SportsCar가 아닌 Truck 객체를 생성하려면?
-- Car car = new Truck(); 이렇게 직접 코드를 건드려서 수정해야함.
-
-### 2. 변경에 유리한 코드- getCar() 작성하기
-
-```java
-package com.hyocoding.ch2.diCopy1;
-
-class Car{}
-class SportsCar extends Car{}
-class Truck extends Car{}
-
-public class Main{
-    public static void main(String[] args) throws Exception{
-        Car car = getCar();
-        System.out.println("car="+car);
-    }
-    static Car getCar()  throws Exception{
-        Properties p = new Properties();
-        p.load(new FileReader("config.txt"));
-
-        Class clazz = Class.forName(p.getProperty("car"));
-
-        return (Car)clazz.newInstance();
-    }
-}
-```
-
-[config.txt]는 최상위 프로젝트에 추가하기
-
-```
-car=com.hyocoding.ch2.diCopy1.SportsCar
-```
-
-- 코드를 변경할 필요 없이 config.txt 외부 파일을 변경함으로써 프로그램이 다르게 동작한다.
-
-### 3. getCar()를 getObject()로 변경하기
-
-```java
-package com.hyocoding.ch2.diCopy1;
-
-class Car{}
-class SportsCar extends Car{}
-class Truck extends Car{}
-class Engine{}
-
-public class Main{
-    public static void main(String[] args) throws Exception{
-        Car car = (Car)getObject("car");
-        Engine engine = (Engine) getObject("engine");
-        System.out.println("car="+car);
-        System.out.println("engine="+engine);
-    }
-
-    static Object getObject(String key)  throws Exception{
-        Properties p = new Properties();
-        p.load(new FileReader("config.txt"));
-
-        Class clazz = Class.forName(p.getProperty(key));
-
-        return clazz.newInstance();
-    }
-}
-```
-
-[config.txt]
-
-```
-car=com.hyocoding.ch2.diCopy1.SportsCar
-engine=com.hyocoding.ch2.diCopy1.Engine
 ```
