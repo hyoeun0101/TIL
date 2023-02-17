@@ -1,9 +1,9 @@
-# String
+## 🍎 String
 
 String은 `immutable 클래스`이다. String이 생성한 문자열은 변경불가이다.
 String을 생성하는 방법은 `문자열 리터럴`과 `String 생성자`가 있다.
 
-## 문자열 리터럴
+### 문자열 리터럴
 
 문자열 리터럴로 문자열을 만들면 컴파일 시 클래스 파일에 저장된다. 그래서 같은 내용의 문자열을 또 사용했을 때, 똑같은 문자열을 생성하지 않고 클래스 파일에 있는 문자열을 사용한다.  
 클래스 파일이 클래스 로더에 의해 메모리에 올라갈 때, 클래스 파일의 리터럴은 JVM의 constant pool에 저장된다.
@@ -28,7 +28,7 @@ Method Area에 있어서 GC의 대상이 아니다.
 
 빈 문자열은 길이가 0인 char배열이 생성된다.
 
-## String의 equals()와 hashCode()
+## 🍎 String의 equals()와 hashCode()
 
 String에는 다음과 같이 equals()와 hashCode()가 오버라이딩되어 있어서 객체의 참조변수의 값이 아니라 객체의 값을 비교하는 것이다.
 
@@ -76,7 +76,9 @@ String 문자열을 지원하는 인코딩은 LATIN-1(1byte), UTF-16(2byte) 두 
 영문는 1byte로 표현이 가능하지만, 문자열은 기본적으로 char형이었기 때문에 2byte를 사용했다. 즉 1byte는 의미없는 값으로 채워졌다는 것이다.  
 byte형을 사용하면 영문의 경우 1byte로 표현이 가능하게 되어 메모리 공간을 절약할 수 있게 되었다.
 
-## StringBuffer
+---
+
+## 🍎 StringBuffer
 
 : String과 유사하지만 StringBuffer는 `문자열 변경`이 가능하다. 내부적으로 문자열 수정을 위한 Buffer를 가지고 있다.  
 **생성자 4개**
@@ -108,6 +110,18 @@ public StringBuffer(CharSequence seq) {
 - 동기화되어 있다.
   - 멀티쓰레드가 아닌 경우 동기화는 불필요하게 성능만 떨어뜨린다.
 
-## StringBuilder
+## 🍎 StringBuilder
 
 : 동기화 뺀 StringBuffer
+
+## 🍎 String.valueOf()와 toString()
+
+- `String.valueOf()` : 파라미터가 null이면 문자열 "null"을 만들어 반환한다.
+  - 따라서 null 체크 시 `"null".equals(str)` 이렇게 해야한다.
+- `toString` : 대상 값이 null이면 NullPointerException이 발생한다.
+
+```java
+//map.get("nullValue") 값이 null이라면
+String str1 = String.valueOf(map.get("nullValue"));// str1="null"
+String str2 = map.get("nullValue").toString(); //NullPointerException 발생
+```
