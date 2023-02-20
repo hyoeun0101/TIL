@@ -176,5 +176,56 @@ git diff
 
 : 워킹 디렉토리의 변경 사항 확인
 
-- --name-only : 파일명만 확인
-- --staged
+- `git diff --name-only` : 변경된 파일명만 확인
+- `git diff --staged` : 스테이징의 변경 사항 보기
+- `git diff 커밋1 커밋2` : 커밋끼리 변경 사항 비교하기
+- `git diff 브랜치1 브랜치2` : 브랜치끼리 변경 사항 비교하기
+- `git diff --name-only HEAD HEAD^^` : 전전 커밋부터 변경된 파일 보기
+
+## 🍎blame
+
+: 작성자 확인하기
+
+```
+git blame 파일명
+```
+
+```
+git blame -L (시작줄,끝줄) (파일명)
+```
+
+## 🍎bisect
+
+: 이진 탐색 알고리즘으로 문제의 발생 시점 찾아내기
+
+1. 에러가 발생한 시점에서 탐색 시작하기
+
+```
+git bisect start
+```
+
+2. 현재 커밋이 오류발생 지점임을 표시하기
+
+```
+git bisect bad
+```
+
+3. 오류발생 의심 지점으로 이동하기
+
+```
+git checkout (커밋해시)
+```
+
+4. 오류 발생하지 않을 시 양호함을 표시하기
+
+```
+git bisect good
+```
+
+- 원인을 찾을 때까지 반복
+
+5. 이진 탐색 종료
+
+```
+git bisect reset
+```
