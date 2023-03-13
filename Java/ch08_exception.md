@@ -1,4 +1,6 @@
-# 예외 처리
+## 🍎 예외 처리
+
+### 에러 종류
 
 1. 컴파일 에러 - 컴파일 시 발생하는 에러
 2. 런타임 에러 - 실행 시 발생하는 에러
@@ -202,3 +204,55 @@ Caused by: chap08.SpaceException: 설치할 공간이 부족합니다.
 ```
 
 Caused by 를 통해 원인 예외를 출력한다.
+
+## 🍎 try-catch-resource
+
+### try-catch-finally
+
+- Closable 인터페이스를 구현한 클래스는 사용한 후 close() 메서드를 호출하여 자원을 반납해야한다.
+- finally에서 close()를 호출하여 마지막에 무조건 자원을 반환하도록 한다.
+
+```java
+public static void main(String args[]) throws Exception {
+    FileInputStream fis = null;
+    BufferedInputStream bis = null;
+    int data = -1;
+
+    try {
+        fis = new FileInputStream("file.txt");
+        bis = new BufferedInputStream(fis);
+
+        while((data = bis.read()) != -1) {
+            Syetem.out.print(data);
+        }
+    } finally {
+        if (fis != null) fis.close();
+        if (bis != null) bis.close();
+    }
+}
+```
+
+- 이 코드는 여러 단점을 가지고 있다.
+  - 자원 반납에 의해 코드가 복잡해진다.
+  - 작업이 번거롭다.
+  - 실수로 자원을 반납하지 못하는 경우가 발생한다.
+  - 에러로 자원을 반납하지 못하는 경우가 발생한다.
+
+### try-catch-resources
+
+- 위의 문제를 해결하기 위해 Java7부터 try-catch-resources 문이 추가되었다.
+- AutoClosable 인터페이스를 구현한 클래스는 try-catch-resources 문을 통해 유연한 코드를 작성할 수 있다.
+
+```java
+public static void main(String args[]) throws Exception {
+
+    try (FileInputStream fis = new FileInputStream("file.txt"); BufferedInputStream bis = new BufferedInputStream(fis)) {
+        int data;
+        while ((data = bis.read()) != -1) {
+            System.out.println(data);
+        }
+    }
+}
+```
+
+- close() 메서드 호출 필요없이 자동으로 자원을 반납해준다.

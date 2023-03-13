@@ -86,7 +86,14 @@ public class AppConfig {
 - 스프링 컨테이너는 `싱글톤 컨테이너`이다.
 - 어떻게 객체를 하나만 생성하고 관리하는 것일까?  
   ➡︎ `@Configuration`
-- `@Configuration`은 설정 정보 클래스 AppConfig.class에 붙인다. 스프링 컨테이너는 이 클래스 역시 스프링 빈으로 등록한다.
+- `@Configuration`은 설정 정보 클래스 AppConfig.class에 붙인다.
+- `@Configuration`에는 @Component가 있어 AppConfig.class도 빈으로 등록한다.
+
   - `@Configuation`으로 인해 스프링 컨테이너는 설정 정보 클래스를 클래스의 바이트 코드 조작 라이브러리를 통해 빈으로 등록한다.
   - 일반적인 클래스가 아니라 AppConfig를 상속받은 `AppConfig$$CGLIB`가 빈으로 등록된다. 이 CGLIB를 통해 싱글톤을 보장하는 것이다.
-  - 따라서 @Configuration을 붙이지 않으면 싱글톤을 보장되지 않는다. **설정 정보는 꼭 @Configuration을 사용하여 싱글톤을 보장해야한다!**
+  - 따라서 @Configuration을 붙이지 않으면 싱글톤을 보장되지 않는다.  
+    **설정 정보는 꼭 @Configuration을 사용하여 싱글톤을 보장해야한다!**
+
+  ```java
+
+  ```
