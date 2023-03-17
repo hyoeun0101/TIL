@@ -17,12 +17,14 @@
 - 네트워크 프로그램에서 이벤트 발생 주체는 `소켓`이며, `소켓 연결`, `데이터 송수신` 등의 이벤트가 발생한다.
 - 이벤트가 공유하는 데이터 객체를 생성하고 그 객체를 통해 채널로 데이터를 전송한다.
 
-## 🍎 Netty의 주요 특징
+## 🍎 네티 동작 방식
 
-- 비동기
-- 이벤트 기반
-- 고성능
-- 추상화
+1. BootStrap : Netty를 구동하기 위한 클래스
+2. EventLoopGroup : EventLoop의 그룹
+3. EventLoop : channel에서 발생하는 이벤트를 체크하고, 이벤트가 발생하면 핸들러에게 전달하는 역할
+4. SocketChannel :
+5. ChannelPipeline
+6. ChannelHandler
 
 ## 🍎 부트스트랩
 
@@ -84,12 +86,21 @@ public class NettyRelayServer {
                             channelPipeline.addLast("RelayServerHandler", new NettyRelayServerHandler(new PacketNavigator(roCommonMapper)));
                         }
                     });
+
+            ChannelFuture cf = bootstrap.bind().sync(); // sync()는 바인딩이 완료되길 대기한다.
+
+            cf.channel().closeFuture().sync(); //채널의 CloseFuture를 얻고 완료될 때까지 현재 스레드를 블로킹한다.
+        } finally {
+          workerGroup.shutdownGracefully();
+          bossGroup.shutdownGracefully();
         }
     }
 }
 ```
 
-### ChannelOption 종류
+- ChannelFuture는 작업이 완료되면 그 결과에 접근할 수 있게 해주는 자리 표시자 역할을 하는 인터페이스다.
+
+### option 종류
 
 - SO_BACKLOG : 동시에 수용 가능한 클라이언트의 연결 요청 수
 - SO_RCVBUF, SO_SNDBUF : 커널의 수신 버퍼 크기, 송신 버퍼 크기 조정. 보통 UDP에서 사용, 보통 TCP에서는 크기가 지정되서 오고감.
@@ -109,9 +120,9 @@ public class NettyRelayServer {
 
 ### 인바운드 이벤트 순서
 
-1. channelRegistered
-2. channelActive
-3. channelRead
-4. channelReadComplete
-5. channelInactive
-6. channelUnregistered
+1. channelRegistered : 채널이 이벤트 루프에 등록되었을 때 발생, 새로운 채널이 생성되면 발생.
+2. channelActive : channelRegistered 이후에 발생. 입출력을 수행할 상태가 되었음. 연결 직후
+3. channelRead : 데이터가 수신될 때 실행. 수신된 데이터는 ByteBuf 객체에 있음.
+4. channelReadComplete : 데이터 수신이 완료되었을 때 실행. 채널의 데이터를 다 읽고 더이상 읽을 게 없을 때 발생.
+5. channelInactive : 채널 비활성시 발생. 이 이후에는 채널에 대한 입출력 작업을 할 수 없음.
+6. channelUnregistered : 채널이 이벤트 루프에서 제거되었을 때 발생.

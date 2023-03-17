@@ -138,3 +138,15 @@ public StringBuffer(CharSequence seq) {
 String str1 = String.valueOf(map.get("nullValue"));// str1="null"
 String str2 = map.get("nullValue").toString(); //NullPointerException 발생
 ```
+
+## 🍎 String.format()
+
+1. %d
+
+```java
+int i=23;
+System.out.println(String.format("%5d"), i); // 길이5 나머지는 공백.
+System.out.println(String.format("%05d"), i); // 길이 5, 나머지는 0
+System.out.println(String.format("%-5d"), i); // -는 왼쪽정렬
+
+```

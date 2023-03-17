@@ -2,9 +2,9 @@
 
 - SpringApplication은 몇몇 추가 어플리케이션 이벤트를 제공한다.
 - 이벤트가 발생하면 리스너가 실행된다.
-- 리스너를 빈으로 등록하면 빈 중에 해당하는 이벤트에 대한 리스너를 찾아서 실행한다.
-  - 주의해야할 점!
-  - ApplicationContext가 만들어진 후 발생한 이벤트만 빈으로 등록된 리스너를 실행한다.
+- 몇몇의 이벤트는 ApplicationContext가 생성되기 전에 트리거돼서 @Bean으로 리스너를 등록할 수 없다. `SpringApplication.addListeners()`, `SpringApplicationBuilder.listeners()` 메서드로 등록할 수 있다.
+- 리스너를 빈으로 등록하면 스프링은 빈에서 이벤트에 대한 리스너를 찾아 실행한다.
+  - 주의해야할 점!! ApplicationContext가 만들어진 후 발생한 이벤트만 빈으로 등록된 리스너를 실행한다.
 - 리스너를 빈으로 등록하지 않았다면 addListeners()로 리스너를 추가해줘야한다.
 
 [Application과 동일한 위치에 SampleListener.java 생성]
@@ -54,13 +54,18 @@ public class CoreApplication {
 
 ## 🍎 ApplicationEvent 종류
 
-- ApplicationContextInitializedEvent
-- ApplicationEnvironmentPreparedEvent
-- ApplicationPreparedEvent
-- ApplicationReadyEvent
-- ApplicationStartedEvent
-- ApplicationFailedEvent
-- ApplicationStartingEvent
+- `ApplicationStartingEvent`
+  - 등록과 초기화를 제외하고, 시작할 때 실행.
+- `ApplicationEnvironmentPreparedEvent`
+  - context에서 사용할 Environment는 알고 있고, context가 생성되기 전에 실행
+- `ApplicationPreparedEvent`
+  - Bean Definition이 로드된 후, refresh가 시작되기 전에 실행된다.
+- `ApplicationStartedEvent`
+  - context가 refresh되고, 어플리케이션이 실행되기 전에 실행
+- `ApplicationReadyEvent`
+  - 어플리케이션이 실행된 후 실행. 어플리케이션이 요청을 처리할 준비가 된 것이다.
+- `ApplicationFailedEvent`
+  - 시작할 때 예외가 있는 경우 발생
 
 ### SpringApplication.run()
 
