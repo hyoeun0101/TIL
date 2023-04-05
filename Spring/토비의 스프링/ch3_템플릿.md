@@ -1,12 +1,17 @@
 ### 정리
 
-- 공유 리소스 반환이 필요한 코드는 반드시 try/catch/finally 블록으로 관리해야한다.
-- 전략 패턴 : 변하지 않는 부분은 컨텍스트로, 변하는 부분은 전략으로 한다. 중간에 인터페이스를 두어 변하는 부분은 유연하게 바꿀 수 있어야한다.
+- `pool 방식` : 공유 리소스 반환이 필요한 코드는 반드시 try/catch/finally 블록으로 관리해야한다.
+- `전략 패턴` : 변하지 않는 부분은 컨텍스트(Context)로, 변하는 부분은 전략(Strategy)으로 한다. 클라이언트에서 전략을 선택 및 생성 후 컨텍스트에게 넘겨준다. 이 때 전략은 인터페이스를 통해 유연하게 변경할 수 있어야 한다. 이는 변하지 않는 패턴을 가지고, 그 중 일부분만 바꿔서 사용해야하는 경우에 적합한 구조이다.
+
 - 같은 애플리케이션에서 여러 전략을 사용한다면, 컨텍스트를 사용하는 클라이언트 메서드에서 직접 전략을 관리한다.
-- 클라이언트 메소드 안에 익명 내부 클래스를 작성
-- 컨텍스트가 하나 이상의 클라이언트 인스턴스에서 사용되면 클래스를 분리하여 공유한다.
-- 컨텍스트는 DI 받거나, 클라이언트 클래스에서 직접 생성하거나.
-- 템플릿/콜백 패턴
+- 클라이언트에서 전략을 생성할 때 익명 내부 클래스로 작성할 수 있다. 전략의 인터페이스는 functional interface여야 한다.
+- 컨텍스트가 하나 이상의 클라이언트 인스턴스에서 사용되면 컨텍스트를 클래스로 분리하자.
+- 이 때 컨택스트와 클라이언트가 높은 결합도를 가지는데, 컨텍스트를 클라이언트에게 DI 하는 방법은 두 가지가 있다. 자동 DI, 수동 DI(클라이언트에서 직접 생성)
+
+- 템플릿/콜백 패턴 : 단일 전략 메소드를 갖는 전략 패턴이면서, 익명 내부 클래스를 사용해서 매번 전략을 새로 생성하여 컨텍스트를 호출하는 방식
+- 콜백의 코드에서 일정한 패턴이 반복되면 콜백을 템플릿에 넣고 재활용하자.
+- 템플릿과 콜백에 다양한 타입이 들어갈 수 있도록 제네릭 활용.
+- 템플릿/콜백을 설계할 때는 템플릿과 콜백이 서로 주고 받는 정보에 관심을 둬야한다. 템플릿이 콜백에게 어떤 값을 넘겨 줄 것인지, 콜백은 어떤 값을 리턴해 줄 것인지.
 
 ---
 
@@ -364,10 +369,97 @@ public class JdbcContext {
 
 ### 두 가지 방법 중 어느 것을 선택하나?
 
+- 의존관계를 명확하게 드러내야하는 경우 1번, 의존관계를 숨겨야 할 때는 2번.
 - 위의 두 가지 방법 중 어느 것이 낫다고 말할 수는 없다. 상황에 따라 적절하다고 판단되는 방법을 선택해서 사용하라.
 - 다만 왜 그렇게 선택했는지에 대한 분명한 이유는 말할 수 있어야한다.
 - 분명하게 설명할 자신이 없다면 차라리 인터페이스를 만들어 평범한 DI 구조로 만드는게 나을 수도 있다.
 
 ## 🍎 템플릿/콜백
 
-- 전략 패턴 + 익명 내부 클래스를 DI하기
+- 전략 패턴 + 익명 내부 클래스 활용
+- 전략 패턴의 Context가 템플릿, 익명 내부 클래스의 오브젝트를 콜백이라고 한다.
+- 콜백은 일반적으로 functional interface를 사용하여 익명 내부 클래스로 구현된다.
+- 매번 사용할 콜백 오브젝트를 새롭게 전달한다.
+
+### 동작 방식
+
+1. 클라이언트가 콜백 오브젝트를 생성하고, 템플릿의 메소드를 호출한다. 이 때 콜백의 오브젝트는 템플릿의 메소드의 파라미터로 넘긴다.
+2. 템플릿은 콜백 오브젝트를 받아서 콜백 오브젝트의 메소드를 실행한다.
+3. 콜백은 작업을 수행 후 템플릿에게 결과를 반환해준다.
+4. 템플릿은 콜백의 작업 결과를 받아 나머지 작업을 마저 수행한다. 경우에 따라 처리 결과를 클라이언트에게 반환한다.
+
+### 리팩토링 순서 정리
+
+1. 중복된 코드는 먼저 메서드로 분리하기
+2. 인터페이스를 사이에 두어 전략 패턴을 적용하고, DI로 의존관계 관리하기
+3. 바뀌는 부분이 한 어플리케이션에서 여러 개 생성되면 템플릿/콜백 패턴 고려하기
+
+## 🍎 JdbcTempalte
+
+- 여러 템플릿을 제공하며, 템플릿 호출 시 익명 내부 클래스로 콜백을 제공해야한다.
+- `UserDao` <- `JdbcTemplate`
+  - JDBC API를 사용하는 방식, 예외처리, 리소스 반납, DB 연결 등에 대한 관심은 오직 JdbcTemplate에 있다.
+  - JdbcTemplate은 DAO안에서 직접 생성하는 것이 관례이지만, 원한다면 독립된 싱글톤 빈으로 등록 후 DI 받아 인터페이스(JdbcOperations)를 통해 사용할 수 있다.
+
+```java
+/*
+ * JdbcTemplate 적용하기
+ */
+public class UserDao8 {
+    private final JdbcTemplate jdbcTemplate;
+    private RowMapper<User> userMapper = new RowMapper<User>() {
+        @Override
+        public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+            User user = new User();
+            user.setId(rs.getString("id"));
+            user.setName(rs.getString("name"));
+            user.setPassword(rs.getString("password"));
+            return user;
+        }
+    };
+
+    public UserDao8(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
+    public void deleteAll() throws Exception {
+        this.jdbcTemplate.update("delete from users");
+    }
+
+    public void addUser(final User user) {
+        String sql = "insert into users(id, name, password) values (?,?,?)";
+        this.jdbcTemplate.update(sql, user.getId(), user.getName(), user.getPassword());
+    }
+
+    public int getCount() {
+        return this.jdbcTemplate.query(
+            new PreparedStatementCreator() {
+
+                @Override
+                public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                    return con.prepareStatement("select count(*) from users");
+                }
+
+            },
+            new ResultSetExtractor<Integer>() {
+
+                @Override
+                public Integer extractData(ResultSet rs) throws SQLException, DataAccessException {
+                    rs.next();
+                    return rs.getInt(1);
+                }
+
+            });
+    }
+
+    public User getUser(String id) {
+        return this.jdbcTemplate.queryForObject("select * from users where id = ?", userMapper);
+    }
+
+    public List<User> getAll() {
+        return this.jdbcTemplate.query(
+            "select * from users order by id", userMapper);
+    }
+}
+
+```
