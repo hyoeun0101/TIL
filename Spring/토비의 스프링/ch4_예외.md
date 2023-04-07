@@ -78,6 +78,7 @@ public void add() throws DuplicateKeyException {
 ```
 
 - 반면에 애플리케이션 자체의 로직에 의해 의도적으로 발생시키는 예외는 `체크 예외`여야 한다. 개발자가 잊지 않고 처리 로직을 구현하기 위함이다.
+
 ```java
 public void add() throws DuplicationUserIdException {
     try {
@@ -90,14 +91,29 @@ public void add() throws DuplicationUserIdException {
 ```
 
 ## 🍎 SQLException, DataAccessException
+
 ### SQLException
+
 - 대부분의 `SQLException`은 코드 레벨에서 복구할 방법이 없다. SQL 문법이 틀렸거나, 제약조건을 위반했거나, DB 서버가 다운됐거나, DB 커넥션 풀이 꽉 차서 DB 커넥션을 가져올 수 없을 때 발생하는데 이는 개발자에게 예외가 발생했다고 알리는 용도로만 쓰인다. 위에 말했듯이 이런 경우는 빨리 `런타임 예외`로 포장해줘야 한다!
+
+### DataAccessException
+
 - JdbcTemplate에서는 `SQLException`을 `런타임 예외`인 `DataAccessException`으로 포장해서 던져준다. 따라서 JdbcTemplate을 사용하는 메서드에서는 `DataAccessException`을 잡아도 되고, 안잡아도 된다.
+- 또한 스프링에선 데이터 액세스 기술마다 다르게 발생하는 예외를 `DataAccessException`로 추상화했다. 즉 `DataAccessException`을 통해 기술에 독립적인 예외를 정의하고 사용할 수 있는 것이다!
+
 ```java
-public void deleteAll() throws Exception {
-    this.jdbcTemplate.update("delete from users");
+// 기술마다 발생하는 예외가 다르다.
+public void add(User user) throws PersistentException; //JPA
+public void add(User user) throws JdoException; //JDO
+public void add(User user) throws HibernateException; //Hiberate
+```
+
+```java
+public interface UserDao {
+    // DataAccessException를 통해 추상화. 런타임 예외이므로 throws 선언하지 않아도 됨.
+    public void add(User user);
+
 }
 ```
-### DataAccessException
-- 스프링에선 `DataAccessException`을 통해 기술에 독립적인 예외를 정의하고 사용할 수 있다.
-- `DataAccessException`의 하위 클래스들는 구체적인 예외 정보를 나타낸다. ex) `DuplicateKeyException`, `DataAccessResourceFailureException`, `DataIntegrityViolationException` 등
+
+- 좀 더 구체적인 여러 DataAccessException의 하위 클래스를 제공한다. ex) `DuplicateKeyException`,`DataAccessResourceFailureException`, `DataIntegrityViolationException`,`ObjectOptimisticLockingFailureException`, `InvalidDataAccessResourceUsageException` 등
