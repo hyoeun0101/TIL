@@ -19,19 +19,28 @@
 ## 🍎 Propterty로 객체 초기화하는 방법
 ### 1. setter로 초기화하기
 ```xml
-    <bean id="car" class="hello.core.prac.Car">
-        <property name="color" value="red"/>
-        <property name="oil" value="100"/>
-        <property name="engine" ref="engine"/>
-        <property name="doors">
-            <array value-type="hello.core.prac.Door">
-                <ref bean="door"/>
-                <ref bean="door"/>
-            </array>
-        </property>
-    </bean>
+<bean id="car" class="hello.core.prac.Car">
+    <property name="color" value="red"/>
+    <property name="oil" value="100"/>
+    <property name="engine" ref="engine"/>
+    <property name="doors">
+        <array value-type="hello.core.prac.Door">
+            <ref bean="door"/>
+            <ref bean="door"/>
+        </array>
+    </property>
+</bean>
+
+<bean id="engine" class="hello.core.prac.Engine"/>
+<bean id="door" class="hello.core.prac.Door" />
 ```
-- setter를 호출하는 것이기 때문에 Car에 setter 작성이 필요하다.
+- property는 setter를 호출하는 것이기 때문에 Car에 setter 작성이 필요하다.
+- name은 프로퍼티의 이름. 이 프로퍼티 이름으로 수정자 메서드를 알 수 있다.
+    - `<property name="engine"/>`는 `setEngine()`을 호출하여 동작한다.
+- ref는 주입할 오브젝트의 빈 이름이다. 
+- 빈의 id와 property의 name은 인터페이스 이름을 하는 경우가 많다. 
+- 주입할 객체를 변경하고 싶을 때 빈의 property ref만 변경하면 된다.
+
 
 ### 2. 생성자로 초기화하기
 ```xml

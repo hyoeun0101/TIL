@@ -119,7 +119,9 @@ engine1 = hello.core.prac.Engine@cb0ed20
 - Guava:Google Core Libraries For Java 라이브러리 추가 필요.
 
 ## 🍎@Resource
+
 : by Name
+
 - 표준 애너테이션 - Project Structure > Libraries > apache-tomcat 추가 > 빌드 클릭
 - @Resource(name="이름"). name 생략 시 참조변수 이름이 기본값이다.
 
@@ -138,4 +140,13 @@ private void doResource(){
         e.printStackTrace();
     }
 }
+```
+
+- 필드 주입, 수정자 주입에 사용 가능하다.
+- 이름과 매핑하는 빈이 없으면 타입으로 찾지만, 이는 권장되진 않는다.
+  - @Resource를 타입으로 빈을 찾게 하는 건 다음과 같이 컨텍스트가 자신에 대한 레퍼런스를 직접 제공할 때만 적합하다.
+
+```java
+@Resource
+ApplicationContext context;
 ```

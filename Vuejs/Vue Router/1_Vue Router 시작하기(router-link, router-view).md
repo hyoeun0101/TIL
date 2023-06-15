@@ -1,3 +1,42 @@
+```javascript
+import { createRouter, createWebHashHistory } from 'vue-router'
+
+// 1. 경로에 사용할 컴포넌트를 정의
+// import로 해당 컴포넌트 가져올 수 있음.
+const Home = { template: '<div>Home</div>' }
+const About = { template: '<div>About</div>' }
+
+// 2. 경로를 정의하고, 각 경로를 컴포넌트와 매핑.
+const routes = [
+  { path: '/', component: Home },
+  { path: '/about', component: About },
+]
+
+// 3. `routes`를 옵션으로 전달해 라우터 인스턴스를 생성.
+const router = createRouter({
+  // 4. 사용할 히스토리 모드 정의.
+  history: createWebHashHistory(),
+  routes, // `routes: routes`와 같음
+})
+
+// 5. 루트 인스턴스를 생성하고 마운트.
+const app = Vue.createApp({})
+// 라우터 인스턴스를 `use()`로 등록해야 함.
+app.use(router)
+
+app.mount('#app')
+```
+
+
+
+
+
+
+
+
+
+
+
 # router-link
 `<router-link>`는 `<a href="..."></a>`로 랜더링 된다. 목표 위치는 to로 지정한다.    
 a태그보다 router-link를 사용해야하는 이유는?
@@ -16,7 +55,7 @@ a태그보다 router-link를 사용해야하는 이유는?
 <router-link :to="'home'">Home</router-link>
 
 <!-- 위와 같습니다. -->
-<router-link :to="{ path: 'home' }">Home</router-link>
+<router-link :to="{ path: 'home' }">Home</router-link>Iks5
 
 <!-- 이름을 가지는 라우트 -->
 <router-link :to="{ name: 'user', params: { userId: 123 }}">User</router-link>

@@ -426,6 +426,9 @@ public class UserDao8 {
         this.jdbcTemplate.update("delete from users");
     }
 
+
+
+
     public void addUser(final User user) {
         String sql = "insert into users(id, name, password) values (?,?,?)";
         this.jdbcTemplate.update(sql, user.getId(), user.getName(), user.getPassword());
@@ -456,6 +459,8 @@ public class UserDao8 {
         return this.jdbcTemplate.queryForObject("select * from users where id = ?", userMapper);
     }
 
+
+
     public List<User> getAll() {
         return this.jdbcTemplate.query(
             "select * from users order by id", userMapper);
@@ -463,3 +468,8 @@ public class UserDao8 {
 }
 
 ```
+
+## 🍎 팩토리
+
+- 객체를 생성하고 관리하는 클래스. 설정 파일 클래스를 `팩토리`라고 한다.
+- 컨테이너에서는 설정 파일을 생성하는 팩토리가 반드시 필요하다.

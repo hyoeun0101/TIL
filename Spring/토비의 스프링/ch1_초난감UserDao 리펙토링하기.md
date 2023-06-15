@@ -226,3 +226,32 @@ public class NConnectionMaker implements ConnectionMaker{
 2. 구현이 계속 바뀌어야 되진 않은가?
 3. 클래스로 분리해야 되진 않은가?
 4. 인터페이스가 필요하진 않은가?
+
+
+## XML 설정 파일 만들기
+```java
+@Config
+public class AppConfig {
+    @Bean
+    public ConnectionMaker connectionMaker() {
+        return new DConnectionMaker();
+    }
+
+    @Bean
+    public UserDao userDao() {
+        UserDao userDao = new UserDaoJdbc();
+        userDao.setConnectionMaker(connectionMaker());
+        return userDao;
+    }
+}
+```
+
+```xml
+<beans>
+    <bean id="connectionMaker" class="com.spring.tobi.ch3.DConnectionMaker"/>
+
+    <bean id="userDao" class="com.spring.tobi.ch3.dao.UserDaoJdbc">
+        <proterty name="connectionMaker" ref="connectionMaker"/>
+    </bean>
+</beans>
+```

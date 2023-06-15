@@ -1,0 +1,3 @@
+## querySelectorAll()
+
+document.querySelectorAll(".example");

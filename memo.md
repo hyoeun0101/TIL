@@ -169,3 +169,31 @@ Charactor.isDigit('97'); //true
 Charactor.isDigit(97); //false. int값 입력하면 char로 변환 후 체크한다. 즉 97을 'a'로 판단.
 
 ```
+
+## 230323
+
+- 소켓 통신 코드에선 데이터를 byte 배열로 주고 받는다. 받은 byte 배열을 순서대로 HeaderPos 객체, BodyPos 객체에 넣는다.
+- 여기서 HeaderPos의 어떤 특정값에 따라서 다른 BodyPos 객체를 생성해야한다.
+- 기존의 코드는 if-else를 반복적으로 사용하여 HeaerPos의 특정값에 따라 BodyPos를 처리한다.
+
+```java
+if(headerPos.getInstCode("HBPT")) {
+  bodyReqPos = new BodyReqPos();
+} else if(headerPos.getInstCode("EPCT")) {
+  bodyReqPosCT = new BodyReqPosCT();
+}
+```
+
+- 메서드에서 반복되는 if-else를 없애고자, 여러 BodyPos를 인터페이스로 추상화할 수 없을까 생각을 하였다.
+- 결론은... 할 수 없다!!
+- 사수님의 피드백 : 전문이나 API정의서를 보면 공통적인 것을 추상화할 수 있는지 없는지 판단할 수 있어야한다.
+- 전문을 보니 BodyPos 부분은 공통적인 것이 없어 추상화가 불가능했다.
+
+## 230327
+
+```
+io.netty.channel.ChannelPipelineException: com.mycloudmembership.prelaysocket2.netty.NettyEncoderDecoder$NettyDecoder is not a @Sharable handler, so can't be added or removed multiple times.
+
+```
+
+##

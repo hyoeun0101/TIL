@@ -37,6 +37,7 @@ public class UserDaoTest {
 
 - 테스트 컨텍스트는 테스트 메서드를 실행할 때마다 ApplicationContext를 생성한다. 테스트 메서드 3개를 실행하면 ApplicationContext가 3번 생성되는 것이다.
 - 애노테이션 설정만으로 테스트에서 필요로 하는 ApplicationContext를 한번만 생성하고 공유해서 사용할 수 있다! 테스트 클래스에 @RunWith, @ContextConfiguration 을 붙여주자.
+- `@ContextConfiguration`에 설정파일 이름을 지정하지 않으면, `클래스 이름-context.xml`이 디폴트로 사용된다.
 
 [예제2]
 
@@ -155,3 +156,41 @@ public class UserDaoTest {
 - 우선적으로 스프링 컨테이너를 사용하지 않을 것(2번)을 고려해라. 오브젝트의 생성과 초기화가 단순하다면 2번 방법이 제일 빠르고, 간결하다.
 - 복잡한 의존관계를 가진 오브젝트를 테스트할 경우는 스프링의 설정을 이용한 DI(1번)를 고려해라. 테스트할 설정 파일을 따로 만들어 사용하는 것이 좋다.
 - 예외적인 의존관계를 강제로 구성해야하는 경우가 있다. 이는 수동 DI(3번)를 고려해라. @DirtiesContext붙이는 것도 잊지 말아야한다.
+
+## 🍎 Mock Object 생성하기
+
+- UserService를 테스트할 때, 비지니스 로직에만 집중하면 된다. Dao를 거쳐 DB에 접근할 필요가 없다. (이미 Dao의 테스트는 성공한다는 전제하에)
+- 따라서 UserService가 의존하는 UserDao에 Mock Object를 생성하여 주입한다.
+
+### Mockito 프레임워크 활용하기
+
+```java
+    @Test
+    public void mockAllUserUpgradeLevelTest() throws Exception {
+      UserServiceImpl userServiceImpl = new UserServiceImpl();
+      //1. 인터페이스를 이용해 mock 객체를 만든다.
+      UserDao mockUserDao = mock(UserDao.class);
+
+      //2. 리턴값을 지정해준다.
+      // getAll() 메서드를 호출할 때 리턴값 지정.
+      when(mockUserDao.getAll()).thenReturn(new ArrayList<User>());
+
+      //3. mock 객체를 DI한다.
+      userServiceImpl.setUserDao(mockUserDao);
+
+      MailSender mockMailSender = mock(MailSender.class);
+      userServiceImpl.setMailSender(mockMailSender);
+
+      userServiceImpl.allUsersUpgradeLevel();
+
+      //4. 특정 메소드가 호출됐는지, 어떤 값을 가지고 몇 번 호출됐는지 검증한다.
+      // UserDao의 update메서드가 2번 호출됐는지 확인. any()는 파라미터 상관없이 호출 횟수만 확인.
+      verify(mockUserDao, times(2)).update(any(User.class));
+      verify(mockUserDao, times(2)).update(any(User.class));
+      // update()메소드의 파라미터를 검증.
+      verify(mockUserDao).update(this.users.get(1));
+      assertThat(this.users.get(1).getLevel()).isEqualTo(Level.valueToInt(Level.SILVER));
+      verify(mockUserDao).update(this.users.get(4));
+      assertThat(this.users.get(4).getLevel()).isEqualTo(Level.valueToInt(Level.GOLD));
+    }
+```
