@@ -196,4 +196,8 @@ io.netty.channel.ChannelPipelineException: com.mycloudmembership.prelaysocket2.n
 
 ```
 
-##
+## 230616
+
+부모의 값이 변했는데, 이미 자식에선 전 값으로 객체를 생성했다.
+
+- 값이 변경되면 swiper를 생성해야한다.
