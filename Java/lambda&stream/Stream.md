@@ -12,7 +12,7 @@
 - 지연된 연산. 최종연산을 해야 중간연산을 거쳐 수행되는 것임.
 - 병렬 처리가 쉽다. parallel()
 
-# 스트림 - 생성
+# 🍎 스트림 - 생성
 
 Collection 인터페이스의 `stream` 메서드 - List, Set에 사용 ex) list.stream();  
 기본형 스트림 타입 IntStream, LongStream, DoubleStream 제공
@@ -71,7 +71,7 @@ Stream<Integer> stream = evenStream.boxed();//IntStream -> Stream<Integer>
 Stream emptyStream = Stream.empty();
 ```
 
-# 스트림- 중간연산
+# 🍎 스트림- 중간연산
 
 ```java
 //skip(),limit()
@@ -239,7 +239,7 @@ Stream<String> lineStream = Arrays.stream(lineArr);
 lineStream.flatMap(line->Stream)
 ```
 
-# 스트림-최종연산
+# 🍎 스트림-최종연산
 
 - allMatch: 모든 요소가 조건 만족하면 true
 - anyMatch: 한 요소라도 조건 만족하면 true
@@ -358,7 +358,7 @@ String stuNames = stuStream.map(Student::getName).collect(Collectors.joining(","
 
 ### collectingAndThen()
 
-# 스트림 - 그룹화
+# 🍎 스트림 - 그룹화
 
 ### 1. partitioningBy() - true, false로 분할함.
 
