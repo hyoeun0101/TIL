@@ -28,7 +28,7 @@ class Exam{
 |BiConsumer<T,U>|-|-|
 |Predicate<T>|boolean test(T t)|매개변수O, 반환값 T/F|
 |BiPredicate<T,U>|-|-|
-|Function<T>|T apply(T t)|매개변수O, 반환값O|
+|Function<T,R>|R apply(T t)|매개변수O, 반환값O|
 |UnaryOperator<T>|T apply(T t)|Function의 자손, 매개변수와 반환타입이 같음|
 |BiFunction<T,U>|-|-|
 |BinaryOperator<T>|-|BiFunction의 자손, 두개의 매개변수와 반환타입이 같음|
@@ -39,7 +39,7 @@ class Exam{
 ```java
 class Ex14_3{
     public static void main(String[] args){
-        Predicate<Integer> p =i -> i < 100;
+        Predicate<Integer> p = i -> i < 100;
         Predicate<Integer> q = i -> i < 200;
         Predicate<Integer> r = i -> i%2==0;
         Predicate<Integer> notP = p.negate();
