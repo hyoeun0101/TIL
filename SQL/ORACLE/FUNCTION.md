@@ -57,3 +57,5 @@ NVN2("데이터", 'N', 'Y')
 ```
 
 : 데이터가 null이면 N, null이 아니면 Y
+
+## 🍎ROW_NUMBER

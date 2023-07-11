@@ -36,8 +36,3 @@ List<String> names = menu.stream()
                         .map(Dish::getName)
                         .collect(toList());
 ```
-
-## 🍎 3. 스트림 연산
-
-- 중간 연산 - filter,map, sorted, peek, flatMap
-- 최종 연산 - reduce, collect, count, forEach, allMatch 등
