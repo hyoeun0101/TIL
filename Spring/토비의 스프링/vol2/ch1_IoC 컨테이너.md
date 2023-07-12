@@ -1,8 +1,13 @@
 ## 🍎 IoC 컨테이너
+
 - IoC 컨테이너를 만들려면 `POJO 클래스`, `설정 메타정보` 이 두 가지가 필요하다.
 - POJO 클래스는 인터페이스를 구현하게 하여 유연하게 만든다.
 - 설정 메타정보는 빈을 어떻게 만들고, 어떻게 동작할 것인지에 대한 정보이다.
+
 ### IoC 컨테이너의 설정 메타 정보는 BeanDefinition 인터페이스를 구현하여 만들어진다.
+
+![ㅁ](https://github.com/PSVM2022/Dopamin/assets/96059261/bc3c09ee-f72c-48db-86ec-71eb95b399cf){: width="10"}
+
 - 메타 정보(빈 아이디,이름, 클래스 이름, 스코프, 프로퍼티 값 등)를 BeanDefinition 구현체에 정의하여 사용한다.
 - `BeanDefinitionReader`는 원본의 설정 메타 정보를 읽어와, `BeanDefinition` 오브젝트로 변환해준다.
 - 이 BeanDefinition 인터페이스 덕분에 자바는 설정 메타정보의 형태에 종속적이지 않게 되었다.
@@ -10,12 +15,11 @@
   - 예를 들어 A,B라는 두 개의 설정 메타 정보에서 Hello.class를 빈으로 등록했다면, A의 Hello의 객체와 B의 Hello의 객체는 다르다.
 
 ## 🍎 IoC 컨테이너의 종류 - 스프링이 제공하는 ApplicationContext 구현체
+
 - StaticApplicationContext : 거의 학습용.테스트 목적
 - GenericApplicationContext : 직접 다룰 일은 없다. 다만 Jnit 테스트가 자동으로 만들어주는 스프링 테스트 애플리케이션 컨텍스트가 바로 이것이다.
 - GenericXmlApplicationContext : XmlBeanDefinitionReader를 내장하고 있어서 BeanDefinitionReader를 따로 정의하지 않아도 된다.
 - WebApplicationContext : 웹 환경에서 필요한 기능이 추가됨.
-
-
 
 ## 🍎 IoC 컨테이너 계층 구조 - 부모 컨텍스트, 자식 컨텍스트
 

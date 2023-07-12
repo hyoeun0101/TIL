@@ -1,15 +1,8 @@
 ## 🍎Collector
 
 - 스트림 전체는 reduce(), 그룹별로 나눠 사용할 때는 collect() 메서드를 사용한다.
-- collect의 파라미터는 Collector 인터페이스이다.
-
-### Collector 인터페이스의 추상 메서드
-
-- supplier()//누적할 곳
-- accumulator() //누적 방법
-- combiner() //결합방법(병렬)
-- finisher() //최종변환
-- Collectors는 Collector의 구현 클래스이다. 위의 추상 클래스는 Collectors 클래스에 이미 구현되어 있으니 이 클래스를 사용하면 된다.
+- collect메서드의 파라미터는 Collector 인터페이스이다.
+- Collector 인터페이스의 구현 클래스 Collectors 클래스가 있다.
 
 ## 🍎 Collectors의 메서드 정리
 
@@ -127,10 +120,92 @@ Map<Dish.Type, List<String>> dishNamesByType = menu.stream().collect(groupingBy(
 - 다중화 그룹화
   - gourpingBy를 두 번 써서 여러 번 그룹화가 가능하다.
 
-### collectingAndThen
+### 중첩 컬렉터 - collectingAndThen
 
 - collectingAndThen(Collector, Function)
+- Collector 메서드를 실행한 결과로 Function을 실행한다.
 
 ```java
+// 타입으로 그룹화하고, 요리 중 칼로리 높은 것울 추출하고, 그 결과를 Optional::get을 실행하여 반환한다.
 menu.stream().collect(groupingBy(Dish::getType, collectingAndThen(maxBy(comparingInt(Dish::getCalories)), Optional::get)));
 ```
+
+### ture, false로 그룹화 - partitioningBy
+
+- partitioningBy(Predicate)
+- partitioningBy(Predictae, Collector)
+
+```java
+// 채식인 요리, 아닌 요리로 그룹화하기
+Map<Boolean, List<Dish>> partitionedMenu = menu.stream().collect(partitioningBy(Dish::isVegetarian));
+
+```
+
+## 🍎Collector 인터페이스의 추상 메서드
+
+```java
+public interface Collector<T, A, R> {
+  Supplier<A> supplier();
+  BiConsumer<A, T> accumulator();
+  Function<A, R> finisher();
+  BinaryOperator<A> combiner();
+  Set<Characteristics> characteristics();
+}
+```
+
+- T는 수집될 스트림의 타입이다.
+- A는 누적자, 즉 중간 결과를 누적하는 객체의 타입이다.
+- R은 연산 결과 타입이다.
+
+### supplier
+
+- 컬렉션을 생성하여 반환한다.
+
+```java
+public Supplier<List<T>> supplier(0 {
+  return () -> new ArrayList<>();
+  // return () -> ArrayList::new;
+})
+```
+
+### accumulator
+
+- 컬렉션에 값을 누적한다.(추가한다)
+
+```java
+public BiConsumer<List<T>, T> accumulator() {
+  return (list, item) -> list.add(item);
+  // return List::add;
+}
+```
+
+### finisher
+
+- 누적한 결과를 담은 객체를 최종 결과로 반환한다.
+
+```java
+// 누적 객체가 이미 최종 결과 상태일 경우, 항등 함수 반환
+public Funtion<List<T>, List<T>> finisher() {
+  return Function.identity();
+}
+```
+
+### combiner
+
+- 병렬화 리듀싱 과정에서 사용한다.
+-
+
+```java
+public BinaryOperator<List<T>> combiner() {
+  return (list1, list2) -> {
+    list1.addAll(list2);
+    return list1;
+  }
+}
+```
+
+### characteristics
+
+-
+
+## 🍎Collector 인터페이스를 구현하여 커스텀 컬렉터 만들기
