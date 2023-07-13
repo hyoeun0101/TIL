@@ -1,4 +1,5 @@
 ## 🍎 filter
+
 ```java
 List<Dish> specialMenu = Arrays.asList(
     new Dish("A", true, 120, Dish.Type.OTHER),
@@ -8,16 +9,23 @@ List<Dish> specialMenu = Arrays.asList(
     new Dish("E", true, 530, Dish.Type.OTHER),
 )
 ```
+
 - filter는 모든 요소 돌면서 체크함.
-### 슬라이싱 - takeWhile
+
+### 슬라이싱 - takeWhile - java9제공
+
 - 정렬 되어있는 경우, 조건이 true면 작업 중단 후 요소 반환(앞으로 슬라이싱)
+
 ```java
 List<Dish> sliceMenu = specialMenu.stream()
                                 .takeWhile(dish -> dish.getCalories < 320)
                                 .collect(toList());// A,B
 ```
+
 ### 슬라이싱 - dropWhile
+
 - 정렬 되어있는 경우 조건이 false면 중단하고 남은 요소 반환(뒤로 슬라이싱)
+
 ```java
 List<Dish> sliceMenu = specialMenu.stream()
                                 .dropWhile(dish -> dish.getCalories < 320)
@@ -25,7 +33,9 @@ List<Dish> sliceMenu = specialMenu.stream()
 ```
 
 ### limit, skip
+
 ## 🍎 map
+
 - ["Hello", "World"]를 ["H","e""l","o","W","r","d"]로 만들기.
 
 ```java
@@ -35,5 +45,5 @@ words.stream()
     .distinct()// [H,e,l,o]     [W,o,r,l,d]
     .collect(toList()); //H, e, l, o
 ```
-## 🍎 flatMap
 
+## 🍎 flatMap
