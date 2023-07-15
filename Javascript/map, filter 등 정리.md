@@ -37,7 +37,7 @@ const students = [
 ];
 
 students.filter((student) => student.score > 50);
-// []
+// [학생 B,C,D,E]
 ```
 
 ### map

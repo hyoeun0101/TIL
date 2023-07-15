@@ -196,8 +196,19 @@ io.netty.channel.ChannelPipelineException: com.mycloudmembership.prelaysocket2.n
 
 ```
 
-## 230616
+### [230706] DTO, VO, Entity 무엇을 사용해야 할까?
+- DTO
+  - Data Transfer Object. 데이터 전송 객체. 데이터 전달의 목적
+  - 비즈니스 로직을 갖지 않는 순수한 데이터 객체, getter/setter 메소드만 갖는다.
+  - setter를 가지는 경우 `가변 객체`로 활용된다.
+  - final 필드, 생성자를 이용하면 불변 객체로 활용할 수 있다.
+- VO
+  - Value Object. 값 자체를 표현하는 객체. 객 자체를 값으로 사용하기 위함
+  - 특정한 비즈니스 로직을 가진다.
+  - `불변 객체`이며, 오직 읽기만 가능하다.
+  - 값의 비교를 위해 equals, hashcode를 재정의한다. 그럼 같은 값을 가진 객체는 모두 똑같은 객체임을 의미한다.
 
-부모의 값이 변했는데, 이미 자식에선 전 값으로 객체를 생성했다.
-
-- 값이 변경되면 swiper를 생성해야한다.
+- Entity
+  - 실제 DB 테이블과 1:1로 매핑
+  - 상속받거나 구현체여서는 안되며, 테이블의 컬럼과 같아야함. 가장 Core한 클래스
+  - 절대로 요청, 응답값을 전달하는 클래스를 사용해선 안됨.

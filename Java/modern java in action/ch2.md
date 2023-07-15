@@ -27,7 +27,7 @@ public static List<Apple> filterGreenApples(List<Apple> inventory) {
 ### 2.1.2 두번 째, 빨간 사과도 필터링
 
 ```java
-public static List<Apple> filterGreenApples(List<Apple> inventory, Color color) {
+public static List<Apple> filterApples(List<Apple> inventory, Color color) {
     List<Apple> result = new ArrayList<>();
     for(Apple apple: inventory) {
         if(apple.getColor().equals(color)) {

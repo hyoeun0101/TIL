@@ -113,18 +113,30 @@ Function<BufferedReader, String> f = (BufferedReader b) -> {
 피해야 할 사앟ㅇ은 무엇인지
 
 1. 컴파일러가 람다의 타입 확인하는 법
+
    - 람다가 사용되는 콘텍스트를 이용해서 람다의 타입을 추론할 수 있다. taget type?
    - `List<Apple> heavierThan150g = filter(inventory, (Apple apple) -> apple.getWeight() > 150);`
      - filter 메서드의 선언을 확인한다.
      - filter의 두 번째 파라미터는 Predicate<T> 타입이다. T은 Apple로 대치된다.
      - Predicate의 시그니처 test 메서드를 확인한다. test는 Apple을 인자로 받아 boolean을 반환한다.
-     - 람
+     - 람다도 Apple을 인자로 받아 boolean을 반환하므로 타입 검사가 성공적으로 완료된다.
 
-- 타입 검사
-- 같은 람다, 다른 함수형 인터페이스 : 같은 람다 표현식이라도 함수형 인터페이스에 따라 다르게 해석할 수 있다.
-- 타입 추론 : 파라미터 타입을 작성하지 않아도 된다.
-- 지역 변수 사용
-  - 람다에서 사용하는 지역 변수는 final이다.
+2. 같은 람다, 다른 함수형 인터페이스
+   - 같은 람다여도 선언하는 함수형 인터페이스가 무엇이냐에 따라 다르게 동작한다.
+
+```java
+// 불리언 값을 리스트에 저장한다.
+Predicate<String> p = s -> list.add(s);
+
+// s
+Consumer<String> c = s -> list.add(s);
+
+```
+
+3. 타입 추론 : 파라미터 타입을 작성하지 않아도 된다.
+4. 제약
+
+- 람다에서 사용하는 지역 변수는 final이다.
 
 ## 🍎 6. 메서드 참조
 
