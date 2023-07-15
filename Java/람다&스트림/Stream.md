@@ -107,7 +107,7 @@ Stream<String> strStream = Stream.of("dd","aaa","CC","cc","b");
   🌞길이 순 정렬//bddCCccaaa
 - strStream.sorted(Comparator.comparing(String::length))  
   🌞역//aaaddCCccb
-- strStream.sorted(Comparator.comparing(String::length).reversed())
+- strStream.sorted(Comparator.cFomparing(String::length).reversed())
 
 **sorted()의 매개변수인 Comparator의 메서드**
 
