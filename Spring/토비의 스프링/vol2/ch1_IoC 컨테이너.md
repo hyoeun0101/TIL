@@ -6,7 +6,7 @@
 
 ### IoC 컨테이너의 설정 메타 정보는 BeanDefinition 인터페이스를 구현하여 만들어진다.
 
-![ㅁ](https://github.com/PSVM2022/Dopamin/assets/96059261/bc3c09ee-f72c-48db-86ec-71eb95b399cf){: width="10"}
+<img src="https://github.com/PSVM2022/Dopamin/assets/96059261/bc3c09ee-f72c-48db-86ec-71eb95b399cf" width="350"/>
 
 - 메타 정보(빈 아이디,이름, 클래스 이름, 스코프, 프로퍼티 값 등)를 BeanDefinition 구현체에 정의하여 사용한다.
 - `BeanDefinitionReader`는 원본의 설정 메타 정보를 읽어와, `BeanDefinition` 오브젝트로 변환해준다.
@@ -16,18 +16,26 @@
 
 ## 🍎 IoC 컨테이너의 종류 - 스프링이 제공하는 ApplicationContext 구현체
 
-- StaticApplicationContext : 거의 학습용.테스트 목적
-- GenericApplicationContext : 직접 다룰 일은 없다. 다만 Jnit 테스트가 자동으로 만들어주는 스프링 테스트 애플리케이션 컨텍스트가 바로 이것이다.
-- GenericXmlApplicationContext : XmlBeanDefinitionReader를 내장하고 있어서 BeanDefinitionReader를 따로 정의하지 않아도 된다.
-- WebApplicationContext : 웹 환경에서 필요한 기능이 추가됨.
+- `StaticApplicationContext` : 거의 학습용.테스트 목적
+- `GenericApplicationContext` : 직접 다룰 일은 없다. 다만 Jnit 테스트가 자동으로 만들어주는 스프링 테스트 애플리케이션 컨텍스트가 바로 이것이다.
+- `GenericXmlApplicationContext` : XmlBeanDefinitionReader를 내장하고 있어서 BeanDefinitionReader를 따로 정의하지 않아도 된다.
+- `WebApplicationContext` : 웹 환경에서 필요한 기능이 추가됨.
+
+![ㅍ](https://github.com/PSVM2022/Dopamin/assets/96059261/d41f706d-c50d-4abc-878d-d332e59b8935)
 
 ## 🍎 IoC 컨테이너 계층 구조 - 부모 컨텍스트, 자식 컨텍스트
 
 - 웹 애플리케이션이 생성하는 컨텍스트 : root ApplicationContext
   - 주로 공통된 빈을 다룸
 - 서블릿이 생성하는 컨텍스트 : 자식 ApplicationContext
+  -
 - 스프링이 컨텍스트를 실행할 때, 우선 자식 컨텍스트에서 찾은 다음 등록된 빈이 없으면 부모 컨텍스트에서 찾는다. 즉, 자식 우선.
 - 주의할 점 : 컨텍스트의 실행 방향은 오로지 자식에서 부모로만 간다. 형제나 자식으로 가지 않는다!
+
+```java
+// 자식 컨텍스트 생성하는 법
+GenericApplicationContext child = new GenericApplicationContext(parent);
+```
 
 ## @Configuration 없는 클래스의 @Bean
 

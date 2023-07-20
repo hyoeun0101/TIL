@@ -191,9 +191,7 @@ public Funtion<List<T>, List<T>> finisher() {
 
 ### combiner
 
-- 병렬화 리듀싱 과정에서 사용한다.
-- 스트림을 재귀적으로 분할한다. 분할된 서브스트림은 위의 세 개의 과정을 병렬로 처리한다.
-- 병렬로 처리한 서브스트림의 결과를 combiner로 조합한다. 그 결과는 finisher를 통해 최종 반환한다.
+- 병렬화 리듀싱 과정에서 사용한다. 두 개의 서브 스트림의 결과를 병합한다.
 
 ```java
 public BinaryOperator<List<T>> combiner() {
@@ -204,8 +202,25 @@ public BinaryOperator<List<T>> combiner() {
 }
 ```
 
+### 정리
+
+- 순차 스트림의 경우
+
+  - 순차 알고리즘으로 처리한다.
+  - supplier로 누적할 것 얻고, accumulator로 데이터 누적. 스트림 요소가 남아있으면 스트림의 다음 항목 누적.
+  - 스트림 요소 남아있지 않으면 finisher 실행
+
+- 병렬 스트림의 경우
+  - 스트림을 두 개의 서브파트로 분할, 재귀적으로 서브파트를 최대한 작게 만듦.
+  - 각각의 서브 파트에서 순차 알고리즘을 실행, 즉 병렬로 처리.
+  - 각각의 서브 파트의 결과를 combiner로 합침.
+  - 결과를 finisher를 통해 반환
+
 ### characteristics
 
--
+- 스트림을 병렬로 처리할 것인지, 어떤 최적화를 선택해야 할지 정한다.
+- unordered : 리듀싱 결과는 스트림 요소의 순서에 영향을 받지 않음.
+- concurrent : 스트림의 병렬 수행 가능, unordered 없으면, 데이터가 정렬되지 않은 상황에서만 병렬 수행 가능
+- identity_finish : 최종 결과로 누적자 객체를 사용
 
 ## 🍎Collector 인터페이스를 구현하여 커스텀 컬렉터 만들기
