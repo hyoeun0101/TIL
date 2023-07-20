@@ -164,7 +164,7 @@ public interface Collector<T, A, R> {
 ```java
 public Supplier<List<T>> supplier(0 {
   return () -> new ArrayList<>();
-  // return ArrayList::new;
+  // return () -> ArrayList::new;
 })
 ```
 
@@ -203,8 +203,11 @@ public BinaryOperator<List<T>> combiner() {
 }
 ```
 
-- 순차 스트림의 경우 순차 알고리즘으로 처리한다.
+### 정리
 
+- 순차 스트림의 경우
+
+  - 순차 알고리즘으로 처리한다.
   - supplier로 누적할 것 얻고, accumulator로 데이터 누적. 스트림 요소가 남아있으면 스트림의 다음 항목 누적.
   - 스트림 요소 남아있지 않으면 finisher 실행
 
