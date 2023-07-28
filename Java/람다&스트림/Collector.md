@@ -4,7 +4,7 @@
 - collect메서드의 파라미터는 Collector 인터페이스이다.
 - Collector 인터페이스의 구현 클래스 Collectors 클래스가 있다.
 
-## 🍎 Collectors의 메서드 정리
+## 🍎 Collectors 클래스의 메서드 정리
 
 ### 요약 연산 - summingInt, averagingInt, summarizingInt
 
@@ -69,9 +69,6 @@ Optional<Dish> mostCalorieDish = menu.stream().collect(reducing((d1, d2) -> d1.g
 
 ```
 
-- collect와 reduce 차이
-  - collect는 누적 계산 후 그 결과를 변환해도 되지만, reduce는 누적하여 계산한 결과를 변환하면 의미적으로 잘 못 사용되는 것이다.
-  - 병렬 : reduce를 병렬 떄 사용하면 누적값에 대해 동시성 문제가 발생한다. 따라서 병렬 실행 때는 collect를 사용해야 한다.
 
 ### 그룹화 - groupingBy
 
@@ -83,15 +80,15 @@ Optional<Dish> mostCalorieDish = menu.stream().collect(reducing((d1, d2) -> d1.g
     - Function으로 그룹화한 뒤, Collector 실행
   - `groupingBy(Function, Supplier)`
 
-- 요리 종류로 단순 그룹화하기
 
 ```java
+//요리 종류로 단순 그룹화하기
 Map<Dish.Type, List<Dish>> dishesByType = menu.stream().collect(groupingBy(Dish::getType));
 ```
 
-- 칼로리로 그룹화하기
 
 ```java
+//칼로리로 그룹화하기
 Map<CaloricLevel, List<Dish>> dishesByCaloricLevel = menu.stream().collect(groupingBy( dish -> {
     if(dish.getCalories() <= 400) {
         return CaloricLevel.DIET;
@@ -103,16 +100,14 @@ Map<CaloricLevel, List<Dish>> dishesByCaloricLevel = menu.stream().collect(group
 }));
 ```
 
-- 요리 종류로 그룹화한 후 필터링하기
-
 ```java
+// 그룹화한 후 필터링하기 - filtering
 // 칼로리 높은 음식 그룹화하기
 Map<Dish.Type, List<Dish>> dishesByType = menu.stream().collect(groupingBy(Dish::getType, filtering(dish -> dish.getCalories() > 500, toList())));
 ```
 
-- 요리 종류로 그룹화한 후 매핑하기
-
 ```java
+// 그룹화한 후 매핑하기 - mapping
 // 이름으로 그룹화하기
 Map<Dish.Type, List<String>> dishNamesByType = menu.stream().collect(groupingBy(Dish::getType), mapping(Dish::getName, toList()));
 ```
@@ -130,7 +125,7 @@ Map<Dish.Type, List<String>> dishNamesByType = menu.stream().collect(groupingBy(
 menu.stream().collect(groupingBy(Dish::getType, collectingAndThen(maxBy(comparingInt(Dish::getCalories)), Optional::get)));
 ```
 
-### ture, false로 그룹화 - partitioningBy
+### ture, false로 분할 - partitioningBy
 
 - partitioningBy(Predicate)
 - partitioningBy(Predictae, Collector)
@@ -140,6 +135,9 @@ menu.stream().collect(groupingBy(Dish::getType, collectingAndThen(maxBy(comparin
 Map<Boolean, List<Dish>> partitionedMenu = menu.stream().collect(partitioningBy(Dish::isVegetarian));
 
 ```
+
+### 이 외
+- toList(), toMap(), toSet()
 
 ## 🍎Collector 인터페이스의 추상 메서드
 
@@ -189,6 +187,7 @@ public Funtion<List<T>, List<T>> finisher() {
   return Function.identity();
 }
 ```
+- 정리하자면 supplier로 컬렉션 생성, accumulator로 누적, finisher로 최종 결과 반환 과정을 거친다.
 
 ### combiner
 
