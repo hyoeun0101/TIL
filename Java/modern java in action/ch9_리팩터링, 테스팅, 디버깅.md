@@ -147,9 +147,141 @@ public interface BufferedReaderProcess {
 
 ### 1. 전략 패턴
 
+- 전략 패턴이란?
+  - 변하는 부분을 전략으로 만든다. 클라이언트에서 어떤 전략을 사용할 것인지 선택하여 생성한다.
+- 필요한 요소 : 클라이언트, 전략 인터페이스, 전략 인터페이스 구현
+  [원래 전략 패턴]
+
+```java
+// 전략 인터페이스
+public interface ValidationStrategy {
+    boolean execute(String s);
+}
+
+//전략 인터페이스 구현
+public class IsAllLowerCase implements ValidationStrategy {
+    @Override
+    public boolean execute(String s) {
+        return s.matches("\\d+");
+    }
+}
+
+public class Validator {
+    private final ValidationStrategy strategy;
+    public Validator(ValidationStrategy v) {
+        this.strategy = v;
+    }
+    public boolean validate(String s) {
+        return strategy.execute(s);
+    }
+}
+```
+
+```java
+// 전략 주입하기
+Validator numericValidator = new Validator(new IsNumeric());
+boolean b1 = numericValidator.validate("aaaa"); //false 반환
+
+Validator lowerCaseValidator = new Validator(new IsAllLowerCase());
+boolean b2 = lowerCaseValidator.validate("bbbb"); //true;
+```
+
+[람다 표현식 사용]
+
+- 람다 표현식은 전략 코드를 캡슐화한다.???
+
+```java
+Validator numericValidator = new Validator((String s) -> s.matches("[a-z]+"));
+boolean b1 = numericValidator.validate("aaaa"); //false 반환
+
+Validator lowerCaseValidator = new Validator((String s) -> s.matches("//d+"));
+boolean b2 = lowerCaseValidator.validate("bbbb"); //true;
+```
+
 ### 2. 템플릿 메서드 패턴
 
+- 변하지 않는 부분을 상위 클래스(추상 클래스)로 만들고, 변하는 부분은 추상 메서드로 구현한다.
+
+```java
+// 추상클래스 구현 필요
+abstract class OnlineBanking {
+    public void processCustomer(int id) {
+        Customer c = Database.getCustomerWithId(id);
+        makeCustomerHappy(c);
+    }
+    abstract void makeCustomerHappy(Customer c);
+}
+```
+
+[람다 표현식 사용]
+
+```java
+abstract class OnlineBankingLambda {
+    public void processCustomer(int id, Consumer<Customer> makeCustomerHappy) {
+        Customer c = Database.getCustomerWithId(id);
+        makeCustomerHappy.accept(c);
+    }
+    abstract void makeCustomerHappy(Customer c);
+}４６００보
+```
+
+```java
+new OnlineBankingLambda().processCustomer(1337,
+                        (Customer c) -> System.out.println("Hello, "+ c.getName()));
+```
+
 ### 3. 옵저버 패턴
+
+- 어떤 이벤트가 발생했을 때 한 객체가 다른 객체 리스트(옵저버)에 자동으로 알림을 보낸다.
+- GUI 애플리케이션에서 옵저버 패턴이 자주 등장한다.
+- 사용자가 버튼을 클릭하면 옵저버에 알림이 전달되고, 동작 수행
+- 트위터같은 알림 시스템
+
+```java
+// 다양한 옵저버를 그룹화할 Observer 인터페이스
+interface Observer {
+    void notify(String tweet);
+}
+```
+
+```java
+// 여러 옵저버 정의
+class NYTimes implements Observer {
+    @Override
+    public void notify(String tweet) {
+        if(tweet != null && tweet.contains("money")) {
+            System.out.println("Breaking news in NY!" + tweet);
+        }
+    }
+}
+
+class Guardian implements Observer {
+    @Override
+    public void notify(String tweet) {
+        if(tweet != null && tweet.contains("queen")) {
+            System.out.println("Yet more news from London..." + tweet);
+        }
+    }
+}
+
+class LeMonde implements Observer {
+    @Override
+    public void notify(String tweet) {
+        if(tweet != null && tweet.contains("money")) {
+            System.out.println("Today cheese, wine and news! " + tweet);
+        }
+    }
+}
+```
+
+```java
+interface Subject {
+    // 새로운 옵저버를 등록
+    void registerObserver(Observer o);
+    // 트윗의 옵저버에 트윗을 알리기
+    void notifyObservers(String tweet);
+}
+```
 
 ### 4. 의무 체인 패턴
 
@@ -157,6 +289,12 @@ public interface BufferedReaderProcess {
 
 ## 🍎 람다 테스팅
 
-### 보이는 람다 표현식 테스트하기
+### 보이는 람다 표현식의 동작 테스팅
+
+### 람다를 사용하는 메서드의 동작에 집중하라
+
+### 복잡한 람다를 개별 메서드로 분할하기
+
+### 고차원 함수 테스팅
 
 ## 🍎 디버깅
