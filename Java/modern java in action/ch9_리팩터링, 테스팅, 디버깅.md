@@ -149,7 +149,8 @@ public interface BufferedReaderProcess {
 
 - 전략 패턴이란?
   - 변하는 부분을 전략으로 만든다. 클라이언트에서 어떤 전략을 사용할 것인지 선택하여 생성한다.
-- 필요한 요소 : 클라이언트, 전략 인터페이스, 전략 인터페이스 구현
+- 필요한 요소 : 클라이언트, 전략 인터페이스, 전략 인터페이스 구현    
+
   [원래 전략 패턴]
 
 ```java
@@ -281,20 +282,107 @@ interface Subject {
     // 트윗의 옵저버에 트윗을 알리기
     void notifyObservers(String tweet);
 }
+
+class Feed implements Subject {
+    private final List<Observer> observers = new ArrayList<>();
+    @Override
+    public void registerObserver(Observer o) {
+        this.observers.add(o);
+    }
+    @Override
+    public void notifyObservers(String tweet) {
+        observers.forEach(o -> o.notify(tweet));
+    }
+}
+```
+```java
+Feed f = new Feed();
+f.registerObserver(new NYTimes());
+f.registerObserver(new Guardian());
+f.registerObserver(new LeMonde());
+```
+
+[람다 표현식 사용]
+```java
+f.registerObserver((String tweet) -> {
+    if(tweet != null && tweet.contains("money")) {
+        System.out.println("Breaking news in NY! " + tweet);
+    }
+});
+
+f.registerObserver((String tweet) -> {
+    if(tweet != null && tweet.contains("queen")) {
+        System.out.println("Yet more news from London... " + tweet);
+    }
+});
 ```
 
 ### 4. 의무 체인 패턴
+- 한 객체가 어떤작업을 처리한다음, 다른 객체로 결과를 전달한다.
+```java
+public abstract class PrcessingObject<T> {
+    protected PrcessingObject<T> successor;
+    public void setSuccesor(ProcessingObject<T> successor) {
+        this.successor = successor;
+    }
+    public T handle(T input) {
+        T r = handleWork(input);
+        if(successor != null) {
+            return successor.handle(r);
+        }
+        return r;
+    }
+    abstract protected T handleWork(T input);
+}
+```
+```java
+public class HeaderTextProcessing extends PrcessingObject<String> {
+    public String handleWork(String text) {
+        return "From Raoul, Mario and Alan: " + text;
+    }
+}
 
+public class SpellCheckerProcessing extends PrcessingObject<String> {
+    public String handleWork(String text) {
+        return text.replaceAll("labda", "lambda");
+    }
+}
+```
+```java
+// 두 작업 처리 객체를 연결해서 작업 체인 만들기
+PrcessingObject<String> p1 = new HeaderTextProcessing();
+PrcessingObject<String> p2 = new SpellCheckerProcessing();
+
+// 작업 처리 연결
+p1.setSuccesor(p2);
+String result = p1.handle("Aren't labdas really sexy?!!");
+System.out.println(result);//From Raoul, Mario and Alan: Aren't lambdas really sexy?!!
+```
+[람다 표현식 사용]
+```java
+UnaryOperator<String> headerProcessing = (String text) -> "From Raoul, Mario and Alan:" + text;
+UnaryOperator<String> spellCheckerProcessing = (String text) -> text.replaceAll("labda", "lambda");
+
+Function<String, String> pipeline = headerProcessing.andThen(spellCheckerProcessing);
+
+String result = pipeline.apply("Aren't labdas really sexy?!!");
+
+```
 ### 5. 팩토리 패턴
-
+- 생성자를 호출하는 Supplier를 값으로 가진 맵
+- 기본 생성자 호출할 때만 사용 가능
 ## 🍎 람다 테스팅
 
 ### 보이는 람다 표현식의 동작 테스팅
-
+- 람다는 익명이므로 테스트 코드 이름을 호출할 수 없다.
+- 람다는 함수형 인터페이스를 반환하므로 함수형 인터페이스의 시그니처 메서드를 호출해서 테스트를 할 수 있다.
 ### 람다를 사용하는 메서드의 동작에 집중하라
-
+- 람다식을 사용하는 메서드의 결과를 비교하여 테스트한다.
 ### 복잡한 람다를 개별 메서드로 분할하기
-
+- 람다를 메서드 참조로 바꾼다.
 ### 고차원 함수 테스팅
-
+- 함수를 인수로 받거나 다른 함수를 반환하는 메서드 테스트는?
+- 메서드가 람다를 인수로 받는다면 다른 람다로 메서드의 동작을 테스트할 수 있다.
 ## 🍎 디버깅
+- 확인할 것 : 스택 트레이스, 로깅
+- peek을 사용해서 스트림을 소비하지 않고, 요소들을 출력할 수 있다.
