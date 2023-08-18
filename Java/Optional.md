@@ -48,6 +48,7 @@ String str4 = optVal.orElseThrow(NullPointerException::new);//null이면 예외 
 
 - isPresent() : null이면 false, 아니면 true
 - ifPresent(Consumer) : 값이 있으면 람다식 실행, 없으면 아무 일도 안함
+- ifPresentOrElse(Consumer, Runnable) : 값이 비어있으면 Runnable을 실행
 ```java
 if(Optional.ofNullable(str).isPresent()){
     System.out.println(str);
