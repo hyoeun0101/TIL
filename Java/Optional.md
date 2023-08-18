@@ -35,7 +35,7 @@ Optional<String> optVal = Optional.<String>empty();//빈 객체로 초기화
 ## Optional<T> 객체 값 가져오기
 - get() : null이면 `NoSuchElementException` 발생
 - ofElse(값) : null이면 대체 값 지정
-- orElseGet(Supplier) : null이면 람다식 실행하여 값 지정
+- orElseGet(Supplier) : null이면 람다식 실행하여 값 지정, 디폴트 메서드를 만드는데 시간이 걸리거나(효율성때문) Optional이 비어있을때 기본값이 필요한 상황에 사용한다.
 - orElseThrow(Supplier) : null이면 지정된 예외 발생
 ```java
 Optional<String> optVal = Optional.of("abc");
