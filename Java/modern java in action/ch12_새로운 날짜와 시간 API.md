@@ -114,15 +114,11 @@ LocalDate date4 = date3.with(ChronoField.MONTH_OF_YEAR, 2); //2011-02-25
 ### TemporalAdjusters 사용하기
 
 - TemporalAdjsters에서 시간, 날짜를 조정하는 정적 메서드를 제공한다.
+```java
+import static java.time.temporal.TemporalAdjusters.*;
 
-### 날짜와 시간 객체 출력, 파싱
-
-## 🍎 다양한 시간대와 캘린더 활용법
-
-### 시간대 사용하기
-
-### UTC/Greenwich 기준의 고정 오프셋?
-
-### 대안 캘린더 시스템 사용하기
-
-- 이슬람력
+LocalDate date1 = LocalDate.of(2014, 3, 18);
+LocalDate date2 = date1.with(nextOrSame(DayOfWeek.SUMDAY)); // 2014-03-23
+LocalDate date3 = date2.with(lastDayOfMonth()); //2014-03-31
+```
+<img width="581" alt="스크린샷 2023-08-25 오후 11 26 30" src="https://github.com/PSVM2022/Dopamin/assets/96059261/96aeceac-ff74-476d-bc73-d0254e778321">
