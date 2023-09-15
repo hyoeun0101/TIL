@@ -190,6 +190,7 @@ boolean b2 = lowerCaseValidator.validate("bbbb"); //true;
 [람다 표현식 사용]
 
 - 람다 표현식은 전략 코드를 캡슐화한다.???
+    - 람다는 이름으로 호출하지 못하는 익명이기 때문에 캡슐화되는 건 당연하다. 딱 필요한 부분에서만 볼 수 있고, 다른 외부에선 보거나, 접근할 수 없다.
 
 ```java
 Validator numericValidator = new Validator((String s) -> s.matches("[a-z]+"));
