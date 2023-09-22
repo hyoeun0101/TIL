@@ -125,7 +125,10 @@ userStorage.loginUser(
 
 - 비동기로 동작하는 자바스크립트 객체
 - 네트워크 통신, 파일 읽기 같이 시간이 걸리거나 무거운 동작들은 비동기로 처리하여 빠르게 실행하도록 한다.
-- state : 동작 수행 중일 땐 pending 상태, 동작 성공하면 fulfilled 상태, 에러 발생하면 rejected
+- 상태
+  - 대기(pending): 동작 수행 중
+  - 이행(fulfilled) : 동작 성공
+  - 거부(rejected) : 에러 발생
 
 ```javascript
 ...
