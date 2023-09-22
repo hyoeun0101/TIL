@@ -64,8 +64,8 @@ NVN2("데이터", 'N', 'Y')
 
 - coalesce 뜻 : 합치다
 
+- 칼럼1이 NULL이 아니면 칼럼1 그냥 리턴, NULL이면 칼럼2 리턴.
 - COALESCE(phone, tel) : phone필드 값을 리턴하고, 그 값이 NULL이면 tel필드의 데이터를 리턴
-- 칼럼1이 NULL이 아니면 리턴, NULL이면 칼럼2로.
 - NVL 함수는 두 개의 인자를 받을 수 있지만 COALESCE는 여러 개의 인자를 받을 수 있다.
 
 ```sql

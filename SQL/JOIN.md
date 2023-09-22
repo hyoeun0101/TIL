@@ -1,50 +1,116 @@
-topic
+[TOPIC]  
 |tid |title |description |author_id|
 |----|-----|-----------|----------|
-|1| HTML| HTML is …| 1|
-|2| CSS| CSS is …| 2|
-|3| Database| Database is ..| 1|
-|4| Oracle| Oracle is …| NULL|
+|001| 제목1| 세부사항1| author1|
+|002| 제목2| 세부사항2| author2|
+|003| 제목3| 세부사항3| author1|
+|004| 제목4| 세부사항4| NULL|
 
-author
+[AUTHOR]  
 |aid |name |city |profile_id|
 |----|-----|-----|-------|
-|1 |egoing |seoul |1|
-|2| leezche| jeju| 2|
-|3| blackdew |namhae| 3|
+|author1|이름1|서울|프로필1|
+|author2|이름2|제주|프로필2|
+|author3|이름3|부산|프로필3|
 
-profile
+[PROFILE]
 |pid| title |description|
 |---|--------|-----------|
-|1| developer| developer is …|
-|2| designer| designer is … |
-|3| DBA| DBA is ..|
+|프로필1| 개발자| developer is …|
+|프로필2| 디자이너| designer is … |
+|프로필3| DBA| DBA is ..|
 
-# ⭐LEFT OUTER JOIN
+## 🍎LEFT OUTER JOIN
 
-:A...left 기준으로 테이블 합치기. 없는 값은 NULL
+- 합집합
+- 왼쪽 기준으로 테이블 합치기.
+- 왼쪽 테이블 값은 모두 select.
+- join하는 기준값이 오른쪽 테이블에 없으면 NULL로 표시.
 
-### Q. topic 테이블을 기준으로 author테이블 left join하기
+```SQL
+SELECT *
+FROM TOPIC
+LEFT JOIN AUTHOR
+ON TOPIC.AUTHOR_ID = AUTHOR.AID;
+```
 
-SELECT \* FROM topic <span style='color:red'>LEFT JOIN author ON topic.author_id=author.aid</span>;  
-![left](https://user-images.githubusercontent.com/96059261/211751490-5a238ab1-0dc6-44b3-bc0c-2d2213043b26.png)
+| tid | title | description | author_id | aid     | name  | city | profile_id |
+| --- | ----- | ----------- | --------- | ------- | ----- | ---- | ---------- |
+| 001 | 제목1 | 세부사항1   | author1   | author1 | 이름1 | 서울 | 프로필1    |
+| 002 | 제목2 | 세부사항2   | author2   | author2 | 이름2 | 제주 | 프로필2    |
+| 003 | 제목3 | 세부사항3   | author1   | author1 | 이름1 | 서울 | 프로필1    |
+| 004 | 제목4 | 세부사항4   | NULL      | NULL    | NULL  | NULL | NULL       |
 
-# ⭐INNER JOIN
+## 🍎INNER JOIN
 
-:A와 B 교집합..없는 값 지워짐.
+- 교집합
+- 조인하는 테이블에 없는 값은 지워짐.
 
-SELECT \* FROM topic <span style='color:red'>INNER JOIN author ON topic.author_id=author.aid</span>;
+```SQL
+SELECT *
+FROM TOPIC
+INNER JOIN AUTHOR
+ON TOPIC.AUTHOR_ID = AUTHOR.AID;
+```
 
-# FULL OUTER JOIN
+| tid | title | description | author_id | aid     | name  | city | profile_id |
+| --- | ----- | ----------- | --------- | ------- | ----- | ---- | ---------- |
+| 001 | 제목1 | 세부사항1   | author1   | author1 | 이름1 | 서울 | 프로필1    |
+| 002 | 제목2 | 세부사항2   | author2   | author2 | 이름2 | 제주 | 프로필2    |
+| 003 | 제목3 | 세부사항3   | author1   | author1 | 이름1 | 서울 | 프로필1    |
 
-: A와 B의 합집합... 중복된 값은 제거.
+## 🍎FULL OUTER JOIN
 
-SELECT \* FROM topic FULL OUTER JOIN author ON topic.author_id=author.aid
+- 합집합인데...
 
-(SELECT _ FROM topic LEFT JOIN author ON topic.author_id=author.aid) UNION (SELECT _ FROM topic RIGHT JOIN author ON topic.author_id=author.aid)
+```SQL
+SELECT *
+FROM TOPIC
+FULL OUTER JOIN AUTHOR
+ON TOPIC.AUTHOR_ID = AUTHOR.AID;
+```
 
-# EXCLUSIVE LEFT JOIN
+다음과 같음
 
-: A-B...A에서 B 삭제
+```SQL
+(
+    SELECT *
+    FROM TOPIC
+    LEFT JOIN AUTHOR
+    ON TOPIC.AUTHOR_ID = AUTHOR.AID
+)
+UNION
+(
+    SELECT *
+    FROM TOPIC
+    RIGHT JOIN AUTHOR
+    ON TOPIC.AUTHOR_ID = AUTHOR.AID
+);
 
-SELECT \* FROM topic LEFT JOIN author ON topic.author_id=author_aid WHERE author.aid is NULL
+```
+
+| tid  | title | description | author_id | aid     | name  | city | profile_id |
+| ---- | ----- | ----------- | --------- | ------- | ----- | ---- | ---------- |
+| 001  | 제목1 | 세부사항1   | author1   | author1 | 이름1 | 서울 | 프로필1    |
+| 002  | 제목2 | 세부사항2   | author2   | author2 | 이름2 | 제주 | 프로필2    |
+| 003  | 제목3 | 세부사항3   | author1   | author1 | 이름1 | 서울 | 프로필1    |
+| 004  | 제목4 | 세부사항4   | NULL      | NULL    | NULL  | NULL | NULL       |
+| NULL | NULL  | NULL        | NULL      | author3 | 이름3 | 부산 | 프로필3    |
+
+- null인지는 확실하지 않음! ㅎㅎ^^
+
+## 🍎 EXCLUSIVE LEFT JOIN
+
+- 여집합
+
+```SQL
+SELECT *
+FROM TOPIC
+LEFT JOIN AUTHOR
+ON TOPIC.AUTHOR_ID = AUTHOR.AID
+WHERE AUTHOR.AID IS NULL;
+```
+
+| tid | title | description | author_id | aid  | name | city | profile_id |
+| --- | ----- | ----------- | --------- | ---- | ---- | ---- | ---------- |
+| 004 | 제목4 | 세부사항4   | NULL      | NULL | NULL | NULL | NULL       |

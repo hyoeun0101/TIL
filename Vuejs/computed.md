@@ -1,12 +1,46 @@
-# computed()
+## 🍎 computed
 
-: 메서드와 비슷한 기능을 제공하지만 computed에는 `캐싱`기능이 있다.
+- 데이터를 가공하는 등의 복잡한 연산은 뷰 인스턴스 안에서 하고, HTML에는 데이터만 뿌려야 한다.
+- computed 속성은 이러한 데이터 연산들을 정의하는 영역이다.
 
-## computed와 methods의 차이
+```javascript
+<div id="app">
+  <p>{{ reversedMessage }}</p>
+</div>
 
-- computed에 종속된 속성이 변경되면 computed가 실행이 되고, 변경이 되지 않으면 캐싱된 값을 사용한다.
-- 반면에 methods는 랜더링할 때마다 함수가 호출된다.
-  <예제>
+...
+
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      message : 'Hello Vue~',
+    },
+    computed: {
+      reversedMessage: function() {
+        return this.message.split('').reverse().join('');
+      }
+    }
+  });
+</script>
+```
+
+- HTML에 바로 `{{ message.split('').reverse().join('') }}` 이렇게 정의할 수 있지만 computed를 활용해야 한다.
+
+### computed 속성의 장점
+
+- computed내에서 참조하고 있는 data값이 바뀌면 자동으로 computed가 실행되어 값을 변환한다.
+- 캐싱 기능 : `{{ reversedMessage }}`를 여러 곳에서 호출하면 처음 한번만 실행하고, 그 다음 호출 시에는 연산을 하지 않고, 캐싱된 값을 사용한다.  
+  ➡︎ 정리 : computed내에서 참조하고 있는 data값이 변경되면 computed가 실행되고, 변경되지 않으면 캐싱된 값을 사용한다.
+
+### computed와 methods의 차이
+
+- methods
+  - 호출을 해야만 실행하며, 호출할 때마다 실행하기 때문에 별도의 캐싱 기능이 필요없다.
+- computed
+  - 호출하지 않아도 종속된 data의 변경을 감지하여 자동으로 실행한다.
+  - 데이터가 변경되기 전에 이전 값을 가지고 있다가(캐싱하고 있다가) 캐싱값을 반환한다.
+- 따라서 복잡한 연산을 반복 수행해서 화면에 나타내야 한다면 methods 대신 computed를 사용하는 것이 성능 면에서 더 효율적이다.
 
 ```javascript
 export default {
@@ -38,38 +72,7 @@ export default {
 <span>{{ publishedBooksMessage }}</span>
 ```
 
-위의 예제의 computed는 author에 의존하고 있다. author의 값이 바뀌면 computed가 실행되고, 값이 변하지 않으면 캐싱된 값을 불러온다. 따라서 publishedBooksMessage를 세 번 호출하지만 실제론 한 번만 호출된다.  
-또한 반응형인 값을 의존해야 computed가 실행되는 것이다.
-
-<예제>
-
-```javascript
-<template>
-  <div>{{ firstName }}</div>
-  <div>{{ lastName }}</div>
-  <div>{{ fullName }}</div>
-  <input type="text" v-model="firstName" />
-</template>
-<script>
-export default {
-  data() {
-    return {
-      firstName: 'Foo',
-      lastName: 'Bar',
-      fullName: 'Foo Bar'
-    }
-  },
-  computed: {
-    fullName: function () {
-      console.log('fullName update')
-      return this.firstName + ' ' + this.lastName
-    }
-  }
-}
-</script>
-```
-
-- computed에 종속된 속성 값(firstName, lastName)이 변경되면 computed가 실행된다.
+- 위의 예제의 computed는 author에 의존하고 있다. author의 값이 바뀌면 computed가 실행되고, 값이 변하지 않으면 캐싱된 값을 불러온다. 따라서 publishedBooksMessage를 세 번 호출하지만 실제론 한 번만 호출된다.
 
 ## getter, setter
 
@@ -114,7 +117,7 @@ export default {
 
 ```
 
-## watch
+## 🍎 watch
 
-: watch, computed 모두 종속된 값이 변경되면 실행된다는 공통점을 가지고 있다.  
-대부분의 경우 computed를 사용하지만, 데이터에 대한 응답으로 비동기를 사용하거나, 비용이 많이 드는 작업을 실행할 때는 watch를 사용한다.
+- watch, computed 모두 종속된 값이 변경되면 실행된다는 공통점을 가지고 있다.
+- computed는 간단한 연산 정도로 적합하고, watch는 비동기 서버 통신과 같이 비용이 많이 드는 작업을 실행할 때 적합하다.

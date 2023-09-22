@@ -3,7 +3,7 @@
 - 비동기 API 설계와 구현
 - 동기 API를 비동기적으로 소비하기
 - 두 개 이상의 비동기 연산을 파이프라인으로 만들고 합치기
-- 비동기 작업 완료에 대응하기
+- 비동기 작ㅏㅂ업 완료에 대응하기
 
 ## 🍎 Future의 단순 활용
 
@@ -299,6 +299,9 @@ public List<String> findPrices(String product) {
 ### 동기 작업과 비동기 작업 조합하기
 
 - findPrices 메서드를 비동기적으로 재구현
+- thenCompse?
+- thenApply?
+- thenCombine?
 
 ```java
 public List<String> findPrices(String product) {
@@ -317,7 +320,13 @@ public List<String> findPrices(String product) {
 
 1. 첫 번째 map : Stream<CompletableFuture<String>> 을 반환, 비동기적으로 가격을 조회하여 CompletableFuture에 가격 정보 문자열을 담는다. 그리고 커스텀 Excutor로 CompletableFuture을 설정한다.
 
-- 두 번째 map : 가격 정보 문자열을 Quote 객체로 파싱한다. thenApply 메서드는 CompletableFuture 동작이 끝날 때까지 블록하지 않는다. (?) CompletableFuture가 동작을 완전히 완료한 다음에 thenApply 메서드에 전달된 람다식을 실행한다.(?) 이는 CompletableFuture의 결과물을 지정하는 것이다.
+2. 두 번째 map : 가격 정보 문자열을 Quote 객체로 파싱한다. thenApply 메서드는 CompletableFuture 동작이 끝날 때까지 블록하지 않는다. (?) CompletableFuture가 동작을 완전히 완료한 다음에 thenApply 메서드에 전달된 람다식을 실행한다.(?) 이는 CompletableFuture의 결과물을 지정하는 것이다.
+3. 세 번째 map : 가격에 할인율 적용. 연쇄적으로 수행되는 두 개의 비동기 동작 생성.
+   - 상점에서 가격 정보 얻어와서 Quote로 변환하는 동작
+   - 상점에서 가져온 가격을 Discount 서비스로 전달해서 할인된 최종가격 얻는 동작.
+   - 이 두 비동기 연산을 파이프라인으로 만들 수 있도록 thenCompose 메서드 제공.
+
+- Async붙은 메서드는 다음 작업이 다른 스레드에서 실행되도록 스레트 풀로 작업을 제출. 안붙은 메서드는 이전 작업을 수행한 스레드와 같은 스레드에서 작업을 실행.
 
 - thenApply == 스트림의 map
 - thenCompose == 스트림의 flatMap
