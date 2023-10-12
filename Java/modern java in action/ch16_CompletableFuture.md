@@ -332,3 +332,5 @@ public List<String> findPrices(String product) {
 - thenCompose == 스트림의 flatMap
 
 ## 🍎 CompletableFuture의 종료에 대응하는 법
+
+16.3.4 Executor로 ㅇ플리케이션 성능 개선??

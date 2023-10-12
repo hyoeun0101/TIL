@@ -218,7 +218,7 @@ public BinaryOperator<List<T>> combiner() {
 
 ### characteristics
 
-- 스트림을 병렬로 처리할 것인지, 어떤 최적화를 선택해야 할지 정한다.
+- 스트림을 병렬로 처리할 것인지 정하고, 병렬로 처리 시 어떤 최적화를 사용할 건지 선택한다.
 - unordered : 리듀싱 결과는 스트림 요소의 순서에 영향을 받지 않음.
 - concurrent : 스트림의 병렬 수행 가능, unordered 없으면, 데이터가 정렬되지 않은 상황에서만 병렬 수행 가능
 - identity_finish : 최종 결과로 누적자 객체를 사용
