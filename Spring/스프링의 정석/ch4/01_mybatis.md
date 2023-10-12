@@ -1,8 +1,10 @@
-# MyBatis
-: SQL Mapping Framework - Easy & Simple    
-자바 코드로부터 SQL문을 분리해서 관리   
-매개변수 설정과 쿼리 결과를 읽어오는 코드를 제거   
+## 🍎 MyBatis
 
+- 스프링과 SQL을 매핑하는 프레임워크이다. 단순하고 쉽다는 특징을 가지고 있다.
+- MyBatis를 사용하면 자바 코드로부터 SQL문을 분리해서 관리할 수 있다.
+- 매개변수 설정과 쿼리 결과를 읽어오는 코드를 제거할 수 있다.
+
+- 기존에는 다음과 같이 사용했다.
 
 ```java
 String sql = "sql문";
@@ -11,17 +13,20 @@ Connection conn = ds.getConnection();
 PreareStatement p = conn.prepareStatement(sql);
 
 ```
-이렇게 자바코드 안에 sql문이 있는데 MyBatis를 쓰면 나눌 수 있음. 
 
-1. 이렇게   
-sql문 따로 xml에 저장. resources/mapper/UserMapper
+- MyBatis를 사용하면 SQL문만 xml파일로 따로 관리할 수 있다.
+
+[main/resources/mapper/UserMapper.xml]
+
 ```xml
 <mapper namespace="com.fastcampus.ch4.dao.UserMapper">
     <insert id="insert" parameterType="com.fastcampus.ch4.domain.UserDto">
         INSERT INTO user_info VALUES (#{id}, #{pwd},#{name},#{email},#{birth},#{sns},now());
     </insert>
 ```
-2. 이렇게
+
+[main/java/com/example/dao/UserDao.java]
+
 ```java
 @Repository
 public class UserDaoImpl implements UserDao{
@@ -36,50 +41,21 @@ public class UserDaoImpl implements UserDao{
 }
 ```
 
+#### SqlSession 메서드
 
-__maven repo - mybatis, mybatis-spring__
+| 메서드                                                       | 설명                                                           |
+| ------------------------------------------------------------ | -------------------------------------------------------------- |
+| int insert(String, Object parameter)                         | insert문 실행, insert된 행의 갯수를 반환                       |
+| int delete(String s,Object parameter)                        | delete 문 실행 후, 행의 갯수 반환                              |
+| int update(String s,Object parameter)                        | update문 실행 후, 행의 갯수 반환                               |
+| T selectOne(String s,Object parameter)                       | 하나의 행 반환하는 select                                      |
+| List<E> selectList(String s, Object parameter)               | 여러 행 반환하는 select                                        |
+| Map<K,V> selectMap(String s, String keyCol,Object parameter) | 여러 행 반환하는 select, keyCol에 Map의 key로 사용할 컬럼 지정 |
 
-#### 2. SqlSessionFactoryBean
-: SqlSession을 생성해서 제공    
-- SqlSession : SQL 명령을 수행하는데 필요한 메서드 제공
+### Mapper XML 작성하기
 
-- SqlSesionFactoryBean : SqlSessionFactory를 Spring에서 사용하기 위한 빈   
-- SqlSessionTemplate : SQL명령을 수행하는데 필요한 메서드 제공. thread-safe!!(여러 Dao를 동시에 실행해도 안전함. 그걸 SqlSessionTemplate가 관리해줌.)
+[resources/mapper/boardMapper.xml]
 
-- SqlSessionFactoryBean 등록하기 - [root-context.xml]에 추가
-```xml
-
-	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<property name="dataSource" ref="dataSource"/>
-        <!-- mybatis 설정 파일 지정 -->
-		<property name="configLocation"  value="classpath:mybatis-config.xml"/>
-        <!-- sql문 들어있는 xml파일인 Mapper 위치 지정하기 -->
-		<property name="mapperLocations" value="classpath:mapper/*Mapper.xml"/>
-	</bean>
- 
-	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
-		<constructor-arg ref="sqlSessionFactory"/>
-	</bean>
-
-```
-
-
-
-#### 3. SqlSession 메서드
-|메서드|설명|
-|---|----|
-|int insert(String, Object parameter)|insert문 실행, insert된 행의 갯수를 반환|
-|int delete(String s,Object parameter)|delete 문 실행 후, 행의 갯수 반환|
-|int update(String s,Object parameter)|update문 실행 후, 행의 갯수 반환|
-|T selectOne(String s,Object parameter)|하나의 행 반환하는 select|
-|List<E> selectList(String s, Object parameter)|여러 행 반환하는 select|
-|Map<K,V> selectMap(String s, String keyCol,Object parameter)|여러 행 반환하는 select, keyCol에 Map의 key로 사용할 컬럼 지정|
-
-
-
-### 4. Mapper XML 작성하기
-
-resources/mapper/boardMapper.xml
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
@@ -110,12 +86,14 @@ resources/mapper/boardMapper.xml
 </mapper>
 ```
 
-### 5. <typeAliases>으로 이름 짧게 하기
+### typeAliases으로 이름 짧게 하기
 
 [resources/mybatis-config.xml]에 추가
+
 ```xml
 <typeAliases>
     <typeAlias alias="BoardDto" type="com.fastcampus.domain.BoardDto"/>
 </typeAliases>
 ```
-별명(alias)은 대소문자 구별 안함!!!!    
+
+별명(alias)은 대소문자 구별 안함!!!!

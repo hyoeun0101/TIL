@@ -334,10 +334,3 @@ public List<String> findPrices(String product) {
 ## 🍎 CompletableFuture의 종료에 대응하는 법
 
 16.3.4 Executor로 ㅇ플리케이션 성능 개선??
-
-
-
-- 비동기 에러 처리
-예외 던지거나, 저번 주 에러 담은 거
-
-- 결국은 스레드 실제로 돌려봐야함.
