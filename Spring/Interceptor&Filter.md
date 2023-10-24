@@ -4,6 +4,7 @@
 - 스프링 컨테이너가 아닌 웹 컨테이너(서블릿 컨테이너)에 의해 관리된다.(스프링 빈으로 등록은 된다)
 - 공통적인 요청 전처리, 응답 후처리에 사용한다. 로깅, 인코딩 등
 
+- 대표적으로 Filter를 인증/인가에 사용하는 도구로 SpringSecurity가 있다. SpringSecurity는 Spring MVC에 종속적이지 않는데 이는 필터를 기반으로 인증/인가를 처리하기 때문이다.
 
 ### Filter의 메소드
 - javax.servlet의 Filter 인터페이스를 구현하며 이는 다음의 세 가지 메소드를 가진다.
@@ -151,6 +152,25 @@ public interface HandlerInterceptor {
 |Request/Response 객체 조작 여부|O|X|
 |구현 방식|web.xml에서 설정하기|설정 및 메서드 구현 필요|
 |용도|공통된 보안 및 인증/인가 작업, 모든 요청에 대한 로깅, 이미지/데이터 압축 및 문자열 인코딩, Spring과 분리되어야 하는 기능|세부적인 보안 및 인증/인가 공통작업, API 호출에 대한 로깅, Controller로 넘겨주는 데이터 가공|
+
+
+- 스프링의 예외 처리 여부
+    - Filter는 스프링 앞의 서블릿에서 관리하기 때문에 예외가 처리되지 않고 서블릿까지 전달된다. 그럼 자동으로 서블릿은 500 Status 응답을 반환한다. 이를 해결하기 위해선 Filter에서 응답 객체에 대한 예외처리가 필요하다.
+```java
+public class MyFilter implements Filter {
+    @Ovrride
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        HttpServletResponse servletRes = (HttpServletResponse) response;
+        servletRes.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        servletRes.getWriter().print("유저가 존재하지 않음");
+    }
+}
+```
+
+- Request/Response 객체 조작 가능 여부
+    - Filter는 FilterChain으로 요청,응답 객체를 전달할 수 있어 조작이 가능하다.
+    - DispatcherServlet이 여러 Interceptor 목록을 가지고 있고 이를 for문으로 실행시킨다. Interceptor에서는 boolean값을 리턴하며 요청, 응답 객체를 변경할 수 없다. true를 리턴하면 다음 인터셉터를 실행하거나 컨트롤러로 요청이 전달된다.
+
 ## WebMvcConfigurer
 
 - Spring MVC 자동 구성 제어하기
