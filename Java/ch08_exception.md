@@ -104,10 +104,10 @@ finally
 ### try-catch-resource
 
 - Closable 인터페이스를 구현한 클래스는 사용한 후 close() 메서드를 호출하여 자원을 반납해야한다.
-- 자바 7이전에는 finally 블럭에서 close()를 호출하여 마지막에 무조건 자원을 반환하도록 하였다.
+- 자바 7이전에는 finally 블럭에서 close()를 호출하여 마지막에 무조건 자원을 반환하도록 하였는데 이는 코드를 복잡하게 만들었다.
 
 ```java
-// 자바7 이전의 코드
+// 자바7 이전의 코드, finally에서 close() 호출
 public static void main(String args[]) throws Exception {
     FileInputStream fis = null;
     BufferedInputStream bis = null;
@@ -121,26 +121,25 @@ public static void main(String args[]) throws Exception {
             Syetem.out.print(data);
         }
     } finally {
-        if (fis != null) fis.close();
-        if (bis != null) bis.close();
+        try {
+            if (fis != null) fis.close();
+            if (bis != null) bis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
     }
 }
 ```
 
-- 이 코드는 여러 단점을 가지고 있다.
-  - 자원 반납에 의해 코드가 복잡해진다.
-  - 작업이 번거롭다.
-  - 실수로 자원을 반납하지 못하는 경우가 발생한다.
-  - 에러로 자원을 반납하지 못하는 경우가 발생한다.
-
 - 위의 문제를 해결하기 위해 Java7부터 try-catch-resources 문이 추가되었다.
-- try-catch-resources 문을 통해 다음과 같은 유연한 코드를 작성할 수 있다.
-- try-catch-resources문은 close() 메서드 호출없이 자동으로 자원을 반납해준다.
+- try의 괄호에 AutoClosable 인터페이스를 구현한 클래스를 선언하며, 이는 close() 메서드 호출없이 자동으로 자원을 반납해주어 유연한 코드를 작성할 수 있게 해준다.
 
 ```java
 public static void main(String args[]) throws Exception {
 
     try (FileInputStream fis = new FileInputStream("file.txt"); BufferedInputStream bis = new BufferedInputStream(fis)) {
+        
         int data;
         while ((data = bis.read()) != -1) {
             System.out.println(data);
