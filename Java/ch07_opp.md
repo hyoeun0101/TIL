@@ -37,7 +37,8 @@ class Point{
 
 ## 🍎 참조변수 super와 생성자 super()
 
-참조변수 `super`: 부모의 멤버와 자식의 멤버 구분 짓기 위함.
+### 참조변수 super
+- 부모의 멤버와 자식의 멤버 구분 짓기 위함.
 
 ```java
 class A{
@@ -54,8 +55,29 @@ class B extends A{
 }
 ```
 
-생성자 `super()` : 조상의 생성자 호출. 모든 생성자 첫줄에는 super(); 생략되어있다.
+### 생성자 super()
+- 조상의 생성자 호출한다. 모든 생성자 첫줄에는 `super();` 생략되어있다.
+- 조상의 생성자가 기본 생성자가 아니면 반드시 자식 생성자에서 `super(param);`을 선언해야 한다. 안하면 컴파일 에러 발생.
+```java
+public class A extends B {
+    private String a;
 
+    public A(String b, String a) {
+        super(b);
+        this.a = a;
+    }
+}
+
+```
+```java
+public class B {
+    private String b;
+
+    public B(String b) {
+        this.b = b;
+    }
+}
+```
 ## 🍎 제어자
 
 - 접근 제어자 - private < default < protected < public

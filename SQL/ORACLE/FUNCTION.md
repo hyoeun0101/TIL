@@ -1,4 +1,4 @@
-### 🍎DECODE 함수
+### 🍎DECODE
 
 ```
 DECODE(expr, search, result [,search, result]... [,default])
@@ -15,7 +15,7 @@ DECODE(expr, search, result [,search, result]... [,default])
 | DECODE(A, B, X, C, Y, Z)              | A = B이면 X 출력, A = C이면 Y 출력, A ≠ B 이고 A ≠ C이면 Z 출력           |
 | DECODE(A1, B, DECODE(A2, C, X, Y), Z) | A1=B이면서 A2=C이면 X 출력, A1=B이면서 A2≠C이면 Y를 출력, A1≠B이면 Z 출력 |
 
-### 🍎TO_CHAR 함수
+### 🍎TO_CHAR
 
 : 날짜, 숫자를 문자열로 변환
 
@@ -28,11 +28,11 @@ SELECT TO_CHAR(SYSDATE, 'YYYYMMDD')              --20200723
 - `SYSDATE` : 오늘 날짜
 - `SYSDATE-1` : 어제 날짜
 
-### NVL(데이터, 지정값)
+### 🍎NVL(데이터, 지정값)
 
 : 데이터가 NULL이면 지정값으로 변환.
 
-### TO_DATE()
+### 🍎TO_DATE()
 
 : 문자열을 날짜 데이터로 변환
 
@@ -70,4 +70,11 @@ NVN2("데이터", 'N', 'Y')
 
 ```sql
 SELECT COALESCE(칼럼1, 칼럼2,...,칼럼N) FROM 테이블
+```
+
+### 🍎 CONCAT
+- 문자열 합치기
+- CONCAT 대신 || 사용 가능
+```
+SELECT CONCAT(COUNTRY_ID, COUNTRY_NAME) FROM COUNTRIES;
 ```
