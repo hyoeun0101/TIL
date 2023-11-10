@@ -135,8 +135,29 @@ public class RestTemplateConfig {
 public class RestTemplateExam{
     //빈으로 등록하여 자동 주입을 하자!
     private final RestTemplate restTemplate;
-    public ResponseEntity<UserResponse> postExam(){
+    public ResponseEntity<UserResponse> callApi() {
+        //1. ClientHttpRequestFactory 생성
+        HttpCompoentsClientHttpRequestFactory factory = new HttpCompoentsClientHttpRequestFactory();
+        factory.setConnectTimeout(5000); // 타임아웃 설정 5초
+        factory.setReadTimeout(5000); // 타임아웃 설정 5초
 
+        
+        HttpClient httpClient = HttpClientBuilder.create()
+                        .setMaxConnToTal(50) // 최대 커넥션 수
+                        .setMaxConnPerRoute(20).build();
+
+        factory.setHttpClient(httpClient); // httpClient 설정
+
+        // 2. RestTemplate 객체 생성
+        RestTemplate restTemplate = new RestTemplate(factory);
+
+        
+        HttpHeader header = new HttpHeader();
+        User user = new User();
+        // 3. 요청할 때 보낼 HttpEntity 생성
+        HttpEntity<User> entity = new HttpEntity<User>(user, header);
+
+        // 4. 요청 uri 정의
         URI uri = UriComponentsBuilder
                     .fromUriString("http://localhost:9090")
                     .path("/api/server/user/{userid}/name/{userName}")
@@ -144,8 +165,9 @@ public class RestTemplateExam{
                     .build()
                     .expand(001, "Tom")
                     .toUri();
-                
-        User user = new User();
+        
+        // 5. api 요청
+        restTemplate.exchang(uri.toString(), HttpMethod.GET, entity, UserResponse.class);
         ResponseEntity<UserResponse> res = restTemplate.postForEntity(uri, user, UserResponse.class);
 
         return res.getBody();
