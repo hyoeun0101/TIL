@@ -1,0 +1,163 @@
+## 🍎 강의 환경 세팅
+- docker 설치
+```
+brew install docker
+brew link docker
+docker version
+```
+## 🍎요구사항 정의
+- 선착순 100명에게 할인쿠폰을 제공하는 이벤트 진행
+- 조건
+    - 선착순 100명에게 쿠폰이 지급된다.
+    - 101개 이상이 지급되면 안된다.
+    - 순간적으로 몰리는 트래픽을 버틸 수 있다.
+
+## 🍎 1. MySQL로 구현
+### Mysql 작업환경 세팅
+- docker mysql 실행 명령어
+```
+docker pull mysql
+docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=1234 --name mysql mysql
+
+docker ps
+docker exec -it mysql bash
+```
+- mysql 명령어
+```
+mysql -u root -p
+// 비번 입력
+create database coupon_example;
+use coupon_example;
+```
+
+### 문제점
+- 레이스 컨디션이 발생한다.
+    - 레이스 컨디션? 두 개 이상의 쓰레드가 공유 데이터에 액세스를 하고 동시에 작업하려할 때 발생하는 문제.
+
+
+|Thread-1|Coupon count|Thread-2|
+|---------|------------|------|
+|select count(*) from coupon;|99| |
+| |99|select count(*) from coupon;|
+|create coupon|100| |
+| |101|create coupon|
+
+
+### 해결 방법?
+- Redis를 활용하자.
+    - 레디스는 싱글스레드 기반으로 동작하여 레이스 컨디션을 해결할 뿐만 아니라 incr명령어는 성능도 빠르다.
+- 다른 방법 : MySQL, Redis를 활용한 락을 구현
+    - 우리가 원하는 건 쿠폰 개수에 대한 정합성이다. 락을 활용하여 구현한다면 발급된 쿠폰개수를 가져오는 것부터 쿠폰을 생성하는 것까지 락을 걸어야 한다.
+    - 그렇게된다면 락을 거는 구간이 길어져 성능 문제가 발생한다.
+
+## 🍎 2.Redis로 구현
+### Redis 작업환경 세팅
+```
+docker pull redis
+docker run --name myredis -d -p 6379:6379 redis
+docker ps
+```
+- 스프링에 redis 의존성 추가
+```
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+```
+- 키에 대한 value를 1씩 증가시키는 명령어 
+```
+redis incr 키이름
+```
+- 초기화
+```
+flushall
+```
+### 문제점
+- 많은 쿠폰을 발급한다면 RDB에 과부하를 줄 수 있다. 만약 다양한 서비스에서 사용되고 있었다면 그 서비스에서도 장애가 발생한다.
+- 만약 RDB에 1분에 100개의 insert만 가능하다면?
+    - 10:00에 쿠폰생성 10000개 요청, 10:01에 주문생성 요청이 들어왔다.
+    - 100분동안 쿠폰 생성만 하고있음. 100분 이후에 주문생성 요청이 처리된다.
+
+## 🍎 카프카
+### Kafka?
+- 카프카?
+    - 분산 이벤트 스트리밍 플랫폼
+    - 이벤트 스트리밍이란 소스에서 목적지까지 이벤트를 실시간으로 스트리밍하는 것
+- 기본 구성
+    - Topic : Q
+    - Producer : Topic에 데이터 삽입
+    - Consumer : Topic의 데이터를 가져감
+
+### 카프카 작업환경 세팅
+    
+[docker-compose.yml]
+```yml
+version: '2'
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+  kafka:
+    image: wurstmeister/kafka:2.12-2.5.0
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+```
+- 도커 컴포즈 버전 확인
+```
+docker-compose -v
+```
+- docker-compose.yml 파일 위치가서 카프카 실행
+```
+docker-compose up -d
+```
+- 카프카 종료
+```
+docker-compose down
+```
+- 토픽 생성
+```
+docker exec -it kafka kafka-topics.sh --bootstrap-server localhost:9092 --create --topic testTopic
+```
+- 프로듀서 실행
+```
+docker exec -it kafka kafka-console-producer.sh --topic testTopic --broker-list 0.0.0.0:9092
+```
+- 다른 터미널을 열어 컨슈머 실행
+```
+docker exec -it kafka kafka-console-consumer.sh --topic testTopic --bootstrap-server localhost:9092
+```
+- 프로듀서에 데이터 넣어보면 컨슈머에서 데이터가 나오는걸 볼 수 있음.
+
+### Spring에서 카프카 사용하기
+1. 의존성 추가
+```
+    implementation 'org.springframework.kafka:spring-kafka'
+```
+
+2. Config 추가
+  - ProducerFactory 빈 등록
+  - KafkaTemplate 빈 등록
+
+3. 토픽 생성 및 컨슈머 실행
+```
+// 토픽 생성
+docker exec -it kafka kafka-topics.sh --bootstrap-server localhost:9092 --create --topic coupon_create
+// 컨슈머 실행
+docker exec -it kafka kafka-console-consumer.sh --topic coupon_create --bootstrap-server localhost:9092 --key-deserializer "org.apache.kafka.common.serialization.StringDeserializer" --value-deserializer "org.apache.kafka.common.serialization.LongDeserializer"
+```
+
+### 정리
+- 카프카는 처리량을 조절할 수 있어 api에서 직접 쿠폰을 생성하는 로직보다는 DB의 부하를 줄일 수 있게 해준다.
+- 다만 쿠폰 생성까지 약간의 텀이 발생한다.
+
+## 🍎 요구사항 변경하기
+- ID 1개당 쿠폰 1개만 발급 가능
+- 구현 방법
+  - DB 레벨에서 막기 : user_id와 coupon_type을 PK로 걸어 한 유저가 쿠폰 하나만 가질 수 있게 한다. 하지만 보통 서비스에서 유저는 여러 쿠폰을 가질 수 있기 때문에 실용적인 방법은 아니다.
+  - 유저의 쿠폰 발급 여부를 가져와서 판단
+  - Redis의 Set 이용하기
