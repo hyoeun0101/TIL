@@ -4,13 +4,19 @@
 
 - Server > Service > Connector > Engine > Host > Context > Servlet
 - 톰캣을 실행해보면 위의 순서대로 생성, 호출되는 것을 볼 수 있다.
+1. 사용자 요청이 옴.
+2. 요청은 쓰레드풀에 있는 쓰레드가 처리하게 됨.
+3. Service안의 Connector는 프로토콜에 따라 이 요청을 처리할 Connector가 결정된다.
+4. 그 다음 Connector는 요청을 Engine에게 전달한다. Engine안에는 여러 host가 있을 수 있다.
+5. Host안에 여러 개의 Context가 있을 수 있으며, Context가 바로 우리가 만드는 어플리케이션이다.
+6. Context안에는 Servlet이 여러 개 있다. Servlet은 작은 서버 프로그램이란 뜻이며, Controller와 비슷한 개념! (요청하면 응답)
 
 ## 🍎 톰캣 설정 파일
 
 ### 톰캣설치경로/conf/server.xml
 
 - Tomcat 서버 설정 파일
-- Server > Service > Engine > Host > Context 순서로 서버에 대한 설정이 있다.
+- Server > Service > Engine > Host > Context에 대한 설정이 있다.
 
 ### 톰캣설치경로/conf/web.xml
 
@@ -49,6 +55,7 @@
 		<servlet-name>appServlet</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<init-param>
+        <!-- servelt-context.xml로 설정한다는 의미. -->
 			<param-name>contextConfigLocation</param-name>
 			<param-value>/WEB-INF/spring/appServlet/servlet-context.xml</param-value>
 		</init-param>
@@ -60,5 +67,3 @@
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 ```
-
-- servlet-context.xml로 DispatcherServlet을 초기화한다.
