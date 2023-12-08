@@ -6,10 +6,6 @@
   - 출력 스트림 예시: 모니터, 파일, 프로그램 등
 - 스트림은 바이트 스트림, 문자 스트림으로 나눌 수 있다.
 
-### 문자 스트림 - Reader, Writer
-- 오로지 문자 데이터만 주고 받을 수 있다. 바이트를 문자로 변환하는 작업 필요없이 바로 문자로 입출력할 수 있다.
-- 입력 스트림 : Reader
-- 출력 스트림 : Writer
 
 ## 🍎 바이트 스트림 - InputStream, OutputStream
 - 이미지, 문자 등 모든 종류의 데이터를 주고 받을 수 있다. 
@@ -20,7 +16,7 @@
 
 |리턴 타입|메소드|설명|
 |--------|------|----|
-|void|write(int b)|1byte를 출력, 4byte 중 마지막 1byte만 출력|
+|void|write(int b)|1byte를 출력, 4byte 중 마지막 1byte만 출력, 따라서 정수-128~127만 올바르게 전송가능|
 |void|write(byte[] b)|배열 b의 모든 바이트를 출력|
 |void|write(byte[] b, int off, int len)|배열 b[off]부터 len개의 바이트를 출력|
 |void|flush()|출력 버퍼에 잔류하는 모든 바이트를 출력|
@@ -32,29 +28,25 @@
 
 
 - OutputStream은 내부에 작은 버퍼(Buffer)를 가지고 있다. 
-- write는 버퍼에 바이트를 저장한다. 즉 데이터를 출력할 준비만 하는 것이다. 다만 버퍼가 다 차면 순서대로 출력한다. 
+- write는 버퍼에 바이트를 저장하며 데이터를 출력할 준비만 한다. 버퍼가 다 차면 입력된 순서대로 출력한다. 
 - flush는 버퍼에 남은 잔류를 모두 내보낸다. 모든 버퍼를 출력한다.
 
 ```java
 public void method() {
 
-  // 해당 파일이 없으면 파일을 생성 후 연다.
-  // 해당 파일이 있으면 기존 파일을 덮어쓰기한다.
-  // 단 폴더는 있어야 한다. 폴더가 없으면 FileNotFoundException 발생
-  // FileNotFoundException 필수 처리
-  OutputStream os = new FileOutputStream("C:/Temp/test.txt");
-  
-  // 해당 파일이 있으면 그 파일에 추가한다.
-  OutputStream os2 = new FileOutputStream("C:/Temp/test.txt", true);
-
+  OutputStream os = null
   
   try {
+    // 해당 파일이 없다면 파일을 생성 후 열고, 있다면 기존 파일에 덮어쓰기한다.
+    // 단 폴더는 있어야 한다. 폴더가 없으면 FileNotFoundException 발생한다.
+    // FileNotFoundException 필수 처리
+    os =  new FileOutputStream("C:/Temp/test.txt");
 
-    byte a = 10;
+    byte a = 10; //1바이트
     byte b = 20;
     byte c = 30;
 
-    os.write(a); //IOException 필수처리  //  00001010 (1byte 출력)
+    os.write(a); // 00000000 00000000 00000000 00001010 (4byte 중 끝 1바이트만 출력)
     os.write(b);
     os.write(c);
 
@@ -85,7 +77,7 @@ public void method() {
     byte b = 20;
     byte c = 30;
     
-    os.write(a); //IOException 필수처리
+    os.write(a);
     os.write(b);
     os.write(c);
 
@@ -147,7 +139,7 @@ public void method() {
 
 ```
 
-[read(byte[] b) 예제- 사진을 읽어서 새로운 파일 생성]
+[ read(byte[] b) 예제- 사진을 읽어서 새로운 파일 생성 ]
 ```java
 public void method() {
 
@@ -230,32 +222,110 @@ public void method() {
 
 |리턴 타입|메소드|설명|
 |--------|------|----|
-|int|read()|2byte(문자)를 읽고 4byte(int)로 반환, 따라서 4byte의 끝 2byte에만 데이터가 들어있다. 더 이상 읽을 게 없으면 -1 리턴|
+|int|read()|2byte(1개의 문자)를 읽고 4byte(int)로 반환, 따라서 4byte의 끝 2byte에만 데이터가 들어있다. 더 이상 읽을 게 없으면 -1 리턴|
+|int|read(char[] cbuf)|읽은 문자를 cbuf 배열에 저장하고, 읽은 문자 수를 리턴|
+|void|close()|입력 스트림을 닫고, 사용 메모리 해제|
+
+
+```java
+public void method() {
+  Reader reader = null;
+  try {
+  
+    reader = new FileReader("C:/Temp/test.txt");
+    while(true) {
+      // 문자 한 개씩 읽기
+      int data = reader.read();
+      if(data == -1) break;
+      System.out.println((char)data);
+    }
+    reader.close();
+    System.out.println();
+
+
+    reader = new FileReader("C:/Temp/test.txt");
+    char[] data = new char[100];
+
+    while(true) {
+      // 문자 배열로 읽기. 100개씩 읽음.
+      int num = reader.read(data);
+      if(num == -1) break;
+      for(int i=0; i<num; i++) {
+        System.out.println(data[i]);
+      }
+    }
+
+    reader.close();
+
+  } catch (FileNotFoundException e) {
+    e.printStackTrace();
+  } catch (IOException e) {
+    e.printStackTrace();
+  }
+}
+```
 
 ## 🍎 보조 스트림
 
 - 스트림은 바이트를 다루는데 실제 우리가 어플리케이션에선 int, 문자열 등을 다루지 바이트를 다루진 않는다.
-- 따라서 보통 편리하게 개발하기 위해 바이트를 우리가 원하는 데이터로 변환시켜주는 보조 스트림을 사용한다.
+- 그래서 보통 데이터를 내가 원하는 타입으로 바로 변환하거나, 성능을 향상하는 보조 스트림을 사용한다.
 - 보조 스트림은 혼자서 입출력을 할 순 없다.
 
-### 1. 문자 변환 보조 스트림 InputStreamReader, OutputStreamWriter
+- 입력 스트림 -> 보조 스트림 -> 프로그램 -> 보조 스트림 -> 출력 스트림
+```
+보조스트림 변수 = new 보조스트림(입출력스트림);
+```
+- 스트림 체인 : 보조스트림은 또 다른 보조 스트림과 연결되어 체인으로 구성할 수 있다.
+```
+보조스트림2 변수 = new 보조스트림2(보조스트림1);
+```
 
-### 2. 성능 향상 보조 스트림
+### 보조 스트림 종류
+|보조 스트림|기능|
+|---------|----|
+|InputStreamReader, OutputStreamWriter|바이트 스트림->문자 스트림으로 |
+|BufferedInputStream, BufferedOutputStream, BufferedReader, BufferedWriter|입출력 성능향상|
+|DataInputStream, DataOutputStream|기본 타입 데이터 입출력|
+|PrintStream, PrintWriter|줄바꿈 처리 및 형식화된 문자열 출력|
+|ObjectInputStream, ObjectOutputStream|객체 입출력|
 
+
+
+
+
+### 문자 변환 스트림
+- InputStreamReader: InputStream을 Reader로 변환한다.
+```java
+InputStream is = new FileInputStream("C:/Temp/text.txt");
+Redaer reader = IntputStreamReader(is);
+```
+- OutputStreamWriter : OutputStream을 Writer로 변환한다.
+```java
+OutputStream os = new FileOutputStream("C://Temp/text.txt");
+Writer writer = new OutputStreamWriter(os, "UTF-8");
+
+```
+
+- InputStream -> Reader -> 프로그램 -> Writer -> OutputStream
+
+
+### 성능 향상 스트림
 - BufferedInputStream, BufferedReader
-  - 메모리 버퍼에 데이터 쌓아두었다가 꽉 차면 한꺼번에 하드 디스크로 전송한다.
 - BufferedOutputStream, BufferedWriter
+- 프로그램이 하드디스크의 입출력과 작업하지 않고, 메모리 버퍼와 작업함으로써 실행 성능을 향상시킨다.
+- 데이터를 하드디스크에 바로 보내지 않고, 메모리 버퍼에 데이터를 쌓아두었다가 꽉 차면 한꺼번에 하드 디스크로 전송한다.
 
-### 3. 기본 타입 입출력 보조 스트림 - DataInputStream, DataOutputStream
+
+### 기본 타입 입출력 보조 스트림 - DataInputStream, DataOutputStream
 
 - 바이트 스트림은 바이트 단위로 입출력하기 때문에 기본 데이터 타입으로 입출력할 수 없는데 이를 가능하게 해준다.
 - readInt(), readBoolean(), readUTF() 등
 
-### 4. 프린터 보조 스트림- PrintStream, PrintWriter
+### 프린터 보조 스트림- PrintStream, PrintWriter
 
 - print(),println() 메소드를 가지고 있는 보조 스트림.
 
-### 5. 객체 입출력 보조 스트림
+### 객체 입출력 보조 스트림
 
 ## 🍎 IO와 NIO의 차이점
 
