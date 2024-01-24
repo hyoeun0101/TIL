@@ -1,10 +1,30 @@
-로이 필딩이 발표한 논문 Rest API
-
-- 어떻게 인터넷 상의 서로 다른 시스템들의 독립적인 진화를 보장할 것인가.
+### 로이 필딩이 발표한 논문 Rest API
+- '인터넷 상의 서로 다른 시스템들의 독립적인 진화를 어떻게 보장할 것인가'를 다뤘다.
 - 웹을 깨뜨리지 않으면서 HTTP 진화하기.
 
-- 오늘 날 res
 
+## Rest API
+- API = Application Programming Interface
+- REST = REpresentational State Transfer
+- 로이 필딩의 논문에서 등장한 Rest API.
+- 인터넷 상의 서로 다른 시스템들의 상호 운용성을 제공하여 각 시스템의 독립적인 진화를 보장하기 위해 고안되었다.
+
+### REST 아키텍쳐 스타일 규칙 6가지
+1. Client-Server
+2. Stateless
+3. Cache
+4. Uniform Interface
+5. Layered System
+6. Code-On-Demand(optional)
+
+
+### 그 중 Uniform Interface
+- Identification of resources
+- manipulation of resources through representation
+- self-descriptive messages
+- HATEOAS
+
+- 대부분 규칙은 HTTP
 Rest APi
 REpresentational State Transfer = REST
 - 어떻게 인터넷에서 서로 다른 시스템 간의 독립적인 진화를 보장할 것인가.
@@ -64,3 +84,8 @@ HAL을 사용하여 링크를 제공하자. -> HATEOAS 해결
 헤더에 추가 or 응답 본문에 추가.
 
 
+### HAL? Hypertext Application Language
+- 리소스에 대한 링크와 같은 하이퍼미디어를 정의하기 위한 규칙.
+- 관련된 MIME
+    - application/hal+xml
+    - application/hal+json
