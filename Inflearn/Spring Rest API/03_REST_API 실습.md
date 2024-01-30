@@ -65,3 +65,36 @@ public class EventResource extends ResourceSupport {
 
  @JsonUnwrapped
  : 직렬화할 때 매핑을 하지 않음. event : { id : "123"}
+
+
+
+
+
+
+
+
+
+
+
+
+## Spring Rest Docs
+- Spring MVC Test 를 사용해서 문서의 일부분을 생성해내는 라이브러리.
+
+- Sweager보다 Rest Docs를 선호하는 이유 : api를 변경했을 때, 테스트 코드도 변경해야 하는데 그럼 문서도 같이 바뀐다. 코드는 변경되었는데, 문서에 반영안되는 경우를 방지할 수 있음.
+
+
+### API 문서 만들기
+- 요청 본문 문서화
+- 응답 본문 문서화
+- 링크 문서화
+    - self, query-events, update-event 
+    - profile 링크 추가
+- 요청 헤더 문서화
+- 요청 필드 문서화
+- 응답 헤더 문서화
+- 응답 필드 문서화
+
+
+relaxed
+장점 : 문서 일부분만 테스트할 수 있다.
+단점 : 정확한 문서를 생성하지 못한다.
