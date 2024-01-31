@@ -98,3 +98,37 @@ public class EventResource extends ResourceSupport {
 relaxed
 장점 : 문서 일부분만 테스트할 수 있다.
 단점 : 정확한 문서를 생성하지 못한다.
+
+## Spring Docs 문서 빌드
+
+mvn package
+메이븐은 라이프사이클을 따라서 컴파일, 테스트 컴파일, 테스트, 패키징
+테스트 실행하면 docs 조각들이 만들어지고, 플러그인 때문에 최종적으로 문서가 생성되고 그 문서가 스프링 부트가 기본적으로 지원하는 스타틱 디렉토리에 들어감. 웹 서버를 띄우면 api 문서 페이지를 바로 뷰에서 확인할 수 있음.
+
+아스키다거 메이븐 플러그인으로 html생성. package할 떄, prepare-package가 asciidoc을 처리하라.
+
+asciidoctor-maven-pulugin에 procss-asciidoc을 사용해서 패키징.
+precess-asciidoc이 실행.
+얘는 src/main/asciidoc에 들어있는 모든 아스키닥 문서를 html로 만들어준다. 그 위치는 target의 generated-docs
+
+
+static 만들어준건. maven-resources-plugin 마찬가지로 prepare-package에 끼어넣어줌.
+따라서 순서중여요.
+
+copy-resources \
+
+스프링 부트가 정적 리소스 지원하는 기능. static 아래 모든 파일은 웹서버로 접속 가능.
+
+하이버네이트 : 이벤트에 대한 테이블을 만들수있도록, 쿼리를 볼 수 있도록
+
+
+@SpringBootTest는 @SpringBootApplication이 붙어있는 곳 가서 빈들 다 등록하고, 마찬가지로 설정 파일도 씀.
+테스트 시 설정 파일 다르게 하기
+
+test> resource> application.yml 추가
+project settings 가서 test의 resources를 test resource로 등록
+
+그럼 main의 설정 파일과 test의 설정 파일 이름이 동일해서 test가 main을 덮어씀
+컴파일, test쪽으로 resource 복사하고, test 컴파일 ,test resouce 복사함  
+
+application-
