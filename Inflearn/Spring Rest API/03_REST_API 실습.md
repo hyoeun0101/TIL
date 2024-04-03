@@ -1,4 +1,4 @@
-## HATEOAS와 Self-Descriptive Message 적용
+### HATEOAS와 Self-Descriptive Message 적용
 Rest 리소스를 제공.
 라이브러리.
 
@@ -13,30 +13,33 @@ Rest 리소스를 제공.
 - 서버와 클라이언트는 rel만 보고 처리를 한다. link는 바껴도 상관없음.
 - 애플리케이션 상태에 따라 link 정보가 바뀜.
 
-### Spring HATEOAS 기능 핵심
+## 🍎 Spring HATEOAS 기능 핵심
 - 링크 만드는 기능
     - 문자열 가지고 만들기
     - 컨트롤러와 메소드로 만들기
 - 리소스 만드는 기능
     - 리소스: 데이터 + 링크
 - 링크 찾아주는 기능
+    - Tranverson
+    - LinkDiscoverers
+    - 강좌에서 다루진 X
 
-### 링크
+### 링크에 들어가는 정보
 - href : hypermedia reference. url 설정
 - rel : relation. 현재 리소스와의 관계를 표현
      - self : 자기 자신에 대한 링크
      - profile : 응답 본문에 대한 설명 문서 링크
      - 이외 deposite, transfer, withdraw 등
 
-- event를 생성했을 떄 어떠한 링크 정보를 보여줄 수 있나?
+- event를 생성했을 때 어떠한 링크 정보를 보여줄 수 있나?
     - self, profile
     - update-event : 이벤트 수정할 수 있는 링크
     - query-events : 이벤트를 조회할 수 있는 링크
     
 
-### 링크 정보 넣는 법
-1. ResourceSupport 상속받는 클래스 생성.
-- Event를 EventResource로 변환.
+## 🍎 링크 정보 넣는 법 - ResourceSupport 상속받는 클래스 생성.
+- Event를 EventResource로 변환한다.
+- @JsonUnwrapped : 직렬화할 때 매핑을 하지 않는다. `{"event" : { "id" : "123", "name":"test" }}` 이렇게 하지 않고, `{ "id" : "123", "name":"test" }` 
 
 ```java
 public class EventResource extends ResourceSupport {
@@ -52,6 +55,11 @@ public class EventResource extends ResourceSupport {
     }
 }
 ```
+
+
+- ObjectMapper가 직렬화할 때 BeanSerializer를 사용한다.
+- 스프링에서 HATEOAS를 사용하려면 @EnableHypermediaSupport를 써야하는데, 스프링 부트가 자동으로 설정해줘서 아무 설정없이 바로 HATEOAS를 사용할 수 있었다.
+
 
 - 레퍼런스에 나온 건 아님.
 ```java
