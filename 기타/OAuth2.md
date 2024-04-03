@@ -1,7 +1,5 @@
 - User -> My Application -> Their Application
 - 나의 서비스에서 구글 캘런더와 같은 다른 서비스를 사용할 때 어떻게 해야할까?
-- 우리가 직접적으로 사용자의 구글 아이디를 우리가 사용할 순 없다.
-- 이럴 때 사용하는 것이 바로 OAuth이다.
 - OAuth를 통해서 액세스 토큰을 얻어 나의 서비스에서 다른 서비스의 API를 호출 할 수 있다!
 
 ## 🍎 OAuth에 등장하는 세 가지 주체
@@ -20,7 +18,7 @@
 ### 2. Resource owner의 승인
 
 1. user가 `Login with Goole` 버튼 클릭. -> resource server에게 요청.
-    - 버튼의 url은 다음과 같다.
+    - `Login with Goole` 버튼의 url은 다음과 같다.
     - https://resource.server?cliend_id=1&scope=B,C&redirect_uri=https://client/callback
 
 2.  resource server는 user가 로그인 안되었으면 구글 로그인 페이지 반환
