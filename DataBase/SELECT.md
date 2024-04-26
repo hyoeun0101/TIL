@@ -1,24 +1,41 @@
-## 🍎WEHRE 조건
+### GROUP BY - HAVING 절
+- 
 
-### BETWEEN
 
-`WHERE num BETWEEN 1 AND 10` : num이 1 부터 10사이
 
-### IN
+### WEHRE 조건
+```sql
+-- 1~10 사이
+SELECT * 
+FROM 테이블명
+WHERE 컬럼 BETWEEN 1 AND 10;
 
-`WHERE addr IN ('서울','경기')` :addr가 서울, 경기에 속하다
+-- 포함되어있는지
+SELECT * 
+FROM 테이블명
+WHERE 컬럼 IN ('서울', '경기')
 
-### LIKE
+-- MEMBER_NAME이 '우'로 시작
+SELECT *
+FROM 테이블명
+WHERE MEMBER_NAME LIKE '우%';
 
-`WHERE mem_name LIKE '우%'` : mem_name이 '우'로 시작  
-`WHERE mem_name LIKE '__핑크'` : mem_name이 OO핑크. ex)블랙핑크, 에이핑크
 
-## 🍎ORDER BY
+-- TEAM_NAME이 OO핑크
+SELECT *
+FROM 테이블명
+WHERE TEAM_NAME LIKE '__핑크';
+```
 
-- 정렬
 
+### 정렬 - ORDER BY
 - ASC : 오름차순
 - DESC: 내림차순
+```SQL
+SELECT *
+FROM 
+
+```
 
 ## 🍎DISTINCT
 
