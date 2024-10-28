@@ -98,8 +98,6 @@ Mokito.when(eventRepository.save(event)).thenReturn(event);
 //then
 ```
 
-
-
 ## 🍎 EventDto 만들기
 - Dto에는 @Data써도 괜찮음.
 
@@ -178,4 +176,36 @@ class ErrorsSerializer implements JsonSerializer<Errors> { ... }
 
 
 ### String 빈 값 체크하는 법
-- java 11 이후에 isBlank() 등장. 그 전엔 trim 한 후, isEmpty했어야 함.
+- java 11 이후에 isBlank() 등장. (그 전엔 trim 한 후, isEmpty했어야 함)
+
+```java
+value != null && !value.isBlank()
+```
+
+
+### 도메인 테스트 코드 리팩토링
+- 파라미터로 데이터 입력받기
+```java
+@ParameterizedTest
+@MethodSource("paramsForTestFree")
+public void testFree(int basePrice, int maxPrice, boolean isFree) {
+    //given
+    Event event = Event.builder()
+            .basePrice(basePrice)
+            .maxPrice(maxPrice)
+            .build();
+    //when
+    event.update();
+    //then
+    assertThat(event.isFree()).isEqualTo(isFree);
+}
+
+private static Object[] paramsForTestFree() {
+    return new Object[] {
+            new Object[] {0,0,true},
+            new Object[] {0,100, false},
+            new Object[] {100,0,false},
+            new Object[] {100,200,false}
+    };
+}
+```

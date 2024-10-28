@@ -4,12 +4,18 @@
   https://goddaehee.tistory.com/99
 
 ## 🍎 프로시저 생성
-
+```SQL
+CREATE OR REPLACE PROCEDURE 프로시저명
+  (
+    
+  )
+```
 ## 🍎 프로시저 변수
 
 ### 레퍼런스 변수
 
-###
+## 🍎 구조
+
 
 ### %ROWTYPE, %TYPE
 

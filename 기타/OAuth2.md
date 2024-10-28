@@ -30,11 +30,11 @@
 
 ### 3. Resource Server의 승인
 
-1. resource server는 임시 비밀번호인 authorization code를 client에게 전송. how? 헤더에 `Location: https://client/callback?code=코드값`을 넣어서 반환
+1. resource server는 임시 비밀번호인 authorization code를 user에게 전송. how? 헤더에 `Location: https://client/callback?code=코드값`을 넣어서 반환
 2. user는 자동으로 저 uri로 리다이렉션. 그럼 client는 authorization code를 받음.
 3. client는 resource server에게 요청.
     - https://resource.server/token?grant_type=authorization_code&code=3&redirect_uri=https://client/callback&client_id=1&client_secret=2
-    - 즉 client는 secret인 client_secret과 authorization_token을 가지고 resource server에게 요청하는 것. 
+    - 즉 client는 secret인 client_secret과 authorization_code를 가지고 resource server에게 요청하는 것. 
 4. resource server는 해당 요청과 자신이 가지고 있는 client_id, client_secret, redirect_Url,authorization_code가 일치하는지 확인
 
 ### 4. 액세스 토큰 발급

@@ -94,6 +94,4 @@ public class AppConfig {
   - 따라서 @Configuration을 붙이지 않으면 싱글톤을 보장되지 않는다.  
     **설정 정보는 꼭 @Configuration을 사용하여 싱글톤을 보장해야한다!**
 
-  ```java
 
-  ```
