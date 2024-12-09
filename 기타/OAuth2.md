@@ -3,11 +3,11 @@
 - OAuth를 통해서 액세스 토큰을 얻어 나의 서비스에서 다른 서비스의 API를 호출 할 수 있다!
 
 ## 🍎 OAuth에 등장하는 세 가지 주체
-1. Resource Owner = User
-2. Client = My Application
-3. Resource Server = Their Application (+ Authorization Server)
+1. Resource Owner(나) = User
+2. Client (신포) = My Application
+3. Resource Server (카카오) = Their Application (+ Authorization Server) 
 
-### 1. Resource Server에 client 등록
+### 1. Resource Server에 client 등록 = 카카오에 신포 등록.
 
 - client가 resource server를 사용하기 위해선 사전에 승인을 받아야 함. 원하는 서비스(ex)google, facebook 등)에 가서 client를 등록해야 함.
 - 서비스마다 등록하는 방법이 다르지만 등록할 떄 공통적으로 생성하는 정보는 다음과 같다.
@@ -15,7 +15,7 @@
     - ClientSecret : 그것에 대한 비밀번호. 절대 노출하면 안됨.
     - Authorized redirect URIs : 리소스 서버가 권한을 부여한 uri. client는 해당 uri로만 요청할 수 있음.
 
-### 2. Resource owner의 승인
+### 2. Resource owner의 승인 - 내가 카카오 정보 입력.
 
 1. user가 `Login with Goole` 버튼 클릭. -> resource server에게 요청.
     - `Login with Goole` 버튼의 url은 다음과 같다.
