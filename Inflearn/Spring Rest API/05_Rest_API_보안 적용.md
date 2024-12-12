@@ -64,7 +64,7 @@ Servlet fiterChain을 자동으로 구성하고 거침.
 
 webFilterSecurityInterceptor에서 인증이 필요한지
 이 요청에 security filter를 적용해야한다면 : 인증 정보 확인. holder(인메모리)에서 인증정보를 꺼내려고 함. 
-인증 정보가 없다. -> authenticationManager를 통해 로그인. -> 로그인 성공적 -> Authentication : 인증 정보. 얘를 holder에 저장.
+인증 정보가 없다. -> authenticationManager를 통해 로그인. -> 로그인 성공적 -> Authentication : 인증 정보. 얘를 holder에 저장. 
 
 AuthenticationManager가 사용하는 인터페이스 : UserDetailService, passwordEncoder
 ### 의존성 추가

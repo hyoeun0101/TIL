@@ -155,7 +155,8 @@ Event newEvent = eventRepository.save(event);
 - 웹 관련 테스트는 슬라이스 테스트보다 SpringBootTest가 낫다. 안그럼 mocking할게 너무 많다.
 
 
-## 🍎 입력값 이외에 에러
+## 🍎 Bad_Request
+### 압력값 이외에 에러
 - 설정에 다음 설정을 넣으면 됨.
 ```yml
 spring:
@@ -163,17 +164,27 @@ spring:
     deserialization:
       fail-on-unknown-properties: true
 ```
-### Errors
-reject()호출하면 Global 에러, rejectValue() 호출하면 Field 에러
 
+### 잘못된 값 입력 - @Valid, Errors
+- 검증할 파람 앞에 @Valid 붙이고, 필드에 @NotNull, @Max(100) 등 붙이기.
+- @Valid 파람 바로 옆에 Errors 추가.
 
-
-
-### @JsonComponent
-- SpringBoot가 제공. serialzier를 objectMapper에 등록.
-- ObjectMapper가 Errors 객체를 직렬화할 때 해당 Serializer를 사용한다. 
+### Errors 직렬화하기
+- 자바 스펙(기본 생성자 + getter + setter)을 따르는 객체는 자동으로 ObjectMapper가 BeanSerializer를 사용해서 직렬화를 해줌.
+- Errors는 자바 스펙을 준수하지 않기 때문에 커스텀 Serializer를 만들어야 함!
+- Erros
+    - reject()호출하면 Global 에러, rejectValue() 호출하면 Field 에러
+- @JsonComponent
+    - SpringBoot가 제공. 커스텀 serialzier를 objectMapper에 등록.
+    - ObjectMapper가 Errors 객체를 직렬화할 때 해당 Serializer를 사용한다. 
 ```java
-class ErrorsSerializer implements JsonSerializer<Errors> { ... }
+@JsonComponent //해당 Serializer를 ObjectMapper에 등록
+class ErrorsSerializer implements JsonSerializer<Errors> {
+    @Override
+    public void serialize(Errors errors, JsonGenerator gen, SerializerProvider serializers) {
+        ...
+    }
+}
 ```
 
 
