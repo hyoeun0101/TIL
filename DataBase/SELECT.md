@@ -20,20 +20,20 @@ SELECT *
 FROM 테이블명
 WHERE MEMBER_NAME LIKE '우%';
 
-
 -- TEAM_NAME이 OO핑크
 SELECT *
 FROM 테이블명
 WHERE TEAM_NAME LIKE '__핑크';
 ```
 
-
 ### 정렬 - ORDER BY
 - ASC : 오름차순
 - DESC: 내림차순
+
 ```SQL
 SELECT *
-FROM 
+FROM 테이블명
+ORDER BY
 
 ```
 
@@ -118,3 +118,4 @@ FROM [테이블명2]
 
 - UNION은 정렬 후 모든 컬럼을 거치며 중복 제거하는 일을 한다.
 - UNION ALL은 정렬 후 중복 제거하는 일을 하지 않아서 성능이 더 좋다.
+

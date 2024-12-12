@@ -1,4 +1,8 @@
-## 🍎 MaBatis에서 카멜케이스 변환 방법 (Snake_Case를 calmelCase로)
+## 🔴 mybatis-config.xml
+- resources 바로 아래 위치.
+
+### 카멜케이스 변환
+- DB의 컬럼(snake_case)과 java의 필드(calmelCase)와 매핑
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>

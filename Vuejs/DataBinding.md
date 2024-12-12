@@ -185,8 +185,8 @@ key는 반드시 지정해줘야함.
 
 i는 리스트의 인덱스 번호
 
-## class 바인딩
-
+## 🍎 class 바인딩
+- class 동적으로 입히기
 ```javascript
 <template>
   <div>
@@ -214,7 +214,7 @@ export default {
 </style>
 ```
 
-클래스를 배열로 받을 수도 있음
+- 클래스를 배열로 받을 수도 있음
 
 ```javascript
 <div :class="[activeClass, errerClass]"></div>
@@ -223,6 +223,17 @@ data(){
   return{
     activeClass:'active',
     errorClass:'text-danger'
+  }
+}
+```
+- 클래스 이름 동적으로 받기
+```javascript
+<div :class="bannerNumber"> ... </div>
+
+...
+data() {
+  return {
+    bannerNumber : "banner1"
   }
 }
 ```

@@ -1,4 +1,4 @@
-## 🍎 빈 생명주기 콜백
+## 🔴 빈 생명주기 콜백?
 
 스프링 컨테이너는 다음과 같은 라이프사이클을 가진다.
 
@@ -9,9 +9,9 @@
 스프링 빈 생성 후 콜백과 종료 직전에 콜백을 한다.  
 데이터베이스 커넥션 풀이나 네트워크 소켓 같은 경우에 애플리케이션 실행 시점에 미리 연결을 해두는 작업이 필요하다. 또한 애플리케이션 종료 시점에 연결을 종료하는 작업을 진행해야한다. 스프링에선 라이프사이클 콜백을 통해 이 작업들을 처리할 수 있다.
 
-## 🍎 빈 생명주기 콜백 방법 3가지
+## 🔴 빈 생명주기 콜백 방법 3가지
 
-### 1. 인터페이스 구현 - InitailizingBean, DisposableBean
+### 🟣 1. 인터페이스 구현 - InitailizingBean, DisposableBean
 
 - InitializingBean의 afterPropertiesSet() 메서드를 오버라이딩한다.
   - 빈을 호출한 다음 afterPropertiesSet()이 호출된다.
@@ -53,11 +53,11 @@ public class NetworkClient implements InitializingBean, DisposableBean {
 }
 ```
 
-➡︎ 이 인터페이스는 스프링 인터페이스라 스프링 전용 인터페이스에 의존적이다.  
-➡︎ 메서드 이름 변경을 못한다.  
-➡︎ 외부 라이브러리에 적용 못힌디.
+- 이 인터페이스는 스프링 인터페이스라 스프링 전용 인터페이스에 의존적이다.  
+- 메서드 이름 변경을 못한다.  
+- 외부 라이브러리에 적용 못힌디.
 
-### 2. 빈 등록 시 메서드 지정 - @Bean(initMethod = "init", destroyMethod = "close")
+### 🟣 2. 빈 등록 시 메서드 지정 - @Bean(initMethod = "init", destroyMethod = "close")
 
 - 설정 정보 클래스에 빈 등록 할 때 `@Bean(initMethod = "init", destroyMethod = "close")` 초기화 메서드, 종료 메서드를 지정해주기
 - 빈 생성 후에 `NetworkClient`의 `init()` 메서드가 실행되고, 종료 후엔 `close()` 메서드가 실행된다.
@@ -68,9 +68,11 @@ public class NetworkClient implements InitializingBean, DisposableBean {
 static class LifeCycleConfig {
  @Bean(initMethod = "init", destroyMethod = "close")
  public NetworkClient networkClient() {
- NetworkClient networkClient = new NetworkClient();
- networkClient.setUrl("http://hello-spring.dev");
- return networkClient;
+
+    NetworkClient networkClient = new NetworkClient();
+    networkClient.setUrl("http://hello-spring.dev");
+    return networkClient;
+
  }
 }
 ```
@@ -90,17 +92,17 @@ public class NetworkClient {
 }
 ```
 
-➡︎ 스프링에 의존하지 않는다.  
-➡︎ 메서드 이름을 지정할 수 있다.  
-➡︎ 코드가 아닌 설정 정보를 사용하기 때문에 외부 라이브러리에도 적용할 수 있다.
+- 스프링에 의존하지 않는다.  
+- 메서드 이름을 지정할 수 있다.  
+- 코드가 아닌 설정 정보를 사용하기 때문에 외부 라이브러리에도 적용할 수 있다.
 
-### 3. @PostConstruct, @PreDestroy
+### 🟣3. @PostConstruct, @PreDestroy
 
 - 메서드 위에 애노테이션을 붙여주기만 하면 된다.
 
 ```java
 public class NetworkClient {
-    ...위와 동일...
+    //...위와 동일...
     @PostConstruct
     public void init() {
        System.out.println("NetworkClient.init");
@@ -115,5 +117,5 @@ public class NetworkClient {
 }
 ```
 
-➡︎ 최신 스프링에서 권장하는 방법.  
-➡︎ 하지만 외부 라이브러리에는 적용하지 못한다. 외부 라이브러리에 적용할 땐 @Bean 기능을 이용해야한다!
+- 최신 스프링에서 권장하는 방법.  
+- 하지만 외부 라이브러리에는 적용하지 못한다. 외부 라이브러리에 적용할 땐 @Bean 기능을 이용해야한다!
