@@ -14,7 +14,7 @@
 
 <br>
 
-### 🔴 프로젝트 생성 및 설정
+### 🔴 프로젝트 생성
 - 문제 : Spring Initializer는 Spring Boot 3버전, JDK 17 이상만 가능..
 
 - 해결
@@ -33,15 +33,14 @@
     5. Settings > Gradle - Gradle JVM 버전 확인
 
 ---
-__🟡 의존성 추가__
+### 🟡 의존성 추가
 - Spring  Web
 - PostgreSQL Driver
 - Oracle Driver(일단)
 - Lombok
 - mybatis-spring-boot-starter 2.2버전 사용
 ---
-
-__🟡 Swagger__
+### 🟡 Swagger
 - 설정하기 위한 라이브러리 2개 존재
     - SpringFox, SpringDoc
     - SpringFox는 더이상 업데이트 X. 따라서 SpringDoc 사용
@@ -74,27 +73,33 @@ Execution failed for task ':compileJava'.
       <version>1.8.0</version>
    </dependency>
 ```
----
-__🟡 Spring Boot에서 다중 데이터베이스 설정하기__
-- 고려할 사항 : 다중 데이터베이스에 대한 트랜잭션 처리. 즉 TransactionManager가 여러 개일 때 트랜잭션 처리는 어떻게?
-<!-- 
+
+### 🔴 다중 데이터베이스 설정
+- 고려할 사항 
+    - 다중 데이터베이스에 대한 트랜잭션 처리.
+    - 즉 TransactionManager가 여러 개일 때 트랜잭션 처리는 어떻게?
+
+
+<br><br>
+
+
 1. application.yml 설정하기
 
 2. Datasource 빈으로 등록.
-    - Datasource는 DB 커넥션을 얻기 위한 객체로 빈으로 등록하여 사용. -->
+    - Datasource는 DB 커넥션을 얻기 위한 객체로 빈으로 등록하여 사용.
 
 
-__🟣 HikariCP ? Connection Pool?__
-- __Connection Pool?__
-    - DB연결 요청(=하나의 Http 요청)이 들어올 때마다 Connection을 생성해야 하는데 Connection은 유지하는 것보다 생성하는데 자원이 많이 소모된다.
+### 🟡 Connection Pool?
+- DB연결 요청(=하나의 Http 요청)이 들어올 때마다 Connection을 생성해야 하는데 Connection은 유지하는 것보다 생성하는데 자원이 많이 소모된다.
 
-    - 따라서 Connection Pool에 미리 일정 수 만큼의 Connection을 만들어놓고 꺼내쓰는 방식을 사용한다.
-- __HikariCP?__
-    - 데이터베이스 Connection을 관리해주는 라이브러리.
-    - 기존 SpringBoot에선 tomcat-jdbc를 기본 Datasource로 제공
-    - Spring Boot 2.0 부터 HikariCP가 기본 JDBC Connection Pool로 변경됨.
-    - spring-boot-starter-jdbc에 자동으로 포함. 없으면 다음 hikariCP 의존성 추가 필요
-    - 난 mybatis-spring-boot-starter 안에 jdbc-starter 포함.
+- 따라서 Connection Pool에 미리 일정 수 만큼의 Connection을 만들어놓고 꺼내쓰는 방식을 사용한다.
+
+### 🟡 HikariCP?
+- 데이터베이스 Connection을 관리해주는 라이브러리.
+- 기존 SpringBoot에선 tomcat-jdbc를 기본 Datasource로 제공
+- Spring Boot 2.0 부터 HikariCP가 기본 JDBC Connection Pool로 변경됨.
+- `spring-boot-starter-jdbc`에 자동으로 포함. 없으면 다음 hikariCP 의존성 추가 필요
+- `mybatis-spring-boot-starter` 안에 jdbc-starter 포함.
     
 ```java
 dependencies {
@@ -111,15 +116,19 @@ dependencies {
 </dependency>
 ```
 
-    - HikariCP의 Database url 설정은 `url`이 아닌 `jdbc-url`을 사용한다. 그러니 `application.yml`에서 설정할 때 `url`이 아닌 `jdbc-url`로 설정해야함! ????
+- HikariCP의 Database url 설정은 `url`이 아닌 `jdbc-url`을 사용한다. 그러니 `application.yml`에서 설정할 때 `url`이 아닌 `jdbc-url`로 설정해야함! ????
+
+### 🔴 Mybatis 설정
+- spring과 mybatis 설정하려면 최소한 하나 이상의 `SqlSessionFactory`가 필요. (빈으로 설정해야함.)
 
 
----
-__🍎 로깅__
+### 🔴 로깅
 - https://docs.spring.io/spring-boot/reference/features/logging.html
 
-- 커넥션 여러 개 사용할 때, 트랜잭션 관리 : xml 태그에 붙여야됨!!
+- 의존성 : `spring-jcl` 필요. 이는 `spring-boot-starter-web`에 들어있음.
 
+### 설정법
+1. application.yml에 설정
+2. 커스텀을 원하면 resources에 logback-spring.xml 추가하여 설정
 
-
-vuex랑 로컬스토리지랑 다르
+### 🔴 DTO와 VO?
