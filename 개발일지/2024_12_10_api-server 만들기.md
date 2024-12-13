@@ -1,4 +1,4 @@
-### 🔴 요구사항
+## 🔴 요구사항
 ```
 1. api server
 2. db는 ORACLE 4개 - US7ASC2 or EUC-KR
@@ -14,7 +14,7 @@
 
 <br>
 
-### 🔴 프로젝트 생성
+## 🔴 프로젝트 생성
 - 문제 : Spring Initializer는 Spring Boot 3버전, JDK 17 이상만 가능..
 
 - 해결
@@ -32,14 +32,14 @@
 
     5. Settings > Gradle - Gradle JVM 버전 확인
 
----
+
 ### 🟡 의존성 추가
 - Spring  Web
 - PostgreSQL Driver
 - Oracle Driver(일단)
 - Lombok
 - mybatis-spring-boot-starter 2.2버전 사용
----
+
 ### 🟡 Swagger
 - 설정하기 위한 라이브러리 2개 존재
     - SpringFox, SpringDoc
@@ -74,14 +74,12 @@ Execution failed for task ':compileJava'.
    </dependency>
 ```
 
-### 🔴 다중 데이터베이스 설정
+## 🔴 다중 데이터베이스 설정
 - 고려할 사항 
     - 다중 데이터베이스에 대한 트랜잭션 처리.
     - 즉 TransactionManager가 여러 개일 때 트랜잭션 처리는 어떻게?
 
-
-<br><br>
-
+<br>
 
 1. application.yml 설정하기
 
@@ -118,11 +116,11 @@ dependencies {
 
 - HikariCP의 Database url 설정은 `url`이 아닌 `jdbc-url`을 사용한다. 그러니 `application.yml`에서 설정할 때 `url`이 아닌 `jdbc-url`로 설정해야함! ????
 
-### 🔴 Mybatis 설정
+## 🔴 Mybatis 설정
 - spring과 mybatis 설정하려면 최소한 하나 이상의 `SqlSessionFactory`가 필요. (빈으로 설정해야함.)
 
 
-### 🔴 로깅
+## 🔴 로깅
 - https://docs.spring.io/spring-boot/reference/features/logging.html
 
 - 의존성 : `spring-jcl` 필요. 이는 `spring-boot-starter-web`에 들어있음.
@@ -131,4 +129,21 @@ dependencies {
 1. application.yml에 설정
 2. 커스텀을 원하면 resources에 logback-spring.xml 추가하여 설정
 
-### 🔴 DTO와 VO?
+## 🔴 DTO와 VO?
+
+
+
+
+
+
+## 🔴 Memo
+
+```sql
+-- 테이블만 생성
+create table b1 select * from a1 where false;
+
+-- 테이블 생성 & 데이터도 복사
+create table b1 select * from a1 where false;
+
+```
+
