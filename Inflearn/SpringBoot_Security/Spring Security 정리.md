@@ -24,7 +24,6 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
     return http.build();
 }
-
 ```
 
 - SecurityContextHolder
@@ -61,6 +60,30 @@ public class AccountService implements UserDetailsService {
     - 이 함수에서 반환된 UserDetails는 SecurityContextHolder 안에 저장된다. 
         - SecurityContextHoder[내부 Authentication[내부 UserDetails]]
 
+### 4. UserDetails 구현체 생성
+- 이건 선택 사항.
+
+### 5. 특정 url에 권한처리
+- SecurityConfig에 @EnableGlobalMethodSecurity 애노테이션 추가
+```java
+@Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(secured=true, prePostEnabled=true) // @Security, @PreAuthorize, PostAuthorize 활성화
+class SecurityConfig {...}
+```
+- 권한을 부여할 특정 메서드에 @Secured, @PreAuthorize 붙이기. 해당 권한이 있어야 url에 접근 가능하다.
+```java
+@Secured("ROLE_ADMIN")
+@GetMapping("/info")
+public String getInfo(){...}
+
+
+@PreAuthorize("hasRole('ROLE_AMDIN') or hasRole('ROLE_MANAGER')")
+@GetMapping("/data")
+public String getData(){...}
+```
+- 하나의 권한만 부여하려면 @Secured를 사용하고, 여러 권한을 부여하려면 @PreAuthorize를 사용하라.
+
 
 ## 🍎 OAuth2.0
 
@@ -79,6 +102,17 @@ public class AccountService implements UserDetailsService {
 ### 2. 구글에 클라이언트 등록
 - 서비스마다 등록 방법 다르니 찾아볼 것.
 - 정보 3개 : client id, client secret, redirect url 
-### 3. 구글 로그인 버튼
+
+### 3. 
+
+
 - http://localhost:8080/login/oauth2/code/google
     - `/login/oauth2/code/` 이 부분은 oauth2-client 라이브러리에서 고정한 값임.
+
+
+
+
+
+구글 로그인
+href="/oauth2/authorization/google"
+

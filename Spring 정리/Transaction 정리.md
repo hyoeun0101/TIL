@@ -162,13 +162,17 @@ public class UserServiceImpl implments UserService {
     - jdbc 라이브러리가 기본으로 `JdbcTransactionManager`를 빈으로 등록해준다.
 
 ### @Transactional
-- 메서드 위에 붙이면 AOP로 트랜잭션 관련 코드 넣어줘서 트랜잭션 처리할 수 있다.
+- 메서드, 클래스 위에 붙이면 AOP로 트랜잭션 관련 코드 넣어줘서 트랜잭션 처리를 할 수 있다.
+
+- 메서드 위에 붙이면 메서드 내의 작업에 대해 트랜잭션 처리를 한다.
 
 - 클래스(또는 인터페이스)에 붙이면 클래스(또는 인터페이스) 내의 모든 메서드에 적용된다.
 
 - 단순 @Transactional은 RuntimeException, Error 만 롤백을 한다.
 
     - Exception도 롤백하려면 rollbackFor 속성을 명시해야 한다!
+
+
 ```java
 @Transactional(rollbackFor = "Exception.class")
 ```
@@ -189,20 +193,138 @@ public class UserServiceImpl implments UserService {
 
 - 없으면 새로운 트랜잭션 실행
 
+
+```java
+@Service
+public TxService {
+    @Autowired
+    private A1Dao a1Dao;
+
+    @Autowired
+    private TxService2 txServcie2;
+    
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void insertA1WithTransaction() throws Exception {
+        a1Dao.insert(1, 100); //1. 성공
+
+        txService2.insertB1WithTransaction(); // Exception 발생!
+
+        a1Dao.insert(4, 100);
+    }
+}
+```
+```java
+@Service
+public TxService2 {
+    
+    @Autowired
+    private B1Dao b1Dao;
+    
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void insertB1WithTransaction() throws Exception {
+        b1Dao.insert(2, 100); //2. 성공
+        a1Dao.insert(2, 100); // 3. 실패
+    }
+}
+```
+
+- 설명
+    - 1번 작업 성공
+    - insertB1WithTransaction에서 현재 실행 중인 트랜잭션에 참여.
+    - 2번 작업 성공
+    - 3번 작업 실패
+    - 1, 2번 작업 모두 롤백!
+    - 1,2,3,4번의 커넥션이 모두 같다.
+
+
 ### Requires_new ⭐
 - 무조건 새로운 트랜잭션 실행
+
+
+```java
+public TxService {
+    @Autowired
+    private A1Dao a1Dao;
+
+    @Autowired
+    private B1Dao b1Dao;
+    
+    @Transactional(propagation = Propagation.REQUIRED_NEW, rollbackFor = Exception.class)
+    public void insertA1WithTransaction() throws Exception {
+        a1Dao.insert(1, 100); //1. 성공
+
+        insertB1WithTransaction(); // Exception 발생!
+
+        a1Dao.insert(4, 100); //4. 성공
+    }
+
+
+    @Transactional(propagation = Propagation.REQUIRED_NEW, rollbackFor = Exception.class)
+    public void insertB1WithTransaction() throws Exception {
+        b1Dao.insert(2, 100); //2. 성공
+        a1Dao.insert(2, 100); // 3. 실패
+    }
+}
+
+```
+- 설명
+    - 1번 작업 성공
+    - insertB1WithTransaction에서 새로운 트랜잭션으로 실행
+    - 2번 작업 성공
+    - 3번 작업 실패
+    - 2번 작업만 롤백
+    - 4번 작업 성공 후 1번, 4번 커밋
+    - 1번, 4번의 connection이 같고, 2번,3번의 connection이 같다.
 
 ### Nested
 - 진행 중인 트랜잭션이 있으면 그 트랜잭션의 내부적으로 새로운 트랜잭션(sub transaction)으로 실행.
 
-- savepoint 찍을 수 있음.
+- 하나의 트랜잭션의 작업이 클 때 sub transaction을 만들어서 작업을 쪼갤 수 있다.
+    - sub transaction들 사이에 savepoint를 찍으면 그 지점으로 롤백할 수 있다.
+
+
 ### Mandatory
 - 반드시 진행 중인 트랜잭션에서만 실행 가능. 아니면 예외 발생
 
 ### Supports
 - Tx이 진행 중이건 아니건 상관없이 실행
+
 ### Not_supported
 - Tx없이 처리. Tx이 진행 중이면 잠시 중단
 
 ### Never
 - Tx없이 처리. Tx이 진행 중이면 예외 발생
+
+
+### 주의할 점
+- @Transactional은 프록시 방식의 AOP를 사용한다.
+- 같은 클래스에 속한 메서드끼리 내부 호출인 경우, Advice가 적용하지 않는다.
+
+```java
+public TxService {
+    @Autowired
+    private A1Dao a1Dao;
+
+    @Autowired
+    private B1Dao b1Dao;
+    
+    @Transactional(propagation = Propagation.REQUIRED_NEW, rollbackFor = Exception.class)
+    public void insertA1WithTransaction() throws Exception {
+        a1Dao.insert(1, 100); //1. 성공
+
+        // ⭐ 여기서 insertB1WithTransaction 메서드에선 adviㄴc(트랜잭션 코드)가 적용되지 않는다. 따라서 동일한 트랜잭션에서 수행
+        insertB1WithTransaction(); // Exception 발생!
+
+        a1Dao.insert(4, 100); //4. 성공
+    }
+
+
+    @Transactional(propagation = Propagation.REQUIRED_NEW, rollbackFor = Exception.class)
+    public void insertB1WithTransaction() throws Exception {
+        b1Dao.insert(2, 100); //2. 성공
+        a1Dao.insert(2, 100); // 3. 실패
+    }
+}
+
+
+```
