@@ -31,6 +31,9 @@ git branch -M main
 git log --all -decorate --oneline --graph
 ```
 
+
+
+
 ### 원격브랜치를 로컬로 가져오기
 
 1. git fetch : 원격 내용 가져오기

@@ -1,3 +1,5 @@
+### 2024-12-10
+
 ### 캡챠 라이브러리 적용
 __google reCAPCHA v2, v3__ 또는 __cloudflare turnstile__ 적용
 - 신세계 모바일 WEB(VUE + Spring Boot)에 적용
