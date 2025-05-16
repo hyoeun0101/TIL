@@ -1,5 +1,3 @@
-### GROUP BY - HAVING 절
-- 
 
 
 
