@@ -295,6 +295,7 @@ public TxService {
 ### Never
 - Tx없이 처리. Tx이 진행 중이면 예외 발생
 
+
 ### 주의할 점
 - @Transactional은 프록시 방식의 AOP를 사용한다.
 - 같은 클래스에 속한 메서드끼리 내부 호출인 경우, Advice가 적용하지 않는다.

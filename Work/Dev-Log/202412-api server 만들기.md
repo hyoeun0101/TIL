@@ -1,0 +1,273 @@
+### 2024.12.10 ~ 2024.12.16
+
+## 🔴 요구사항
+```
+1. api server
+2. db는 ORACLE 4개 - US7ASC2 or EUC-KR
+3. 에러, api result 결과가 동일한 포맷
+4. open doc을 이용한 swagger 설정
+```
+- spring-boot 2.6
+- JDK1.8
+- mybatis- typehandler 사용
+- mapper 인터페이스 사용
+- mapper repository 사용
+- SqlSession 직접 사용
+
+<br>
+
+## 🔴 프로젝트 생성
+- 문제 : Spring Initializer는 Spring Boot 3버전, JDK 17 이상만 가능..
+
+- 해결
+    - Spring boot 2.6 lastest version 검색. 
+
+    - JDK 1.8 지원하는지 확인
+
+    1. 일단 Spring Initializer로 프로젝트 생성. (버전 신경 X)
+
+    2. build.gradle 파일에서 Spring Boot 버전을 변경한다. -> External Libraries에서 버전 바뀌었는지 확인
+
+    3. Project Structure >  SDKs > jdk 추가
+
+    4. Project Structure > Project - SDK 버전 변경
+
+    5. Settings > Gradle - Gradle JVM 버전 확인
+
+
+### 🟡 의존성 추가
+- Spring  Web
+- PostgreSQL Driver
+- Oracle Driver(일단)
+- Lombok
+- mybatis-spring-boot-starter 2.2버전 사용
+
+### 🟡 Swagger
+- 설정하기 위한 라이브러리 2개 존재
+    - SpringFox, SpringDoc
+    - SpringFox는 더이상 업데이트 X. 따라서 SpringDoc 사용
+    
+```gradle
+dependencies {
+    // Spring Boot 2.x는 1.8.0 가능
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:1.8.0'
+}
+```
+- 문제 : swagger 의존성 추가하는데 안된다...
+```
+#### 에러코드 ####
+
+Execution failed for task ':compileJava'.
+> Could not resolve all files for configuration ':compileClasspath'.
+   > Could not find org.springdoc:springdoc-openapi-starter-webmvc-ui:1.8.0.
+     Required by:
+         root project :
+
+```
+- 해결
+    - https://springdoc.org/v1/ -> 1.8.0 버전 문서를 보았다.
+    - 문서를 제대로 읽어보자!
+    - 읽어보니 Spring-webmvc에선 다음 의존성이 추가로 필요했다.
+```xml
+  <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-webmvc-core</artifactId>
+      <version>1.8.0</version>
+   </dependency>
+```
+
+## 🔴 다중 데이터베이스 설정
+- 고려할 사항 
+    - 다중 데이터베이스에 대한 트랜잭션 처리.
+    - 즉 TransactionManager가 여러 개일 때 트랜잭션 처리는 어떻게?
+
+<br>
+
+1. application.yml 데이터베이스 정보 설정하기
+
+2. Datasource, TransactionManager를 빈으로 등록.
+
+    - Datasource는 DB 커넥션을 얻기 위한 객체로 빈으로 등록하여 사용.
+
+    - 각 DB마다 DataSource, TransactionManager를 만든다.
+
+
+### 🟡 Connection Pool?
+- DB연결 요청(=하나의 Http 요청)이 들어올 때마다 Connection을 생성해야 하는데 Connection은 유지하는 것보다 생성하는데 자원이 많이 소모된다.
+
+- 따라서 Connection Pool에 미리 일정 수 만큼의 Connection을 만들어놓고 꺼내쓰는 방식을 사용한다.
+
+### 🟡 HikariCP?
+- 데이터베이스 Connection을 관리해주는 라이브러리.
+- 기존 SpringBoot에선 tomcat-jdbc를 기본 Datasource로 제공
+- Spring Boot 2.0 부터 HikariCP가 기본 JDBC Connection Pool로 변경됨.
+- `spring-boot-starter-jdbc`에 자동으로 포함. 없으면 다음 hikariCP 의존성 추가 필요
+- `mybatis-spring-boot-starter` 안에 jdbc-starter 포함.
+    
+```java
+dependencies {
+    // hikariCP 들어있음.
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+}
+
+```
+```xml
+<dependency>
+    <groupId>com.zaxxer</groupId>
+    <artifactId>HikariCP</artifactId>
+    <!-- <version>5.1.0</version> -->
+</dependency>
+```
+
+- HikariCP의 Database url 설정은 `url`이 아닌 `jdbc-url`을 사용한다. 그러니 `application.yml`에서 설정할 때 `url`이 아닌 `jdbc-url`로 설정해야함!
+
+### 🟡 Mybatis 설정
+- spring과 mybatis 설정하려면 최소한 하나 이상의 `SqlSessionFactory`가 필요. (빈으로 설정해야함.)
+
+- DataSource와 마찬가지로 각 DB마다 SqlSessionFactory를 만든다.
+
+
+## 🔴 Memo
+
+```sql
+-- 테이블만 생성
+create table b1 select * from a1 where false;
+
+-- 테이블 생성 & 데이터도 복사
+create table b1 select * from a1 where false;
+
+```
+## 🔴Log - BO
+### 🟡 Mybatis Mapper 매핑
+#### 1. @MapperScan 사용
+- @Configuration 파일에 @MapperScan을 붙인다.
+- 동작 방식
+    - basePackage에서 매퍼 인터페이스를 찾아서 빈으로 등록한다. 매퍼 인터페이스는 @Mapper 애노테이션을 붙인 인터페이스일 수도 있고, @Mapper 애노테이션이 없더라도 해당 인터페이스가 SQL 메서드를 정의하고 있으면 매퍼 인터페이스로 간주한다.
+    - annotationClass 속성 작성하면, 해당 애노테이션이 붙은 인터페이스를 찾아서 빈으로 등록.
+- @Mapper 붙여서 쓰는게 개발자가 보기엔 편함.
+
+#### 2. @MapperScan + @Mapper
+- @Mapper는 매퍼 인터페이스 위에 작성하여 명시적으로 나타냄.
+
+<br><br><br>
+---
+
+### 🟡 로깅
+- https://docs.spring.io/spring-boot/reference/features/logging.html
+
+- 의존성 : `spring-jcl` 필요. 이는 `spring-boot-starter-web`에 들어있음.
+
+### 설정법
+1. application.yml에 설정
+2. 커스텀을 원하면 resources에 logback-spring.xml 추가하여 설정
+
+<br><br><br>
+---
+
+### 🟡 DTO와 VO?
+<br><br><br>
+---
+
+### 🟡 Interceptor
+
+<br><br><br>
+---
+
+### 🟡 다중 데이터베이스 트랜잭션 관리
+
+- 내가 궁금한 것 : 서비스1과 서비스2는 다른 매퍼 사용.
+
+- DB마다 사용할 트랜잭션 매니저 등록.
+
+    - datasource1 - txManager1 : datasource1에 대한 건 txManager1이 관리함.
+    - datasource2 - txManager2 : datasource2에 대한 건 txManager2가 관리함.
+
+
+#### 예제
+1. txManager2를 사용 
+    - 결과 : 무한 대기. 
+    - 이유는? mberMapper1에서 트랜잭션 이미 잡아먹음. 커밋되지 않음. mberMapper2에서 1에 대한 
+```java
+@Override
+public int testTransaction(Mber mber) {
+
+    this.mberMapper1.insertMber(mber);
+
+    int cnt = this.mberMapper2.insertMber(mber);
+
+    return cnt;
+}
+```
+1. txManager2를 사용.
+    - 결과 : 무한 대기. 
+    - 이유는? mberMapper1에서 트랜잭션 이미 잡아먹음. 커밋되지 않음. mberMapper2에서 트랜잭션1에 대한 무한 대기.
+2. txManager1을 사용.
+    - 결과: mberMapper1 insert 성공(커밋), mberMapper2에서 에러발생.
+
+```java
+@Override
+public int testTransaction(Mber mber) {
+
+    this.mberMapper1.insertMber(mber);
+    this.mberMapper1.insertMberHist(mber);
+
+    mber.setName("테스트입니다");
+    int cnt = this.mberMapper2.updateMber(mber);
+
+    return cnt;
+}
+```
+1. txManager1을 사용
+    - 결과 : 
+2. txManager2를 사용
+    - 결과 : mberMapper2에서 mber를 찾을 수 없음. 에러 발생. mberMapper1의 insert는 성공(커밋)
+    - 이유는? mberMapper1은 트랜잭션 관리를 안하고 있음. 따라서 실행하면 즉시 커밋됨. 얘는 txManager1이 알아서 관리할 것.
+
+
+### 🟡 RequestResponseBodyAdviceChain
+
+<br><br><br>
+---
+
+### 🟡 ResponseBodyAdvice
+- 응답값 공통 제어.
+- 공통 헤더 추가, 데이터 암호화, 로깅 등과 같은 작업에 유용.
+
+```JAVA
+supports() //해당 advice를 적용할지 여부 결정
+
+beforeBodyWrite() //응답값 가공
+```
+
+## 🔴 Review
+- 모든 api에 대하여 처리해야 함. 내가 만든 ExceptionHandler는 내가 정의한 exception만 처리한다.
+
+- @RestControllerAdvice, @ComponentScan에서 basePackage 사용.
+    
+    - ResponseBodyAdvice에서 @RestControllerAdvice에 basePackage 작성한다. 그럼 swagger 같은 예외 uri같은 건 제외할 수 있다.
+
+- validator 등록하기.
+
+- RequestAdvice, ResponseAdvice 사용. + 또 뭐하나였는데....
+
+- swagger도 특정 패키지만 스캔해서 그 패키지로 들어오는 uri는 swagger로 만들어줌.
+
+- ResponseBodyAdvice : body가 null인 경우는 들어오지 않는다.? 그리고 JSON만 타게 하는 이유는? 
+
+- ResponseEntity 없애기. 원래 그걸로 반환함.
+
+- 명심 : 의미있는 코드 작성하기. 동작 원리 제대로 알고 사용하기. 테스트할 때 모든 경우에 대해 해야 한다. 완벽하게 만들어야 한다.
+
+- 역정규화. 정규화. 우리나라에선 jpa같은 기술 필요 없는 이유? 화면이 먼저 나오고, 화면 가지고 설계하기 때문. 그래서 조인(역정규화)할 일이 많음.
+
+- AA가 하는 일: 일단 core 패키지 빼냐 안빼냐. response 어떤 로직으로 할거냐. status + code 방식. 그럼 에러코드는 enum이던 따로 빼서 관리함.  
+
+ <br><br><br>
+
+ ---
+
+### 🟡 테스트에서 @Transactional 사용하기
+- @Transactional을 테스트에 붙이면 테스트 메서드 실행 후 자동으로 롤백한다.
+
+- @BeforeEach, @AfterEach를 통해 실행 전과 후에 초기화하는 작업
+

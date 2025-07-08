@@ -124,3 +124,5 @@ public ConfigurableApplicationContext run(String... args) {
 - 응용 프로그램 및 명령줄 러너가 호출되기 전에 게시된 이벤트
 
 - ApplicationListener를 사용하면 이벤트를 핸들링할 수 있다.
+
+
