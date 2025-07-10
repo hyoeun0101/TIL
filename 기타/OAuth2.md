@@ -1,34 +1,52 @@
-- User -> My Application -> Their Application
-- 나의 서비스에서 구글 캘런더와 같은 다른 서비스를 사용할 때 어떻게 해야할까?
-- OAuth를 통해서 액세스 토큰을 얻어 나의 서비스에서 다른 서비스의 API를 호출 할 수 있다!
+## 🔴 OAuth2
+- 나의 서비스에서 구글 캘런더와 같은 다른 서비스를 사용하고 싶을 때 어떻게 해야할까?
 
-## 🍎 OAuth에 등장하는 세 가지 주체
-1. Resource Owner(나) = User
-2. Client (신포) = My Application
-3. Resource Server (카카오) = Their Application (+ Authorization Server) 
+- OAuth를 통해서 액세스 토큰을 얻어 나의 서비스에서 다른 서비스의 API를 호출할 수 있다.
 
-### 1. Resource Server에 client 등록 = 카카오에 신포 등록.
 
-- client가 resource server를 사용하기 위해선 사전에 승인을 받아야 함. 원하는 서비스(ex)google, facebook 등)에 가서 client를 등록해야 함.
-- 서비스마다 등록하는 방법이 다르지만 등록할 떄 공통적으로 생성하는 정보는 다음과 같다.
-    - ClientID : 나의 어플리케이션의 식별자
-    - ClientSecret : 그것에 대한 비밀번호. 절대 노출하면 안됨.
+- 사용자 -> 나의 서비스에 들어와 -> 구글과 같은 다른 서비스 이용 가능.
+
+
+## 🔴 OAuth에 등장하는 세 가지 주체
+
+- 사용자 = User = Resource Owner 
+
+- 나의 서비스 = My Application =  Client
+
+- 다른 서비스 = Their Application = Resource Server (+Authorization Server)
+
+## 🔴 동작방식
+
+### 🟡 1. 다른 서비스에 나의 서비스 등록
+- 나의 서비스에서 다른 서비스를 이용하기 위해서 승인이 필요하다.
+
+- ex) kakao developer에 가서 나의 서비스를 등록해야함.
+
+- 등록하면 생성되는 정보
+    - clientId : 나의 서비스의 식별자
+
+    - clientSecret : 그것에 대한 비밀번호. 노출 절대 금지.
+
+    - Authorized redirect URIs : 권한을 부여한 uri. 콜백 url
+
     - Authorized redirect URIs : 리소스 서버가 권한을 부여한 uri. client는 해당 uri로만 요청할 수 있음.
 
-### 2. Resource owner의 승인 - 내가 카카오 정보 입력.
+### 🟡 2. 리소스 서버의 승인
 
-1. user가 `Login with Goole` 버튼 클릭. -> resource server에게 요청.
-    - `Login with Goole` 버튼의 url은 다음과 같다.
-    - https://resource.server?cliend_id=1&scope=B,C&redirect_uri=https://client/callback
+1. 사용자가 '카카오 로그인' 버튼을 클릭하면 리소스 서버에게 요청이 간다.
+    - ex) https://resource.server?cliend_id=1&scope=B,C&redirect_uri=https://client/callback 
 
-2.  resource server는 user가 로그인 안되었으면 구글 로그인 페이지 반환
-3. user가 로그인 성공.
-4. resource server는 user가 요청한 url을 토대로 clientId 값이 있는지 확인, 자신이 가지고 있는 clientId의 redirect_uri와 user가 보낸 redirect_uri가 일치하는 확인. 일치하지 않으면 끝.
-5. 일치하면 user에게 client에서 해당 scope 기능을 사용할 것을 허용하냐는 페이지 보여줌. 
-6. user가 허용하면, resource server는 user_id와 user_id가 허용한 scope를 저장.
+2. 리소스 서버의 동작 -> 사용자의 계정으로 카카오 로그인 성공
+
+    - 리소스 서버는 사용자가 요청한 url을 토대로 clientId 값을 확인한다.
+    - clientId와 redirect_uri가 일치하는지 검증.
+
+    - (+) 사용자에게 나의 서비스에서 해당 scope 기능 사용을 허용하는지 체크함.
+
+3. 리소스 서버는 user_id와 scope를 저장한다.
 
 
-### 3. Resource Server의 승인
+### 🟡 3. Resource Server의 승인
 
 1. resource server는 임시 비밀번호인 authorization code를 user에게 전송. how? 헤더에 `Location: https://client/callback?code=코드값`을 넣어서 반환
 2. user는 자동으로 저 uri로 리다이렉션. 그럼 client는 authorization code를 받음.

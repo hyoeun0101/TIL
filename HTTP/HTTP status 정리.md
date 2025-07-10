@@ -1,23 +1,54 @@
 
 ## 🔴 2XX
-### 200 OK
+### 🟡 200 OK
 - GET 요청인 경우 : 조회한 리소스 반환
 - HEAD 요청인 경우 : 메세지 본문 없이 표현 헤더가 응답에 포함되어 있음을 의미.
 - POST 요청인 경우 : 성공적으로 전송됨.
 
 
-### 201 Created
+### 🟡 201 Created
 
 - create 성공
 - 응답 메세지 본문에 새로 만들어진 리소스, 리소스에 대한 설명과 링크를 반환.
 
-### 204
+### 🟡 204
 
 - delete 성공
 - response body가 없음.
 
 
+
 ## 🔴 3XX
+
+
+### 🟡 302 Found
+
+- 임시 리다이렉트. 클라이언트에게 다른 URI로 이동하라고 지시하지만, 원본 URI는 유효함.
+
+1. 서버가 HTTP 302와 Loation 헤더를 반환
+
+```
+GET /old-path HTTP/1.1
+Host: example.com
+
+HTTP/1.1 302 Found
+Location: https://example.com/new-path
+Content-Length: 0
+```
+2. 브라우저(클라이언트)는 자동으로 새 URL에 재요청
+
+
+
+### 🟡 303 See Other
+
+- 서버가 클라이언트에게 "다른 URI로 가서 결과를 보라"고 지시하는 리다이렉트 응답 코드.
+
+- 주로 POST 요청의 리다이렉트 상황에서 사용. 
+
+- 예시
+    1. SNS 로그인 페이지  POST 요청 -> 응답이 `HTTP 303 + Location`
+    2. 브라우저에서 GET 요청으로 카카오 로그인 페이지 전환
+
 
 
 ## 🔴 4XX

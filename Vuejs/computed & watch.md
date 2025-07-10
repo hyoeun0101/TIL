@@ -1,6 +1,7 @@
-## 🍎 computed
+## 🔴 computed
 
-- 데이터의 변경을 감지
+- 데이터의 변경을 감지.
+-  computed 내에 선언한 변수가 변경되면 해당 함수 실행. 
 
 ```javascript
 <div id="app">
@@ -116,6 +117,44 @@ export default {
 
 ```
 
-## 🍎 watch
+## 🔴 watch
+- 데이터 변경 시 호출됨.
+
+```javascript
+<template>
+  <div>
+    <button @click="changeMsg()">add</button>
+    <h1>{{ reverseMessage() }}</h1>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      msg: 'Hello Computed!'
+    }
+  },
+  computed: {
+    reverseMessage(){
+        return this.msg.split('').reverse().join('')
+    }
+  },
+  watch:{
+    msg(){
+        console.log('msg=',this.msg)
+    }
+  }
+  methods: {
+    changeMsg() {
+      this.msg ='Good!'
+    }
+  }
+}
+</script>
+```
+
+watch에 msg를 작성하면 msg값이 변할 때 실행이된다. `msg(value)`로 작성할 수 도 있는데 이때 value는 변경된 값을 의미한다.
+
+
 
 - computed는 간단한 연산 정도로 적합하고, watch는 비동기 서버 통신과 같이 비용이 많이 드는 작업을 실행할 때 적합하다.
