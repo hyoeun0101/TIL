@@ -169,10 +169,10 @@ SELECT *
 
 ## 🔴 Log - FO
 
-### 🟡 beforeEnter, beforeRouteEnter
+### 🟡 mobile 화면 로딩 순서
 
-- router > index.js의 beforeEach 실행.
-- 페이지 그려짐
+1. router > index.js의 beforeEach 실행.
+2. 페이지 그려짐
     - src > main.js created 실행.
     - MobileLayout.vue의 beforeRouteEnter() 실행
     - src > main.js mounted 실행.
@@ -196,8 +196,9 @@ SELECT *
 ---
 
 ### 🟡 router에서 next() 동작 방식
-- 문제 상황
-    - `beforeRouteUpdate`에서 next() 호출 후 그 다음 코드가 바로 실행되었다.
+<문제 상황>
+
+- `beforeRouteUpdate`에서 next() 호출 후 그 다음 코드가 바로 실행되었다.
 ```javascript
 beforeRouteUpdate(to, from, next) {
 
@@ -210,6 +211,7 @@ beforeRouteUpdate(to, from, next) {
     next();
 }
 ```
+
 
 - next()는 "라우터 전환을 계속 진행하라"라는 신호를 주는 것 뿐, 그 자체가 비동기 함수처럼 동작하진 않는다.
 
@@ -245,10 +247,6 @@ created() {
 
 <br>
 
----
-### 🟡 input focus 안됨
-
-<br>
 
 ---
 ### 🟡 window.open
@@ -267,6 +265,16 @@ created() {
 
 - 함수는 직렬화가 안되므로, 페이지 리로드/전환 중에 state를 보존하려고 할 때 변할 수 있다.
 
+<br>
+
+---
+### 🟡 created에서 await 걸었는데 mounted로 넘어가는 현상..
+
+- created()에 await을 걸어도 mounted()는 await이 끝날 때까지 기다리지 않음!!
+
+<br>
+
+---
 
 <br><br><br><br><br>
 
