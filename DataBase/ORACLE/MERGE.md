@@ -1,10 +1,11 @@
-### 🍎 MERGE
+## 🔴 MERGE
 - insert, update, delete를 하나의 쿼리로 처리할 수 있음.
 - 데이터가 존재하면 update (또는 delete)하고, 없으면 insert 한다.
 
-### 🍎 MERGE 사용법
-1. __단일 테이블 사용법 - DUAL__
-   - ON 조건절이 일치하면 update. 일치하지 않으면, 일치하지 않으면 insert.
+## 🔴 MERGE 사용법
+
+### 🟡 단일 테이블 사용법(DUAL)
+- ON 조건절이 일치하면 update. 일치하지 않으면 insert.
 
 ```sql
 MERGE INTO 테이블명 A
@@ -17,6 +18,15 @@ WHEN NOT MATCHED THEN --불일치하는 경우[insert]
    VALUES (값)
 ```
 
+```sql
+MERGE INTO S_CUSTOMER S 
+    USING DUAL
+       ON (S.CUSTID = '1234')
+WHEN MATCHED THEN
+UPDATE 
+    SET
+
+```
 2. __동일한 테이블 구조를 가지고있는 테이블 B로부터 데이터 옮기는 법__
    - 테이블 A와 테이블 B는 동일한 테이블 구조를 가지고 있다.
    - ON 절의 조건은 PK를 사용해야한다. 그렇지 않으면 입력 시 중복이 발생하여 에러가 발생할 수 있다.
@@ -43,4 +53,14 @@ WHEN NOT MATCHED THEN
     VALUES (값)
 ```
 
-커서
+
+
+
+
+```sql
+INSERT INTO A_TABLE (COL1, COL2, COL3)
+VALUES (VAL1, VAL2, VAL3)
+ON CONFLICT (COL1) DO
+UPDATE SET COL2 = 'TEST'
+
+```

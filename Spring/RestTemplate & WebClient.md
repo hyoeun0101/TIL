@@ -1,31 +1,53 @@
-## 🍎 RestTemplat이란?
-- Rest API를 호출할 수 있는 Spring 내장 클래스이다.
+- Spring 프로젝트 내에서 API 통신을 해야할 때 RestTemplate를 사용한다.
 
-### RestTemplate의 특징
-- Restful 원칙을 지킨다.
-- HTTP 서버와 통신을 단순화해준다.?
-- Spring 3.0부터 지원되었고, json, xml 응답을 모두 받을 수 있다.
-- HTTP 메서드 (GET, POST, DELETE, PATCH, PUT)을 지원한다.
-- API 호출 후 응답받을 때까지 기다리는 동기 방식이며, Spring 5.0 이후 부터는 deprecated되었다. (Spring 5부터는 동기, 비동기 방식을 둘다 지원)
+- `2025.12.19` Spring 6.1부터는 동기식 HTTP 통신을 위한 RestClient를 제공함. 비동기 및 스트리밍 시나리오의 경우 반응형 WebClient도 고려해보자.
 
-## 🍎 RestTemplate 동작 원리
-![Alt text](/image/resttemplate.png)     
+- Spring에서 신규 개발은 WebClient를 권장함.
 
-1. 애플리케이션 내부에서 **RestTemplate**를 생성하고, URI, HTTP 메서드 등의 헤더를 담아 요청한다.
-    - (EX) restTemplate.exchange(uri, HTTPMethod.GET, Object.class));
-2. **RestTemplate**은 **MessageConverter**를 이용해서 전송할 데이터(requestEntity)를 request Body에 담을 Json으로 변환한다.
-3. **RestTemplate**은 **ClientHttpResquestFactory**로부터 **ClientHttpRequest**를 받아온다.
-    - ClientHttpRequestFactory의 구현체로는 HttpURLConnection, Apache HttpComponents, HttpClient 등이 있다. 
-4. **CilentHttpRequest**가 HTTP 요청 메세지를 만들어 서버에게 요청을 보낸다.
-5. 응답에서 에러가 발생하면 **ResponseErrorHandler**가 에러 처리를 한다.
-6. **ResponseErrorHandler**는 **ClientHttpResponse**에서 응답 데이터를 가져와 에러를 처리한다.
-7. **RestTemplate**은 **HttpMessageConverter**를 통해 응답 메세지를 java object로 변환한다.
-8. 애플리케이션에 반환한다.
+## 🔴 RestTemplat VS WebClient
+- Spring에서 신규 개발은 WebClient를 권장한다.
+
+- RestTemplate은 Blocking. 요청 하나 당 스레드 하나가 할당됨. 요청하고 응답이 올 때까지 스레드를 점유함.
+
+- WebClient는 Non-Blocking. 소수의 스레드로 다수 요청을 처리함. 요청을 하면 스레드를 반환하고 응답이 오면 이벤트로 처리함. 즉 대량 트래픽에 적절함.
+
+- 결론 : 레거시 유지보수는 RestTemplate으로 하되, 신규 개발, 트래픽 큼, 외부 API 많은 경우는 WebClient를 권장한다.
+
+## 🔴 RestTemplat?
+- org.springframework.web.client 패키지 내의 클래스.
+
+- Http 메서드(GET, POST, PUT 등)을 지원
+- API 호출 후 응답받을 때까지 기대라는 **동기식**.
+- **Spring 5.0 이후부터 Deprecated** 됨.
+  - Spring 5.0부턴 동기/비동기 방식을 둘 다 지원함.
 
 
-## 🍎 RestTemplate 사용하기
-### 1. RestTemplate 빈 등록
-- spring-webmvc 의존성을 추가하지만 이는 기본 스프링 부트 의존성에 포함되어 있다. 
+## 🔴 RestTemplate 사용하기
+- spring-webmvc 의존성에 포함되어있음.
+
+### 🟡 빈 등록하기
+
+**빈으로 등록해서 사용해야 하는 이유는?**
+1. 기본 생성자를 통해 사용할 경우 타임아웃 설정이 없다. connect timeout, read timeout 설정 안됨.
+
+  - 즉 외부 API가 응답을 안하면 **스레드는 무한 대기**를 한다.
+2. 공통 설정이 깨진다.
+  - Authorization 헤더, User-Agent, 로깅, Retry, 장애 대응과 같은 공통 설정을 한 RestTemplate 객체를 빈으로 등록하여 사용하는 것이 유리함.
+
+```java
+@Bean
+public RestTemplate restTemplate(RestTemplateBuilder builder) {
+    return builder
+    .additionalInterceptors(new LoggingInterceptor())
+    .build();
+}
+```
+
+
+3. 테스트/Mocking 용이
+4. RestTemplate은 Thread-safe하다. 내부상태없고, 재사용해도 안전하므로 싱글톤 Bean으로 두는 게 맞는 설계이다.
+
+
 ```java
 package com.osc.config;
 
@@ -111,23 +133,6 @@ public class RestTemplateConfig {
 
 }
 ```
-
-### 2. RestTemplate의 메서드
-|메서드|HTTP|설명|
-|----|------|---|
-|getForObject|GET|GET 요청을 하고, 응답 데이터를 object로 반환한다|
-|getForEntity|GET|GET 요청을 하고, 응답 데이터를 ResponseEntity로 반환한다|
-|postForObject|POST|POST 요청을 하고, 응답 데이터를 object로 반환한다|
-|postForEntity|POST|POST 요청을 하고, 응답 데이터를 ResponseEntity로 반환한다|
-|postForLocation|POST|POST 요청을 하고, 응답 헤더에 저장된 uri를 반환한다|
-|delete|DELETE|HTTP DELETE 메서드 요청을 한다|
-|put|PUT|HTTP PUT 메서드 요청을 한다|
-|patchForObject|PATCH|HTTP PATCH 메서드 요청을 한다.|
-|headForHeaders|HEADER|HEADER 메서드 요청을 한다. (header 메서드가 뭔지 찾아볼 것!)|
-|optionsForAllow|OPTIONS|주어진 URL 주소에서 지원하는 HTTP 메서드를 조회한다|
-|exchange|any|HTTP 헤더를 새로 만들며, 모든 HTTP 메서드를 사용할 수 있다|
-|execute|any|Request/Response 콜백을 수정할 수 있다|
-
 
 
 ### 3. POST 예시
