@@ -142,20 +142,53 @@ public class Member {
 }
 ```
 
-## ⭐⭐연관관계 매핑
-- 객체와 테이블 연관관계의 차이
-- 객체의 참조 VS 테이블의 외래키
-
 - 방향
 - 다중성
 - 연관관계의 주인
+## ⭐⭐연관관계 매핑
+- 객체와 테이블의 연관관계 차이점
+  - 객체는 참조를 통해 연관관계를 맺고, 테이블은 외래키를 통해 연관관계를 맺는다.
 
-"객체지향 설계"를 알면 orm의 필요성이 느껴진다?
 
 ### 예제 시나리오
-- 회원 - 팀
 
-객체가 외래키값을 가지고 있다면??
+팀 1 - 회원 N
+
+```java
+class Member {
+    private Long id;
+    
+    private String username;
+    
+    private Team team;
+}
+```
+
+```java
+class Team {
+    private Long id;
+    
+    private String name;
+}
+```
+
+```java
+Team team = new Team();
+team.setName("TeamA");
+
+em.persist(team);
+
+Member member = new Member();
+member.setName("member1");
+member.setTeam(team); // 단방향 연관관계 설정
+
+em.persist(member);
+
+
+
+```
+
+객체가 외래키값을 가지고 있다면?? 객체지향이 안됨.
 
 객체를 테이블에 맞추어 데이터 중심으로 설계하면?
 -> **테이블은 외래키**로 조인해서 연관 테이블을 조회함.
@@ -163,5 +196,97 @@ public class Member {
 테이블과 객체 사이엔 패터다임이 불일치가 존재한다.
 
 
-객체지향 모델링??
-Member
+테이블에선 Member의 외래키 team_id 하나로 두 개의 테이블 모두 접근이 가능하다.
+객체에선?? Member도 team의 정보를 가지고 있어야 하고, Team도 Member의 정보를 가지고 있어야 한다.
+
+
+객체의 양방향 관계:
+단방향 연관관계가 2개가 있는 것.
+@OneToMany의 mappedBy??
+
+테이블의 양방향 관계:
+외래키 하나로 연관관계를 가짐.
+
+=> 여기서 오는 딜레마 : 외래키를 뭐로 관리해야 하지? Member의 team? Team의 members?
+=> 그래서 연관관계의 주인(owner)이 필요하다.
+
+#### 양방향 관계 - 연관관계의 주인(Owner)
+- 객체의 두 관계 중 하나를 주인으로 지정한다.
+- owner가 테이블의 외래키를 관리한다.
+- owner가 아닌 쪽은 읽기만 가능하다.
+- owner가 아닌 쪽에서 mappedBy 사용해서 주인을 지정해줘야 함.
+
+- 누구를 주인으로 정할까?
+  - 외래키가 있는 곳을 주인으로 정하라. 
+
+주인 매핑할 때 주의할 점: 값 변경할 때 owner를 기준으로 수정해야 한다.
+set하는 건 한 쪽에서만 할 것. 편의 메소드 하나 만들어서 수정.
+
+
+컨트롤러에서 Entity 반환하지 말고, DTO 반환하기.
+
+
+#### 다대일 N:1
+
+다대다는 실무에서 사용하면 안된다.
+
+
+
+"다"에 외래키가 있어야 함.
+그래서 다대일일 땐? "다"가 연관관계 주인이다.
+
+양방향할 때 mppedBy 꼭 넣기. + 읽기만 가능.
+
+#### 일대다 1:N
+- 실무에서 이 구조는 거의 가져가지 않음.
+- 원래 '다'에 외래키가 있는게 정상임.
+- '일'이 연관관계 주인이 되는 것. 객체에서 Team이 Member를 알고싶은 것.
+- => 문제: Team을 수정하면? Member도 같이 update 된다.성능 저하. 진짜 심각한건 team만 수정한거 같은데, Member 테이블에 update가 된다는 걸 인지하기 어려움.
+- Member에서 Team을 갈 일이 없더라도, 객체지향을 약간 포기하고, DB에 맞춰서 유지보수하기 쉽게 설계.
+
+
+@JoinColumn(name="team_id", insertable = false, updatable = false) : 읽기 전용. insert, update를 안함.
+
+차라리 다대일 양방향을 사용하자.
+
+#### 일대일 1:1
+외래키가 어디에 있든 상관없다.
+양방향할거면 연관관계 주인이 아닌 곳에 mappedBy는 반드시 적어줘야 한다.
+
+일대일 관계에서 트레이드 오프 : 외래키를 어디에 둘까?
+Member-Locker
+- 추후에 하나의 회원이 여러 개의 Locker를 가질 수 있다면? 추후까지 생각하면 변경이 더 쉬운 Locker에 member_id를 가지고 있는 설계가 더 좋다.
+- 반대로 요구사항이 하나의 Locker를 여러 Member가 가질 수 있다면? Member에 locker_id를 가지고 있는 설계가 더 좋다.
+- 개발자 입장에서 객체지향 관점으로 본다면...?
+  - Member가 locker_id 가지고 있는게 유리하다. 성능 상도 좋음. Member join 없이 하나만 조회하면 되니까 성능 상 장점도 있음.
+  - 결국 트레이드 오프이다.
+  - 너무 먼 미래는 생각하지 않는다. 명확한 1:1 관계일 경우에 Member에 locker_id를 넣음.
+
+**정리**
+
+- 주 테이블에 외래 키
+- 대상 테이블에 외래 키
+  - 단점: 양방향이 필요함. 프록시 기능의 한계로 항상 **즉시 로딩**됨.
+#### 다대다 N:M
+- 실무에서 사용하면 안된다.
+- 관계형 데이터베이스에서 다대다는 가운데에 연결 테이블을 추가해서 일대다, 다대일 관계로 풀어내야함.
+
+
+
+### 상속관계 매핑
+- 테이블 설계 3가지 방법
+
+1. ITEM : item_id, name, price, dtype
+  - MOVIE: item_id, actor, director
+  - BOOK: item_id, author
+  - ALBUM: item_id, artist
+
+2. ITEM: item_id, name, price, dtype, actor, director, author, artist
+
+
+
+
+기본적으로 2번처럼 테이블 생성됨.
+Item에 @Inheritance(strategy = InheritanceType.JOINED) 붙이면? 1번처럼 생성됨.
+
+@DiscriminatorColumn 넣으면 자동으로 dtype이 생김.
