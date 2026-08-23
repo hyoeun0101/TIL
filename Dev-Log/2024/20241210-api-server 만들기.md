@@ -141,8 +141,6 @@ sqlSession - DB
 
 
 <br><br><br><br><br>
-<br><br><br><br><br>
-<br><br><br><br><br>
 
 
 ## 🔴 로깅
@@ -155,21 +153,21 @@ sqlSession - DB
 2. 커스텀을 원하면 resources에 logback-spring.xml 추가하여 설정
 
 ## 🔴 DTO와 VO?
-### DTO (data transfer object)
-- 계층 간 데이터를 전송하기 위해 사용. controller -> service로 이동할 때 사용
+### 🟡 DTO (data transfer object)
+- 계층 간 **데이터를 전송하기 위해** 사용. controller -> service로 이동할 때 사용
 - 데이터 캡슐화.
 - 데이터의 변환 및 전달이 주된 역할.
 - 특징
-    - 가변. 필드 값 변할 수 있음.
-    - 데이터 전달용으로만 사용. 비즈니스 로직 포함하지 않음.
+    - **가변. 필드 값 변할 수 있음.** 즉 setter 존재.
+    - **데이터 전달용**으로만 사용. 비즈니스 로직 포함하지 않음.
     - 데이터베이스 모델(Entity)와 일치하지 않아도 됨. 필요한 데이터만 담아서 사용 가능.
     - 직렬화 가능해야함.
 
 ### VO(value object)
 - 특정 값을 표현하기 위해 사용
-- 그저 값을 담기 위해 존재. 불변성!!
+- 그저 값을 담기 위해 존재. **불변성!!**
 - 특징
-    - 불변. setter없고, 생성자로 값 설정
+    - **불변. setter없고, 생성자로 값 설정**
     - 객체의 동일성은 값 비교로 판단. equals()와 hashCode()를 재정의 해야함.
     - 값만 표현하므로 비즈니스 로직을 포함하지 않음.
 

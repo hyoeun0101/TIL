@@ -79,4 +79,17 @@ public void givenUserPoint_whenChargePoint_thenReturnIncreasedPoint() {
 ```
 <br>
 
+
+
+### 🟡 JUnit 테스트 exception 검증하기.
+
+
+
+
+
+---
+
+<br>
+
+
 ---

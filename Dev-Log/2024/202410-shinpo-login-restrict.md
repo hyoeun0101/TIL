@@ -1,6 +1,11 @@
-## 🔴  2024-09 ~ 2025-01 (2월 오픈)
-### 🟡 우선순위
-계정 > 해외 > 전체(본인인증) > 로그인 2factor > 신규기기 > 전체(캡챠)
+# 프로젝트 개요
+- 2024-09 ~ 2025-01 (2월 오픈)
+- 신세계포인트 앱 로그인 제한 기능 개발
+
+
+## 로그인 제한 우선순위
+> 계정 > 해외 > 전체(본인인증) > 로그인 2factor > 신규기기 > 전체(캡챠)
+
 - 계정과 해외 동시 차단-> 본인인증 -> 성공 후 해외 차단 본인인증 실행.
 
 
@@ -12,8 +17,6 @@
 | sns 로그인|`/mber/v1.0.0/login`|MberLoginController|MberLoginController|
 |생체 로그인|`/webapp/v1.0.0/bioLogin`|BioLoginController|AutoLoginContoller|
 |sso 로그인|`/mber/v1.0.0/ssoTokenCheck`|MberLoginController|MberLoginController|
-
-
 
 
 
@@ -32,9 +35,9 @@
 - @SuperBuilder - 도대체 @SuperBuilder 어떻게 사용하는 것??? 
 - 지금 에러 나는 부분 : CommonModel에 @SuperBuilder를 작성하였는데 기존에 CommonModel을 사용하던 곳에서 에러가 발생함. 해당 클래스에는 @SuperBuilder가 없기 때문인데...
 
-<br><br><br>
+---
 
-## 🔴Log-BO
+# Log-BO
 
 ### 🟡 LocalDateTime 필드 json으로 변환
 
@@ -45,6 +48,7 @@
 2. `JsonFormat(shape = JsonFormat.Shap.STRING, pattern = "yyyy-MM-dd HH:mm:ss")`
 	
 	- @RequestBody, @ResponseBody일 경우 필드에 붙이기.
+
 <br>
 
 ---
