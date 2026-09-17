@@ -13,8 +13,8 @@
 - 객체와 관계형 DB의 매핑
 - 영속성 컨텍스트
 
-## 영속성 컨텍스트
-### EntityManager
+## 1. 영속성 컨텍스트
+### 1-1. EntityManager
 - EntityManager를 통해 영속성 컨텍스트에 접근 가능하다.
 
 - **스프링 환경**에서 EntityManager
@@ -22,7 +22,7 @@
   - 하나의 트랜잭션을 EntityManager가 관리함.
   - 여러 EntityManager가 하나의 PersistenceContext를 공유하여 사용한다.
 
-### 영속성 컨텍스트의 이점
+### 1-2.영속성 컨텍스트의 이점
 - **1차 캐싱**
   - 엔티티 조회 시 영속성 컨텍스트의 1차 캐시에서 먼저 조회한다. 1차 캐시에 값이 없으면 DB에서 SELECT 후 1차 캐시에 저장한다.
 - **동일성 보장**
@@ -43,31 +43,31 @@ System.out.println(a == b);   // true — 1차 캐시를 통해 동일성 보장
 
 ```java
 /**** 쓰기 지연  ***/
-Member m = new Member(1L, "name");
-em.persist(m); // 아직 쿼리 실행X. 1차 캐시에 저장
+Member member = new Member(1L, "name");
+em.persist(member); // 아직 쿼리 실행X. 1차 캐시에 저장
 
 tx.commit; // 커밋 시점에 쿼리 실행
 ```
 
 ```java
 /**** 변경 감지  ***/
-Member m = em.find(Member.class, 1L);
-m.setName("One");
+Member member = em.find(Member.class, 1L);
+member.setName("One");
 
 tx.commit(); // 커밋 시점에 update문 실행
 ```
-### flush
+### 1-3. flush
 - 영속성 컨텍스트의 변경내용에 대해 쿼리를 실행함. 영속성 컨텍스트를 비우진 않음.
 - 직접 호출: `entityManager.flush();`
 - 자동 호출: 트랜잭션 커밋 시점에 자동으로 flush 됨. JPQL 실행 시점에 자동으로 flush됨.
 
-### 영속성 컨텍스트 라이프사이클
+### 1-4. 영속성 컨텍스트 라이프사이클
 - 비영속(transient): 영속성 컨텍스트와 무관한 새 객체
 - 영속(managed): 영속성 컨텍스트가 관리 중
 - 준영속(detached): 관리되다가 분리된 상태. 준영속 상태에서 엔티티를 수정하거나, 삭제해도 쿼리 실행되지 않음.
 - 삭제(removed): 삭제하기로 예약된 상태.
 
-### 준영속 상태로 만드는 법
+### 1-5. 준영속 상태로 만드는 법
 - `entityManager.detach(entity);`: 특정 엔티티만 준영속 상태로 전환
   - ex) `entityManager.detach(member);`: 영속성 컨텍스트가 관리하던 member 객체를 준영속 상태로 전환한다. member의 필드를 수정하더라도 update문이 실행되지 않는다.
 - `entityManager.clear()`: 영속성 컨텍스트를 완전히 초기화
@@ -77,9 +77,9 @@ tx.commit(); // 커밋 시점에 update문 실행
 Member member = em.find(Member.class, 1L);
 em.detach(member); // 준영속
 
-m.setName("newName");
+member.setName("newName");
 
-em.flush(); // 아무 SQL도 안 나감.
+em.flush();   // UPDATE 안 나감. 변경사항 증발
 ```
 
 ```java
@@ -94,12 +94,12 @@ em.flush();   // UPDATE 안 나감. 변경사항 증발
 ```java
 Member member = em.find(Member.class, 1L);
 
-em.close();   // 영속석 컨텍스트를 닫음
+em.close();   // 영속성 컨텍스트를 닫음
 
 member.getUsername();          // OK — 그냥 자바 객체라 필드 접근은 됨
 em.find(Member.class, 2L);     // IllegalStateException!
 ```
-### DDL Auto
+### 1-6. DDL Auto
 - create : 기존 테이블 삭제 후 생성 
 - create-drop: 테이블 생성 후 애플리케이션 종료 시점에 테이블 삭제 
 - update: 변경한 것만 반영(단 삭제는 안됨)
@@ -112,19 +112,19 @@ em.find(Member.class, 2L);     // IllegalStateException!
 > 운영장비에 절대 create,create-drop,update 사용하면 안됨!!!
 ---
 
-## 객체와 테이블 매핑하기
-### 엔티티 설정
+## 2. 객체와 테이블 매핑하기
+### 2-1. 엔티티 설정
 - @Entity : public/protected 기본 생성자 있어야 함.
 - @Table
 
-### 필드와 컬럼 매핑
+### 2-2. 필드와 컬럼 매핑
 - @Column
 - @Id, @GeneratedValue
 - @Enumerated : EnumType.STRING으로 작성하기
 - @Lob
 - @Transient
 
-### 기본 키 매핑
+### 2-3. 기본 키 매핑
 **@GeneratedValue**: 기본키 어떻게 생성할건지 설정
 
 - `GenerationType.IDENTITY`: auto_increment (MyBatis의 auto_increment)
@@ -208,43 +208,56 @@ public class Member {
 }
 ```
 
-## ⭐연관관계 매핑⭐
-- 객체와 테이블의 연관관계 차이점
-  - **테이블은 외래키**로 조인해서 연관 테이블을 조회한다.
-  - **객체는 참조**를 통해 연관 객체를 가진다.
-- 테이블에선 Member의 외래키 team_id 하나로 두 개의 테이블 모두 접근이 가능하다.
-- 객체에선 Member가 Team의 정보를 가질 수도, Team이 Member의 정보를 가질 수도 있다. 즉 양방향이 가능하다.
-  - => 여기서 오는 딜레마 : 외래키를 뭐로 관리해야 하지? Member의 team? Team의 members?
-  - => **연관관계 주인이 필요하다! 외래키가 있는 곳을 주인으로 결정하자.**
+## 3. ⭐연관관계 매핑⭐
+#### 연관관계 매핑 시 고려사항 3가지
+- **다중성**: 다대일, 일대다, 일대일, 다대다
+- **단방향**이냐, **양방향**이냐
+  - 테이블은 **외래키** 하나로 두 테이블을 모두 접근할 수 있다. 객체는 **참조**를 통해 연관 객체를 가진다.
+  - 객체의 참조는 단방향일 수도, 양방향일 수도 있다.
+  - 단방향 예시: Member가 Team을 참조함. 또는 Team이 Member를 참조함.
+  - 양방향 예시: Member도 Team을 참조하고, Team도 Member를 참조함.
+- **연관관계 주인(owner)**
+  - 양방향 관계에서는 연관관계 주인이 필요하다.
 
+### 3-1. 양방향 관계과 연관관계 주인
+- 양방향 관계는 참조가 2군데에 있다. 둘 중 어느 곳에서 외래키를 관리해야 할까?
+  - => 연관관계 주인이 외래키를 관리한다. 테이블에서 외래키가 있눈 곳을 주인으로 결정하자.
 
-### 양방향 관계와 연관관계의 주인(Owner)
 - 예시) 팀 1 - 회원 N
-
+  - MEMBER 테이블: member_id, team_id, username
+  - TEAM 테이블: team_id, name
 ```java
+
 @Entity
-class Member { 
-    @Id @GeneratedValue
-    @Column(name = "member_id")
-    private Long id;
-    
-    private String username;
-    
-    @ManyToOne // => Member가 N, Team이 1. 연관관계 주인
-    @JoinColumn(name = "team_id")
-    private Team team;
+class Member {
+  @Id
+  @GeneratedValue
+  @Column(name = "member_id")
+  private Long id;
+
+  private String username;
 
   /**
-   * 연관관계 편의 메서드
+   * 연관관계 주인:
+   * team 값을 변경하면 update문 실행됨.
    */
-  public void setTeam(Team team) {
-        this.team = team;
-        team.getMembers().add(this);
-    }
+  @ManyToOne // 연관관계 주인
+  @JoinColumn(name = "team_id")
+  private Team team;
+
+  /**
+   * 연관관계 편의 메서드:
+   * 양방향 관계일 땐, 연관관계 편의 메서드를 제공하자.
+   */
+  public void changeTeam(Team team) {
+    this.team = team;
+    team.getMembers().add(this);
+  }
 }
 ```
 
 ```java
+
 @Entity
 class Team {
   @Id
@@ -254,12 +267,89 @@ class Team {
 
   private String name;
 
-  // 주인이 아닌 쪽에서 mappedBy를 통해 주인을 지정해줘야 함.
-  // 읽기 전용
-  @OneToMany(mappedBy = "team")
+  /**
+   * mappedBy: 주인이 아닌 쪽에서 주인을 지정해줘야 함.
+   * 읽기 전용. mebers를 변경해도 update문 실행 안됨.
+   */
+  @OneToMany(mappedBy = "team") // Member의 team 필드
   private List<Member> members = new ArrayList<>();
 }
 ```
+
+#### 올바른 사용
+
+```java
+class Exam {
+  public static void main(String[] args) {
+    Team team = new Team();
+    team.setName("TeamA");
+    em.persist(team);
+
+    Member member = new Member();
+    member.setUsername("member1");
+    member.setTeam(team); // 연관관계 주인쪽에서 값을 변경해야 외래키가 올바르게 들어감.
+    em.persist(member);
+  }
+}
+```
+
+#### 잘못된 사용
+```java
+class Exam {
+  public static void main(String[] args) {
+    Member member = new Member();
+    member.setUsername("member1");
+    em.persist(member);
+
+    Team team = new Team();
+    team.setName("TeamA");
+    team.getMembers().add(member);
+    // => 연관관계 주인이 아니기 때문에 외래키 값에 영향이 없음.
+    // => MEMBER 테이블의 team_id에 값이 안들어감.
+    em.persist(team);
+  }
+}
+```
+
+
+- 양방향 관계에서는 양쪽 다 값을 세팅하는게 맞다. 편의 메서드를 정의해서 사용하자. 양방향 매핑 시 무한 루프 조심하자.
+
+- 되도록이면 양방향 관계는 지양하자. 단방향으로 설계하자.
+
+- 만약 양방향 관계를 사용해야 한다면 owner가 아닌 쪽에서 **mappedBy**로 주인을 지정해줘야 한다.
+
+- owner가 아닌 쪽은 읽기만 가능하다.
+- owner에서 연관관계 편의 메서드를 정의해서 사용하자.
+
+- 양방향 관계 매핑 시 무한루프를 조심하자.
+    - 양방향 관계에서 toString()을 작성하면 안된다. 서로의 toString()을 호출하기 때문에 무한 루프가 발생한다.
+    - 컨트롤러에서 엔티티를 JSON으로 반환하면 안된다. 엔티티를 DTO 변환 후 반환하자.
+
+
+### 3-2. 다대일 @ManyToOne
+
+### 3-3. 일대다 @OneToMany
+
+### 3-4. 일대일 @OneToOne
+
+### 3-5. 다대다 @ManyToMany
+- 실무에서 사용하면 안된다.
+    - 왜? 그러면 어떻게 하나?
+
+
+
+
+
+
+
+
+
+---
+
+### 3-1. 양방향 관계와 연관관계의 주인(Owner)
+- 예시) 팀 1 - 회원 N
+
+
 
 - 되도록이면 양방향 관계는 지양하자. 단방향으로 설계하자.
 - 만약 양방향 관계를 사용해야 한다면 owner가 아닌 쪽에서 mappedBy로 주인을 지정해줘야 한다.
@@ -267,14 +357,16 @@ class Team {
 - owner에서 연관관계 편의 메서드를 정의해서 사용하자.
 - 양방향 관계를 가진 엔티티를 
 ```java
-Team team = new Team();
-team.setName("TeamA");
-em.persist(team);
-
-Member member = new Member();
-member.setName("member1");
-member.setTeam(team); // 단방향 연관관계 설정
-em.persist(member);
+public static void main(String[] args) {
+  Team team = new Team();
+  team.setName("TeamA");
+  em.persist(team);
+  
+  Member member = new Member();
+  member.setName("member1");
+  member.setTeam(team); // 단방향 연관관계 설정
+  em.persist(member);
+}
 
 
 ```
@@ -349,9 +441,9 @@ public class Book extends Item { /*...*/ }
 @Entity
 public class Album extends Item { /*...*/ }
 ```
-- 기본적으로 2번으로 테이블이 생성됨.
+- 기본적으로 상속관계에선 2번 방식(단일 테이블)으로 테이블이 생성됨.
 
-- 부모 클래스에 `@Inheritance(strategy = InheritanceType.JOINED)` 붙이면 1번으로 테이블이 생성됨.
+- 부모 클래스에 `@Inheritance(strategy = InheritanceType.JOINED)` 붙이면 1번 방식으로 테이블이 생성됨.
 
 - 부모 클래스에 `@DiscriminatorColumn` 넣으면 자동으로 dtype 컬럼이 생성됨.
 
@@ -473,20 +565,21 @@ System.out.println("team of member: " + member.getTeam().getClass()); // 실제 
 
 ```java
 public class Order {
-  @OneToMany(mappedBy = "order", casecade = CasecadeType.ALL)
-  private List<OrderItem> orderItems = new ArrayList<>();
-  
+    // Order를 persist할 때, 자동으로 OrderItem도 persist함.
+    @OneToMany(mappedBy = "order", casecade = CasecadeType.ALL)
+    private List<OrderItem> orderItems = new ArrayList<>();
 }
 ```
-- Order를 저장할 때, OrderItem도 같이 저장해줌.
 
 ```java
-// 원래 코드
+// cacade를 설정하지 않은 경우:
+// Order, OrderItem 각각 저장을 해줘야 함.
 em.persist(orderItem1);
 em.persist(orderItem2);
 em.persist(order);
 
-// casecade ALL로 설정하면 orderItem도 같이 persist됨.
+// casecade ALL로 설정하면:
+// Order를 저장하면 OrderItem도 자동으로 저장됨.
 em.persist(order);
 ```
 - 영속성 전이 사용하는 경우: 라이프사이클이 유사할 때, 소유자가 하나일 때 사용한다.
